@@ -1,0 +1,1147 @@
+           结合ODIN(开放数据索引命名)的AP（数据访问点）技术规范（草案）
+
+                  -- PPk开放小组 ( The PPk Public Group )
+                        http://ppkpub.org/
+
+1、AP简介
+    AP是数据访问点(Access Point)的缩写。每一个ODIN标识会被解析映射到一个或若干个数据访问点（AP）上，由AP负责提供具体数据。
+    AP可以理解为PPk网络的“路由器”(Router)。
+
+2、AP架构
+    借鉴NDN（Named Data Networking，即命名数据网络）的定义，AP相关通信采用发布/订阅机制（publish/subscribe）， 是由接收端（即数据消费者，Data Consumer）驱动的。为了接收数据，一个消费者发出一条兴趣（Interest）报文，该报文携带一个ODIN标识，由ODIN标识来识别期望的数据（见图1）。 
+
+                    ----------------------------------
+                    |        ODIN标识符(ODIN)        |
+                    |--------------------------------|
+                    |        负载标识(PayloadID)     |
+                    ----------------------------------
+                             图1 兴趣报文
+
+    作为PPk网络分阶段实现路线的第一阶段目标，将先实现最简单的情况，即消费者直接以IP形式连接存放所需数据的AP获得数据报文。例如：一个消费者可请求 ppk:/23.567/videos/2381920#，会通过层级解析获知可用的AP地址，并以IP数据包的形式向AP发出兴趣报文，AP则同样以IP数据包的形式发回一条数据（Data）报文，它携带数据的ODIN标识(比如ppk:/23.567/videos/2381920#2.0)和对应内容，还有对应生产者内容签名私钥所生成的一个签名（见图2）。
+    注：请求者的ODIN标识如果未指定准确的数据块位置，则缺省匹配返回的是对应内容的最新区块N的第一个数据块（即#N.0）。
+
+                    ----------------------------------
+                    |        ODIN标识符(ODIN)        |
+                    |--------------------------------|
+                    |     元数据描述信息(MetaInfo)   | 
+                    |--------------------------------|
+                    |         数据内容(Content)      | 
+                    |--------------------------------|
+                    |        生产者签名(Signature)   |
+                    ----------------------------------
+                             图2 数据报文
+
+
+    ODIN标识对于路由网络而言是不透明的，即路由不知道一个标识的含义（虽然它们知道一个标识各组成部分之间的边界）。这允许应用可以自主选择其需要的具体资源命名方案，并允许命名方案独立于网络而演化。
+
+    为了检索动态产生的数据，消费者必须能够确定性地定位数据的期望片段构造标识，而不需要以前看到该标识或数据。
+    例如: 消费者可请求ppk:/23.567/videos_2381920，并得到名字为ppk:/23.567/videos_2381920#1.0的一条数据报文（标识尾部增加的“1.0”表示第1个版本区块的第1个片段数据块），之后消费者可指定以后的片段，并请求它们，使用的是第一条数据报文以及消费者应用和生成者应用之间达成的命名惯例等所揭示的信息组合。（如果判断来源AP在一段时间内访问过该资源标识且没有更新的话，可以返回LINK类型，直接利用来源AP的缓存数据返回）
+
+    注：AP可以支持所有现有的应用，包括“推动”内容的那些应用。例如： 为了发送一封电子邮件，客户端首先向服务器发送一条兴趣报文，来请求对于接受该电子邮件的服务器兴趣。如果服务器是感兴趣的，则它将向客户端发送一条兴趣报文，之后客户端向服务器发送数据报文。
+
+    兴趣报文中的ODIN标识可以采用标准结构式或自定义结构式，但解析结果的数据报文中ODIN标识都采用标准结构式。
+    注意:如果多级AP存在相同的情况，借鉴NDN的设计，相同的兴趣报文或数据报文会被忽略以避免环路。
+
+3. 报文定义
+
+    参考和兼容NDN/CCNx协议规范(http://named-data.net/doc/ndn-tlv/index.html , http://tools.ietf.org/html/draft-mosko-icnrg-ccnxmessages-01)。
+
+    报文定义采用了TLV格式编码,即每一个数据字段对应： Type类型， Lenght长度，Value值
+    Type和Length的长度固定，都是2字节；
+    Value的长度由Length指定；
+    解析方法：
+          1.读取type 转换为ntohl、ntohs转换为主机字节序得到类型；指针偏移+2
+          2.读取length，转换为ntohl、ntohs转换为主机字节序得到长度；指针偏移+2
+          3.根据得到的长度读取value，指针偏移+Length；
+          。。。。
+          继续处理后面的TLV；
+
+3.1 报文总体结构
+
+    每一个报文都有8字节的固定头部，后面是采用TLV格式的字段集合，对应逐跳描述(Hop-by-hop，可选)和实际报文(PacketPayload)数据。
+
+                       1                   2                   3
+   0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+---------------+---------------+
+   |    Version    |  PacketType   |         PacketLength          |
+   +---------------+---------------+---------------+---------------+
+   |           PacketType specific fields          | HeaderLength  |
+   +---------------+---------------+---------------+---------------+
+   / Optional Hop-by-hop header TLVs                               /
+   +---------------+---------------+---------------+---------------+
+   / PacketPayload TLVs                                            /
+   +---------------+---------------+---------------+---------------+
+
+3.2 报文固定头部
+
+    固定头部说明如下：
+       o  Version: 协议版本，本文对应为 1 。.
+
+       o  HeaderLength: 包含固定头部（8字节）和逐跳描述(Hop-by-hop)头部TLV字段的总字节长度，最小为8，最大为255.
+
+       o  PacketType: 报文类型， 目前取值定义：兴趣报文(Interest)取值0, 数据报文(ContentObject) 取值1, 兴趣异常反馈报文(InterestReturn)取值2。
+
+       o  PacketLength: 报文总字节长度（包括头部和正文）。
+
+       o  PacketType Specific Fields:  保留字段(3字节)，由特定报文类型定义。
+
+3.2.1 兴趣报文（Interest）固定头部
+
+    兴趣报文的固定头部构成如下：
+                        1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+---------------+---------------+
+   |       1       |       0       |         PacketLength          |
+   +---------------+---------------+---------------+---------------+
+   |   HopLimit    |    Reserved   |     Flags     | HeaderLength  |
+   +---------------+---------------+---------------+---------------+
+    其中，
+    逐跳限制(HopLimit) 在多个AP间接力传播兴趣报文时将依次减1直到0，当该字段减为0后该兴趣报文将不再被转发。 该字段初始可设为1到255范围内的任意值。AP对于收到HopLimit为0的兴趣报文将做忽略处理。
+    保留字段(Reserved)在发出的兴趣报文(Interest)中应设置为0， 在返回的兴趣异常反馈报文(InterestReturn)将被填写上一个状态值。
+    扩展标志(Flags)暂时没有定义，缺省设置为0。
+
+
+3.2.2 数据报文(ContentObject)固定头部
+    数据报文的固定头部构成如下：
+                       1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+---------------+---------------+
+   |       1       |       1       |         PacketLength          |
+   +---------------+---------------+---------------+---------------+
+   |            Reserved           |     Flags     | HeaderLength  |
+   +---------------+---------------+---------------+---------------+
+    保留字段(Reserved)应设置为0。
+    扩展标志(Flags)暂时没有定义，缺省设置为0。
+
+3.2.3 兴趣异常反馈报文(InterestReturn)固定头部
+    兴趣异常反馈报文的固定头部构成如下：
+                        1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+---------------+---------------+
+   |       1       |       2       |         PacketLength          |
+   +---------------+---------------+---------------+---------------+
+   |   HopLimit    |  ReturnCode   |     Flags     | HeaderLength  |
+   +---------------+---------------+---------------+---------------+
+
+    兴趣异常反馈报文与对应兴趣报文的字节长度一样，只是PacketType字段设置为2，原有的保留字段(Reserved)被填写上具体的反馈状态值(ReturnCode)，其他字段内容都保持原样。
+
+    反馈状态值(ReturnCode)取值为大于0的整数，定义如下：
+                      +-------+--------------------+
+                      | Value | Return Type        |
+                      +-------+--------------------+
+                      |   1   | No Route           |
+                      |       |                    |
+                      |   2   | Hop Limit Exceeded |
+                      |       |                    |
+                      |   3   | No Resources       |
+                      |       |                    |
+                      |   4   | Path Error         |
+                      |       |                    |
+                      |   5   | Prohibited         |
+                      |       |                    |
+                      |   6   | Congested          |
+                      |       |                    |
+                      |   7   | MTU too large      |
+                      +-------+--------------------+
+                            Table 1: ReturnCode
+
+3.3 逐跳描述(Hop-by-hop TLV header)字段
+   Hop-by-hop TLV headers are unordered and no meaning should be
+   attached to their ordering.  Four hop-by-hop headers are described in
+   this document:
+
+   +--------+-------------+-----------------+--------------------------+
+   |  Type  |    Abbrev   |       Name      | Description              |
+   +--------+-------------+-----------------+--------------------------+
+   | %x0001 |  T_INTLIFE  |     Interest    | The time an Interest     |
+   |        |             |     Lifetime    | should stay pending at   |
+   |        |             | (Section 3.3.1) | an intermediate node.    |
+   |        |             |                 |                          |
+   | %x0002 | T_CACHETIME |   Recommended   | The Recommended Cache    |
+   |        |             |    Cache Time   | Time for Content         |
+   |        |             | (Section 3.3.2) | Objects.                 |
+   +--------+-------------+-----------------+--------------------------+
+
+                     Table 2: Hop-by-hop Header Types
+
+   Additional hop-by-hop headers are defined in higher level
+   specifications such as the fragmentation specification.
+
+3.3.1.  Interest Lifetime
+
+   The Interest Lifetime is the time that an Interest should stay
+   pending at an intermediate node.  It is expressed in milliseconds as
+   an unsigned, network byte order integer.
+
+   A value of 0 (encoded as 1 byte %x00) indicates the Interest does not
+   elicit a Content Object response.  It should still be forwarded, but
+   no reply is expected.
+
+                        1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+---------------+---------------+
+   |          T_INTLIFE            |             Length            |
+   +---------------+---------------+---------------+---------------+
+   /                                                               /
+   /                      Lifetime (length octets)                 /
+   /                                                               /
+   +---------------+---------------+---------------+---------------+
+
+3.3.2.  Recommended Cache Time
+
+   The Recommended Cache Time (RCT) is a measure of the useful lifetime
+   of a Content Object as assigned by a content producer or upstream
+   node.  It serves as a guideline to the Content Store cache in
+   determining how long to keep the Content Object.  It is a
+   recommendation only and may be ignored by the cache.  This is in
+   contrast to the ExpiryTime (described in Section 3.6.2.2.2)which
+   takes precedence over the RCT and must be obeyed.
+
+   Because the Recommended Cache Time is an optional hop-by-hop header
+   and not a part of the signed message, a content producer may re-issue
+   a previously signed Content Object with an updated RCT without
+   needing to re-sign the message.  There is little ill effect from an
+   attacker changing the RCT as the RCT serves as a guideline only.
+
+   The Recommended Cache Time (a millisecond timestamp) is a network
+   byte ordered unsigned integer of the number of milliseconds since the
+   epoch in UTC of when the payload expires.  It is a 64-bit field.
+
+                        1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+---------------+---------------+
+   |         T_CACHETIME           |               8               |
+   +---------------+---------------+---------------+---------------+
+   /                                                               /
+   /                    Recommended Cache Time                     /
+   /                                                               /
+   +---------------+---------------+---------------+---------------+
+
+3.4.  顶层类型(Top-Level Types)
+
+   The top-level TLV types listed below exist at the outermost level of
+   a PPk-AP/CCNx protocol message.
+
+   +-------+----------------------+-------------------+----------------+
+   |  Type |        Abbrev        |        Name       | Description    |
+   +-------+----------------------+-------------------+----------------+
+   | %x000 |      T_INTEREST      |      Interest     | An Interest    |
+   | 1     |                      |   (Section 3.6)   | MessageType.   |
+   |       |                      |                   |                |
+   | %x000 |       T_OBJECT       |   Content Object  | A Content      |
+   | 2     |                      |   (Section 3.6)   | Object         |
+   |       |                      |                   | MessageType    |
+   |       |                      |                   |                |
+   | %x000 |   T_VALIDATION_ALG   |     Validation    | The method of  |
+   | 3     |                      |     Algorithm     | message        |
+   |       |                      | (Section 3.6.4.1) | verification   |
+   |       |                      |                   | such as        |
+   |       |                      |                   | Message        |
+   |       |                      |                   | Integrity      |
+   |       |                      |                   | Check (MIC), a |
+   |       |                      |                   | Message        |
+   |       |                      |                   | Authentication |
+   |       |                      |                   | Code (MAC), or |
+   |       |                      |                   | a              |
+   |       |                      |                   | cryptographic  |
+   |       |                      |                   | signature.     |
+   |       |                      |                   |                |
+   | %x000 | T_VALIDATION_PAYLOAD |     Validation    | The validation |
+   | 4     |                      |      Payload      | output, such   |
+   |       |                      | (Section 3.6.4.2) | as the CRC32C  |
+   |       |                      |                   | code or the    |
+   |       |                      |                   | RSA signature. |
+   +-------+----------------------+-------------------+----------------+
+
+                       Table 3: PPk-AP/CCNx Top Level Types
+
+3.5.  全局格式定义(Global Formats)
+
+3.5.1.  字符块(Pad)
+
+   The pad type may be used by protocols that prefer word-aligned data.
+   The size of the word may be defined by the protocol.  Padding 4-byte
+   words, for example, would use a 1-byte, 2-byte, and 3-byte Length.
+   Padding 8-byte words would use a (0, 1, 2, 3, 5, 6, 7)-byte Length.
+
+   A pad may be inserted after any TLV except within a ODIN Name TLV.  In the
+   remainder of this document, we will not show optional pad TLVs.
+
+                        1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+---------------+---------------+
+   |             T_PAD             |             Length            |
+   +---------------+---------------+---------------+---------------+
+   /                 variable length pad MUST be zeros             /
+   +---------------+---------------+---------------+---------------+
+
+3.5.2.  组织团体身份标识(Organization Specific TLVs)
+
+   Organizations may request proprietary TLV types in the Hop-By-Hop
+   headers section or other TLV containers.  The organization then has
+   control of the contents of the Value, which may be its own binary
+   field or an encapsulated set of TLVs.  The inner TLVs, because we use
+   a context-dependent TLV scheme, may be fully defined by the
+   organization.
+
+   Organization specific TLVs MUST use the T_ORG type.  The Length field
+   is the length of the organization specific information plus 3.  The
+   Value begins with the 3 byte organization number derived from the
+   last three digits of the IANA Private Enterprise
+   Numbers([CCNSemantics]), followed by the organization specific
+   information.
+
+   +--------+--------+------------------+------------------------------+
+   |  Type  | Abbrev |       Name       | Description                  |
+   +--------+--------+------------------+------------------------------+
+   | %x000B |  T_ORG |  Vendor Specific | Information specific to a    |
+   |        |        |    Information   | vendor implementation.       |
+   +--------+--------+------------------+------------------------------+
+
+                  Table 4: Additional PPk-AP/CCNx Message Types
+
+
+                        1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+---------------+---------------+
+   |            (T_ORG)            |     Length (3+value length)   |
+   +---------------+---------------+---------------+---------------+
+   |   PEN[0]      |    PEN[1]     |     PEN[2]    |               /
+   +---------------+---------------+---------------+               +
+   /                  Vendor Specific Value                        /
+   +---------------+---------------+---------------+---------------+
+
+3.5.3.  链接(Link)
+
+   A Link is the tuple: {ODIN, KeyId, ContentObjectHash}.  It is a
+   general encoding that is used in both the payload of a Content Object
+   with PayloadType = "Link" and in the KeyName field in a KeyLocator.
+
+                        1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+-------------------------------+
+   / Mandatory ODIN name                                           /
+   +---------------+---------------+-------------------------------+
+   / Optional KeyId                                                /
+   +---------------------------------------------------------------+
+   / Optional ContentObjectHash                                    /
+   +---------------------------------------------------------------+
+
+
+3.6.  PPk-AP/CCNx Message
+
+   This is the format for the PPk-AP/CCNx protocol message itself.  The PPk-AP/CCNx
+   message is the portion of the packet between the hop-by-hop headers
+   and the Validation TLVs.  The figure below is an expansion of the
+   "CCNx Message TLV" depicted in the beginning of Section 3.  The PPk-AP/CCNx
+   message begins with MessageType and runs through the optional
+   Payload.  The same general format is used for both Interest and
+   Content Object messages which are differentiated by the MessageType
+   field.  The first enclosed TLV of a PPk-AP/CCNx Message is always the Name
+   TLV.  This is followed by an optional Message TLVs and an optional
+   Payload TLV.
+
+                        1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+---------------+---------------+
+   |         MessageType           |         MessageLength         |
+   +---------------+---------------+---------------+---------------+
+   | ODIN Name TLV       (Type = T_NAME)                           |
+   +---------------+---------------+---------------+---------------+
+   / Optional Message TLVs   (Various Types)                       /
+   +---------------+---------------+---------------+---------------+
+   / Optional Payload TLV  (Type = T_PAYLOAD)                      /
+   +---------------+---------------+---------------+---------------+
+
+
+   +--------+-----------+-----------------+----------------------------+
+   |  Type  |   Abbrev  |       Name      | Description                |
+   +--------+-----------+-----------------+----------------------------+
+   | %x0000 |   T_NAME  |   ODIN Name     | The ODIN name requested in |
+   |        |           | (Section 3.6.1) | an Interest or published   |
+   |        |           |                 | in a Content Object.       |
+   |        |           |                 |                            |
+   | %x0001 | T_PAYLOAD |     Payload     | The message payload.       |
+   |        |           | (Section 3.6.3) |                            |
+   +--------+-----------+-----------------+----------------------------+
+
+                        Table 5: PPk-AP/CCNx Message Types
+
+3.6.1.  ODIN Name
+
+   A ODIN Name is a TLV encoded sequence of segments.  The table below lists
+   the type values appropriate for these Name segments.  A Name MUST NOT
+   include PAD TLVs.
+
+
+                        1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+---------------+---------------+
+   |            T_NAME             |            Length             |
+   +---------------+---------------+---------------+---------------+
+   / Name segment TLVs                                             /
+   +---------------+---------------+---------------+---------------+
+
+   +--------+---------------+-------------------+----------------------+
+   |  Type  | Symbolic Name |        Name       | Description          |
+   +--------+---------------+-------------------+----------------------+
+   | %x0001 | T_NAMESEGMENT | ODIN Name segment | A generic ODIN name  |
+   |        |               | (Section 3.6.1.1) | Segment.             |
+   |        |               |                   |                      |
+   | %x0002 |     T_IPID    |  Interest Payload | An identifier that   |
+   |        |               |         ID        | represents the       |
+   |        |               | (Section 3.6.1.2) | Interest Payload     |
+   |        |               |                   | field.  As an        |
+   |        |               |                   | example, the Payload |
+   |        |               |                   | ID might be a nonce or a hash   |
+   |        |               |                   | of the Interest      |
+   |        |               |                   | Payload.  This       |
+   |        |               |                   | provides a way to    |
+   |        |               |                   | differentiate        |
+   |        |               |                   | between Interests    |
+   |        |               |                   | based on their       |
+   |        |               |                   | payloads without     |
+   |        |               |                   | having to parse all  |
+   |        |               |                   | the bytes of the     |
+   |        |               |                   | payload itself;      |
+   |        |               |                   | instead using only   |
+   |        |               |                   | this Payload ID Name |
+   |        |               |                   | segment              |
+   |        |               |                   |                      |
+   | %x1000 |   T_APP:00 -  |    Application    | Application-specific |
+   |    -   |   T_APP:4095  |     Components    | payload in a name    |
+   | %x1FFF |               | (Section 3.6.1.1) | segment.  An         |
+   |        |               |                   | application may      |
+   |        |               |                   | apply its own        |
+   |        |               |                   | semantics to the     |
+   |        |               |                   | 4096 reserved types. |
+   +--------+---------------+-------------------+----------------------+
+
+                         Table 6: PPk-AP/ODIN Types
+
+3.6.1.1.  Name Segments
+
+   Special application payload name segments are in the range %x1000 -
+   %1FFF.  These have application semantics applied to them.  A good
+   convention is to put the application's identity in the name prior to
+   using these name segments.
+   
+   For example, a name like "ppk:/100/bar/yo#1.0" would be encoded as:
+
+                        1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+---------------+---------------+
+   |            (T_NAME)           |           %x14 (32)           |
+   +---------------+---------------+---------------+---------------+
+   |        (T_NAME_SEGMENT)       |           %x04 (4)            |
+   +---------------+---------------+---------------+---------------+
+   |       p                p               k      |       :       |
+   +---------------+---------------+---------------+---------------+
+   |        (T_NAME_SEGMENT)       |           %x03 (3)            |
+   +---------------+---------------+---------------+---------------+
+   |       1                0               0      |(T_NAME_SEGMENT)
+   +---------------+---------------+---------------+---------------+
+   |               |            %x03 (3)           |       b       |
+   +---------------+---------------+---------------+---------------+
+   |      a                r       |       (T_NAME_SEGMENT)        |
+   +---------------+---------------+---------------+---------------+
+   |           %x06 (6)            |        y      |       o       |
+   +---------------+---------------+---------------+---------------+
+   |       #       |       1       |        .      |       0       |
+   +---------------+---------------+---------------+---------------+
+
+3.6.1.2.  Interest Payload ID
+
+   The Interest Payload ID is an octet string created by the origin of
+   an Interest to represent the Interest Payload.  A common
+   representation is to use a nonce or a hash of the Interest Payload as the
+   Interest Payload ID.
+
+3.6.2.  Message TLVs
+
+   Each message type (Interest or Content Object) is associated with a
+   set of optional Message TLVs.  Additional specification documents may
+   extend the types associated with each.
+
+3.6.2.1.  Interest Message TLVs
+
+   There are three Message TLVs currently associated with an Interest
+   message: the KeyIdRestriction selector and the
+   ContentObjectHashRestriction selector are used to narrow the universe
+   of acceptable Content Objects that would satisfy the Interest.  The
+   InterestPayloadIDMethod identifies how the InterestPayloadID was
+   created
+
+                        1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+---------------+---------------+
+   |         MessageType           |         MessageLength         |
+   +---------------+---------------+---------------+---------------+
+   | ODIN Name TLV                                                      |
+   +---------------+---------------+---------------+---------------+
+   / Optional KeyIdRestriction TLV                                 /
+   +---------------------------------------------------------------+
+   / Optional ContentObjectHashRestriction TLV                     /
+   +---------------------------------------------------------------+
+   / Optional InterestPayloadIDMethod TLV                          /
+   +---------------------------------------------------------------+
+
+   +-------+---------------+-----------------------------+-------------+
+   |  Type |     Abbrev    |             Name            | Description |
+   +-------+---------------+-----------------------------+-------------+
+   | %x000 |  T_KEYIDRESTR |       KeyIdRestriction      | An octet    |
+   | 2     |               |     (Section 3.6.2.1.1)     | string      |
+   |       |               |                             | identifying |
+   |       |               |                             | the         |
+   |       |               |                             | specific    |
+   |       |               |                             | publisher   |
+   |       |               |                             | signing key |
+   |       |               |                             | that would  |
+   |       |               |                             | satisfy the |
+   |       |               |                             | Interest.   |
+   |       |               |                             |             |
+   | %x000 | T_OBJHASHREST | ContentObjectHashRestrictio | The SHA-256 |
+   | 3     | R             | n    (Section 3.6.2.1.2)    | hash of the |
+   |       |               |                             | specific    |
+   |       |               |                             | Content     |
+   |       |               |                             | Object that |
+   |       |               |                             | would       |
+   |       |               |                             | satisfy the |
+   |       |               |                             | Interest.   |
+   |       |               |                             |             |
+   | %x000 |    T_IPIDM    |  Interest Payload ID Method | Defines the |
+   | 4     |               |     (Section 3.6.2.1.3)     | method used |
+   |       |               |                             | to create   |
+   |       |               |                             | the         |
+   |       |               |                             | Interest    |
+   |       |               |                             | Payload ID. |
+   +-------+---------------+-----------------------------+-------------+
+
+                 Table 7: PPk-AP/CCNx Interest Message TLV Types
+
+
+3.6.2.1.1.  KeyIdRestriction
+
+   An Interest may include a KeyIdRestriction selector.  This ensures
+   that only Content Objects with matching KeyIds will satisfy the
+   Interest.  See Section 3.6.4.1.4.1 for the format of a KeyId.
+   可用于满足双方事先约定的特定加密数据需求，或者请求方已掌握内容方的签名公钥，要求内容方用对应合法私钥签名内容以便验证。
+
+3.6.2.1.2.  ContentObjectHashRestriction
+
+   An Interest may also contain a ContentObjectHashRestriction selector.
+   This is the SHA-256 hash of the Content Object - the self-certifying
+   name restriction that must be verified in the network, if present.
+
+   The only acceptable length is 32.
+
+                        1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+---------------+---------------+
+   |        T_OBJHASHRESTR         |             Length            |
+   +---------------+---------------+---------------+---------------+
+   /                                                               /
+   /                       SHA-256 digest (32 bytes)               /
+   /                                                               /
+   /                                                               /
+   +---------------+---------------+---------------+---------------+
+
+3.6.2.1.3.  Interest Payload ID Method
+
+   An optional enumeration that identifies how the Interest Payload ID
+   was created.  If the IPIDM field is missing, it is assumed to be "0"
+   (application specific).
+
+   o  0: Application specific
+
+   o  1: Nonce
+
+   o  2: RFC 6920
+
+   If using an RFC 6920 [RFC6920] name segment for the payload ID, only
+   include the "Digest Algorithm; Digest Value" portion of the NI name
+   in an LCI URI.  For example, use a name like ppk:/name=foo/name=bar/
+   ipid=sha-256-32;f4OxZQ."  The binary wire-format uses the RFC 6920
+   Binary Format inside the name segment Value.
+
+3.6.2.2.  Content Object Message TLVs
+
+   The following message TLVs are currently defined for Content Objects:
+   PayloadType (optional) and ExpiryTime (optional).
+
+
+                         1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+---------------+---------------+
+   |         MessageType           |         MessageLength         |
+   +---------------+---------------+---------------+---------------+
+   | ODIN Name TLV                                                      |
+   +---------------+---------------+---------------+---------------+
+   / Optional PayloadType TLV                                      /
+   +---------------------------------------------------------------+
+   / Optional ExpiryTime TLV                                       /
+   +---------------------------------------------------------------+
+
+
+   +--------+-------------+---------------------+----------------------+
+   |  Type  |    Abbrev   |         Name        | Description          |
+   +--------+-------------+---------------------+----------------------+
+   | %x0005 | T_PAYLDTYPE |     PayloadType     | Indicates the type   |
+   |        |             | (Section 3.6.2.2.1) | of Payload contents. |
+   |        |             |                     |                      |
+   | %x0006 |   T_EXPIRY  |      ExpiryTime     | The time at which    |
+   |        |             | (Section 3.6.2.2.2) | the Payload expires, |
+   |        |             |                     | as expressed in the  |
+   |        |             |                     | number of            |
+   |        |             |                     | milliseconds since   |
+   |        |             |                     | the epoch in UTC.    |
+   |        |             |                     | If missing, Content  |
+   |        |             |                     | Object may be used   |
+   |        |             |                     | as long as desired.  |
+   |        |             |                     |                      |
+   +--------+-------------+---------------------+----------------------+
+   
+
+              Table 8: PPk-AP/CCNx Content Object Message TLV Types
+
+3.6.2.2.1.  PayloadType
+
+   The PayloadType is a network byte order integer representing the
+   general type of the Payload TLV.
+
+   o  0: Data 
+
+   o  1: Key (Reserved for PPk)
+
+   o  2: Link
+
+   o  3: Manifest  (Reserved for PPk)
+
+   The Data type indicate that the Payload of the ContentObject is
+   opaque application bytes.  The Key type indicates that the Payload is
+   a DER encoded public key.  The Link type indicates that the Payload
+   is a Link (Section 3.5.3).  If this field is missing, a "Data" type
+   is assumed.  A Manifest type indicates that the Payload is a Manifest
+   (format TBD).
+
+                        1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+---------------+---------------+
+   |            T_PAYLDTYPE        |            Length             |
+   +---------------+---------------+---------------+---------------+
+   |  PayloadType  /
+   +---------------+
+
+3.6.2.2.2.  ExpiryTime
+
+   The ExpiryTime is the time at which the Payload expires, as expressed
+   by a timestamp containing the number of milliseconds since the epoch
+   in UTC.  It is a network byte order unsigned integer in a 64-bit
+   field.  A cache or end system should not respond with a Content
+   Object past its ExpiryTime.  Routers forwarding a Content Object do
+   not need to check the ExpiryTime.  If the ExpiryTime field is
+   missing, the Content Object has no expressed expiration and a cache
+   or end system may use the Content Object for as long as desired.
+
+                        1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+---------------+---------------+
+   |           T_EXPIRY            |               8               |
+   +---------------+---------------+---------------+---------------+
+   /                          ExpiryTime                           /
+   /                                                               /
+   +---------------+---------------+---------------+---------------+
+3.6.3.  Payload
+
+   The Payload TLV contains the content of the packet.  It is
+   permissible to have a "0" length.  If a packet does not have any
+   payload, this field may be omitted, rather than carrying a "0"
+   length.
+
+                        1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+---------------+---------------+
+   |           T_PAYLOAD           |            Length             |
+   +---------------+---------------+---------------+---------------+
+   /                        Payload Contents                       /
+   +---------------+---------------+---------------+---------------+
+
+3.6.3.1.  Data Payload Contents
+
+   The following message TLVs are currently defined for Data Payload
+   Contents:
+   DataMetaInfo and  DataChunk .
+
+                         1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------------------------------------------------------+
+   / Data MetaInfo TLV                                             /
+   +---------------------------------------------------------------+
+   / Data Chunk TLV                                                /  
+   +---------------------------------------------------------------+
+
+
+   +--------+-------------+---------------------+----------------------+
+   |  Type  |    Abbrev   |         Name        | Description          |
+   +--------+-------------+---------------------+----------------------+
+   | %x1000 | T_METAINFO  |     DataMetaInfo    | The meta information |
+   |        |             | (Section 3.6.3.1.1) | defined by PPk       |
+   |        |             |                     | application          |
+   |        |             |                     |                      |
+   | %x1001 | T_DATACHUNK |      DataChunk      | The chunk of the data|
+   |        |             | (Section 3.6.3.1.2) |                      |
+   |        |             |                     |                      |
+   +--------+-------------+---------------------+----------------------+
+
+3.6.3.1.1.  Data Meta Information
+
+    ODIN标识对应数据内容组织结构采用类区块链结构，能很好地满足定位和读写不同的应用数据内容的需求。
+    对于文件File， 一个区块可对应文件的一个版本， 每一个区块内部则由类似交易记录的若干个二进制子块组成文件实际内容；
+    对于动态数据流Stream，和比特币一样可以理解为按一定顺序产生并记录的数据块。
+
+    在元数据描述信息(MetaInfo)字段里，对于具体资源内容提供以下信息：
+                        1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+---------------+---------------+
+   |         T_METAINFO            |             Length            |
+   +---------------+---------------+---------------+---------------+
+   / ChunkType TLV                                                 /
+   +---------------------------------------------------------------+
+   / BlockSerialNumber TLV                                         /
+   +---------------------------------------------------------------+
+   / BlockChunks TLV                                               /
+   +---------------------------------------------------------------+
+   / ChunkIndex TLV                                                /
+   +---------------------------------------------------------------+
+   / Optional MetaDesc TLV                                        /
+   +---------------------------------------------------------------+
+
+
+   +--------+-------------+---------------------+----------------------+
+   |  Type  |    Abbrev   |         Name        | Description          |
+   +--------+-------------+---------------------+----------------------+
+   | %x1000 | T_CHUNKTYPE |     ChunkType       | 数据子块的类型.      | 
+   |        |             |                     |                      |
+   | %x1001 | T_BLOCKSN   |  BlockSerialNumber  | 对应内容区块号，     |
+   |        |             |                     | 从1开始.             |
+   |        |             |                     |                      |
+   | %x1002 |T_BLOCKCHUNKS|    BlockChunks      | 此区块包含数据子块数 |
+   |        |             |                     |                      |
+   | %x1003 | T_CHUNKINDEX|    ChunkIndex       | 当前数据子块在该区块 |
+   |        |             |                     | 内的索引位置，从0开始|
+   |        |             |                     |                      |
+   |        |             |                     |                      |
+   | %x1004 | T_BLOCKMETA |     BlockMeta       | 对区块整体的元数据描 |
+   |        |             |                     | 述，随该区块的第1个索|
+   |        |             |                     | 引子块提供           |
+   +--------+-------------+---------------------+----------------------+
+
+3.6.3.1.1.1.  Chunk Type
+
+   The ChunkType is a network byte order integer representing the
+   general type of the Payload TLV.
+
+   o  0: Data (possibly encrypted by application)
+
+   o  2: Link
+
+   The Data type indicate that the Payload of the ContentObject is
+   opaque application bytes.  The Link type indicates that the Payload
+   is a Link (Section 3.5.3).  If this field is missing, a "Data" type
+   is assumed. 
+
+                        1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+---------------+---------------+
+   |            T_CHUNKTYPE        |               1               |
+   +---------------+---------------+---------------+---------------+
+   |  ChunkType    /
+   +---------------+
+3.6.3.1.1.2.  Block Meta
+   对区块整体的元数据描述，随该区块的第1个索引子块提供。
+   对于文件数据(File)，该元数据描述可以包含文件名称、创建者、内容格式等描述信息。
+   对于流数据(Stream), 该元数据描述可以包含创建者、内容格式等描述信息。
+   待进一步定义。
+   
+3.6.3.1.1.  Data Chunk   
+
+   The Payload TLV contains the content of the packet.  It is
+   permissible to have a "0" length.  If a packet does not have any
+   payload, this field may be omitted, rather than carrying a "0"
+   length.
+
+                        1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+---------------+---------------+
+   |           T_DATACHUNK         |            Length             |
+   +---------------+---------------+---------------+---------------+
+   /                        Data Chunk                             /
+   +---------------+---------------+---------------+---------------+
+
+3.6.4.  Validation
+
+   Both Interests and Content Objects have the option to include
+   information about how to validate the PPk-AP/CCNx message.  This information
+   is contained in two TLVs: the ValidationAlgorithm TLV and the
+   ValidationPayload TLV.  The ValidationAlgorithm TLV specifies the
+   mechanism to be used to verify the PPk-AP/CCNx message.  Examples include
+   verification with a Message Integrity Check (MIC), a Message
+   Authentication Code (MAC), or a cryptographic signature.  The
+   ValidationPayload TLV contains the validation output, such as the
+   CRC32C code or the RSA signature.
+
+   An Interest would most likely only use a MIC type of validation - a
+   crc, checksum, or digest.
+
+3.6.4.1.  Validation Algorithm
+
+   The ValidationAlgorithm is a set of nested TLVs containing all of the
+   information needed to verify the message.  The outermost container
+   has type = T_VALIDATION_ALG.  The first nested TLV defines the
+   specific type of validation to be performed on the message.  The type
+   is identified with the "ValidationType" as shown in the figure below
+   and elaborated in the table below.  Nested within that container are
+   the TLVs for any ValidationType dependent data, for example a Key Id,
+   Key Locator etc.
+
+   Complete examples of several types may be found in Section 3.6.4.1.5
+
+                        1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+---------------+---------------+
+   |       T_VALIDATION_ALG        |      ValidationAlgLength      |
+   +---------------+---------------+---------------+---------------+
+   |        ValidationType         |            Length             |
+   +---------------+---------------+---------------+---------------+
+   / ValidationType dependent data                                 /
+   +---------------+---------------+---------------+---------------+
+
+   +--------+---------------+---------------------+--------------------+
+   |  Type  |     Abbrev    |         Name        | Description        |
+   +--------+---------------+---------------------+--------------------+
+   | %x0002 |    T_CRC32C   |        CRC32C       | Castagnoli CRC32   |
+   |        |               | (Section 3.6.4.1.1) | (iSCSI, ext4,      |
+   |        |               |                     | etc.), with normal |
+   |        |               |                     | form polynomial    |
+   |        |               |                     | 0x1EDC6F41.        |
+   |        |               |                     |                    |
+   | %x0004 | T_HMAC-SHA256 |     HMAC-SHA256     | HMAC (RFC 2104)    |
+   |        |               | (Section 3.6.4.1.2) | using SHA256 hash. |
+   |        |               |                     |                    |
+   | %x0005 |   T_VMAC-128  |       VMAC-128      | VMAC with 128bit   |
+   |        |               | (Section 3.6.4.1.2) | tags [VMAC]        |
+   |        |               |                     |                    |
+   | %x0006 |  T_RSA-SHA256 |      RSA-SHA256     | RSA public key     | Default for PPk
+   |        |               | (Section 3.6.4.1.3) | signature using    |
+   |        |               |                     | SHA256 digest.     |
+   |        |               |                     |                    |
+   | %x0007 | EC-SECP-256K1 |      SECP-256K1     | Elliptic Curve     |
+   |        |               | (Section 3.6.4.1.3) | signature with     |
+   |        |               |                     | SECP-256K1         |
+   |        |               |                     | parameters (see    |
+   |        |               |                     | [ECC]).            |
+   |        |               |                     |                    |
+   | %x0008 | EC-SECP-384R1 |      SECP-384R1     | Elliptic Curve     |
+   |        |               | (Section 3.6.4.1.3) | signature with     |
+   |        |               |                     | SECP-384R1         |
+   |        |               |                     | parameters (see    |
+   |        |               |                     | [ECC]).            |
+   +--------+---------------+---------------------+--------------------+
+
+                      Table 9: PPk-AP/CCNx Validation Types
+
+3.6.4.1.1.  Message Integrity Checks
+
+   MICs do not require additional data in order to perform the
+   verification.  An example is CRC32C that has a "0" length value.
+
+3.6.4.1.2.  Message Authentication Checks
+
+   MACs are useful for communication between two trusting parties who
+   have already shared private keys.  Examples include an RSA signature
+   of a SHA256 digest or others.  They rely on a KeyId.  Some MACs might
+   use more than a KeyId, but those would be defined in the future.
+
+
+3.6.4.1.3.  Signature
+
+   Signature type Validators specify a digest mechanism and a signing
+   algorithm to verify the message.  Examples include RSA signature og a
+   SHA256 digest, an Elliptic Curve signature with SECP-256K1
+   parameters, etc.  These Validators require a KeyId and a mechanism
+   for locating the publishers public key (a KeyLocator) - optionally a
+   PublicKey or Certificate or KeyName.
+
+3.6.4.1.4.  Validation Dependent Data
+
+   Different Validation Algorithms require access to different pieces of
+   data contained in the ValidationAlgorithm TLV.  As described above,
+   Key Ids, Key Locators, Public Keys, Certificates, Links and Key Names
+   all play a role in different Validation Algorithms.
+
+   Following is a table of PPk-AP/CCNx ValidationType dependent data types:
+
+   +--------+-------------+-----------------------+--------------------+
+   |  Type  |    Abbrev   |          Name         | Description        |
+   +--------+-------------+-----------------------+--------------------+
+   | %x0009 |   T_KEYID   |      SignerKeyId      | An identifier of   |
+   |        |             | (Section 3.6.4.1.4.1) | the shared secret  |
+   |        |             |                       | or public key      |
+   |        |             |                       | associated with a  |
+   |        |             |                       | MAC or Signature.  |
+   |        |             |                       | Typically the      |
+   |        |             |                       | SHA256 hash of the |
+   |        |             |                       | key.               |
+   |        |             |                       |                    |
+   | %x000B | T_PUBLICKEY |       Public Key      | DER encoded public |
+   |        |             | (Section 3.6.4.1.4.2) | key.               |
+   |        |             |                       |                    |
+   | %x000C |    T_CERT   |      Certificate      | DER encoded X509   |
+   |        |             | (Section 3.6.4.1.4.3) | certificate.       |
+   |        |             |                       |                    |
+   | %x000E |  T_KEYNAME  |        KeyName        | A PPk-AP/CCNx Link |  Default for PPk
+   |        |             | (Section 3.6.4.1.4.4) | object.            |
+   |        |             |                       |                    |
+   | %x000F |  T_SIGTIME  |     SignatureTime     | A millsecond       |
+   |        |             | (Section 3.6.4.1.4.5) | timestamp          |
+   |        |             |                       | indicating the     |
+   |        |             |                       | time when the      |
+   |        |             |                       | signature was      |
+   |        |             |                       | created.           |
+   +--------+-------------+-----------------------+--------------------+
+
+              Table 10: PPk-AP/CCNx Validation Dependent Data Types
+
+3.6.4.1.4.1.  KeyId
+
+   The KeyId is the publisher key identifier.  It is similar to a
+   Subject Key Identifier from X509 [RFC 3820, Section 4.2.1.2].  It
+   should be derived from the key used to sign, such as from the SHA-256
+   hash of the key.  It applies to both public/private key systems and
+   to symmetric key systems.
+
+                        1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+---------------+---------------+
+   |             T_KEYID           |            Length             |
+   +---------------+---------------+---------------+---------------+
+   /                            KeyId                              /
+   /---------------+---------------+-------------------------------+
+
+3.6.4.1.4.2.  Public Key
+
+   A Public Key is a DER encoded Subject Public Key Info block, as in an
+   X509 certificate.
+
+                        1
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5
+   +---------------+---------------+---------------+---------------+
+   |          T_PUBLICKEY          |            Length             |
+   +---------------+---------------+---------------+---------------+
+   /                Public Key (DER encoded SPKI)                  /
+   +---------------+---------------+---------------+---------------+
+
+3.6.4.1.4.3.  Certificate
+
+                        1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+---------------+---------------+
+   |            T_CERT             |            Length             |
+   +---------------+---------------+---------------+---------------+
+   /                 Certificate (DER encoded X509)                /
+   +---------------+---------------+---------------+---------------+
+
+3.6.4.1.4.4.  KeyName
+
+   A KeyName type KeyLocator is a Link.
+
+   The KeyName digest is the publisher digest of the Content Object
+   identified by KeyName.  It may be included on an Interest's digest
+   restriction.  A KeyName is a mandatory Name and an optional KeyId.
+   The KeyId inside the KeyLocator may be included in an Interest's
+   KeyId to retrieve only the specified key.
+
+                        1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+-------------------------------+
+   |          T_KEYNAME            |            Length             |
+   +---------------+---------------+-------------------------------+
+   / Link                                                          /
+   +---------------------------------------------------------------+
+
+3.6.4.1.4.5.  SignatureTime
+
+   The SignatureTime is a millisecond timestamp indicating the time at
+   which a signature was created.  The signer sets this field to the
+   current time when creating a signature.  A verifier may use this time
+   to determine whether or not the signature was created during the
+   validity period of a key, or if it occurred in a reasonable sequence
+   with other associated signatures.  The SignatureTime is unrelated to
+   any time associated with the actual PPk-AP/CCNx Message, which could have
+   been created long before the signature.  The default behavior is to
+   always include a SignatureTime when creating an authenticated message
+   (e.g.  HMAC or RSA).
+
+   SignatureTime is a network byte ordered unsigned integer of the
+   number of milliseconds since the epoch in UTC of when the signature
+   was created.  It is a fixed 64-bit field.
+
+                        1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+-------------------------------+
+   |           T_SIGTIME           |               8               |
+   +---------------+---------------+-------------------------------+
+   /                         SignatureTime                         /
+   +---------------------------------------------------------------+
+
+3.6.4.1.5.  Validation Examples
+
+   As an example of a MIC type validation, the encoding for CRC32
+   validation would be:
+
+                        1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+---------------+---------------+
+   |      T_VALIDATION_ALG         |               4               |
+   +---------------+---------------+---------------+---------------+
+   |            T_CRC32            |               0               |
+   +---------------+---------------+---------------+---------------+
+
+   As an example of a MAC type validation, the encoding for an HMAC
+   using a SHA256 hash would be:
+
+                        1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+---------------+---------------+
+   |       T_VALIDATION_ALG        |               40              |
+   +---------------+---------------+---------------+---------------+
+   |        T_HMAC-SHA256          |               36              |
+   +---------------+---------------+---------------+---------------+
+   |             T_KEYID           |               32              |
+   +---------------+---------------+---------------+---------------+
+   /                            KeyId                              /
+   /---------------+---------------+-------------------------------+
+
+   As an example of a Signature type validation, the encoding for an RSA
+   public key signing using a SHA256 digest and Public Key would be:
+
+                        1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+---------------+---------------+
+   |       T_VALIDATION_ALG        |      44 + Variable Length     |
+   +---------------+---------------+---------------+---------------+
+   |          T_RSA-SHA256         |      40 + Variable Length     |
+   +---------------+---------------+---------------+---------------+
+   |             T_KEYID           |               32              |
+   +---------------+---------------+---------------+---------------+
+   /                            KeyId                              /
+   /---------------+---------------+-------------------------------+
+   |          T_PUBLICKEY          |   Variable Length (~ 160)     |
+   +---------------+---------------+---------------+---------------+
+   /                Public Key (DER encoded SPKI)                  /
+   +---------------+---------------+---------------+---------------+
+
+3.6.4.2.  Validation Payload
+
+                        1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +---------------+---------------+---------------+---------------+
+   |     T_VALIDATION_PAYLOAD      |  ValidationPayloadLength      |
+   +---------------+---------------+---------------+---------------+
+   / Type-dependent data                                           /
+   +---------------+---------------+---------------+---------------+
+
+   The ValidationPayload contains the validation output, such as the
+   CRC32C code or the RSA signature.
+
+
+4、AP的功能点
+4.1 解析ODIN标识前缀
+类以于DNS解析WWW网址中的主机域名部分，解析ODIN标识前缀可以获得指定ODIN标识的登记信息（包括：名称、AP列表、数据内容验证参数、登记时间）。
+
+4.1.1 自主解析一级ODIN标识前缀
+一级标识对应AP需要从比特币区块链上同步全部一级ODIN的列表和配置数据，可以自主解析任意一个一级ODIN标识前缀。
+
+4.1.2 递归解析多级扩展ODIN标识前缀
+
+假设一个多级ODIN标识为ppk:/305678.1000/21.35/23.678/ISBN2890321345_P218#
+其去掉资源后缀部分后的前缀为 ppk:/305678.1000/21.35/23.678
+
+先判断缓存中是否已有3级标识前缀 ppk:/305678.1000/21.35/23.678# 起始对应的数据报文
+如果没有，则递归判断缓存中是否已有2级标识前缀 ppk:/305678.1000/21.35# 起始对应的数据报文
+   如果没有，则判断是否已有1级标识前缀 ppk:/305678.1000# 对应的注册信息
+        如果没有，则返回无效数据
+        如有，则向1级标识AP发出对 ppk:/305678.1000/21.35#  的兴趣报文并将收到的数据报文返回使用
+   如有，则向2级标识AP发出对 ppk:/305678.1000/21.35/23.678#  的兴趣报文并将收到的数据报文返回使用
+如果有，则返回缓存的数据报文
+
+以此类推即可递归解析多级扩展ODIN标识前，得到的数据报文中的内容是一个JSON字符串,包含指定该ODIN标识前缀的拥有者相关信息（包括：名称、AP列表、数据内容验证参数、登记时间戳UTC）。
+
+
+4.2 接收兴趣报文并反馈数据报文
+TCP/UDP方式:
+   对应AP_URL形式： socket://ap_host:port/
+   请求: 
+        兴趣报文(Interest)
+   正常应答: 
+        数据报文(ContentObject)
+   异常应答：
+        兴趣异常反馈报文(InterestReturn)   
+
+HTTP方式:
+   对应AP_URL形式： http(s)://ap_host:port/
+   请求: 
+        以request或form提供ppk_interest字段，取值为对应兴趣报文(Interest)
+   正常应答: 
+        数据报文(ContentObject)
+   异常应答：
+        兴趣异常反馈报文(InterestReturn)   
+
+IPFS方式
+   对应AP_URL形式： ipfs://OBJECT_HASH/
+   请求: 
+        在URL后追加"ppk_interest/..."形式字段，取值为URL_ENCODED的对应兴趣报文(Interest)
+   正常应答: 
+        数据报文(ContentObject)
+   异常应答：
+        兴趣异常反馈报文(InterestReturn)   
+
+3、未来发展
+随着PPk网络的进一步发展，后续将借鉴NDN的定义，在消费者无法直连存放所需数据的AP时，可以向自己所能连接的一台或若干台AP发出兴趣报文，AP将记住请求到达的接口，之后通过在其转发信息表（FIB）(是由一种基于ODIN标识的路由协议传播的)中查找该名字而转发兴趣报文。一旦兴趣报文到达拥有被请求数据的一个节点，则发回一条数据（Data）报文。这条数据报文经兴趣报文所产生的反向路径到达消费者。
+
+注意兴趣或数据报文都没有携带任何主机或接口地址（例如IP地址）：依据兴趣报文中携带的ODIN标识，兴趣报文向数据生产者路由，而数据报文依据在每个路由跳处由兴趣所建立的状态信息得以返回。
+
+未来，PPk网络将固有地支持多路径路由，而IP路由采用单一最佳路径来防止环路。在PPk网络中，兴趣不能永久地环回，原因是标识加上随机数的做法可有效地识别要丢弃的重复副本。数据是不会环回的，原因是数据走的是兴趣的反向路径。因此，一台AP可使用多个接口发出一条兴趣，而不用担忧环回。返回的第一条数据将满足兴趣，并被局部缓存；后到达的则被丢弃。这种能力可以进一步细化完善并称之为转发策略。
+
+在未来PPk网络中路由安全将得到极大提高，首先，对所有数据（包括路由消息）签名，防止了数据被欺骗或篡改。第二，多路径路由缓解了前缀劫持，原因是路由可检测到由前缀劫持所导致的异常，并尝试其它路径来检索数据。第三，PPk消息仅谈论数据以及简单地不会寻址到主机的事实，使之向一个特定的目标发送恶意报文成为困难的事情。为了做到实用高效，针对PPk的攻击一定会将焦点放在拒绝服务上，这将通过特定方案来解决。
+
+在接收到一条兴趣报文时，一台AP会首先检查内容存储，如果存在这样的数据，其名字落在该兴趣的名字范围内，则数据将作为一条响应被发回。与传统IP路由的缓存机制不同的是，AP能够向不同请求者重用数据，原因是这些数据由永久唯一标识加以区别的。缓存标识数据将涉及到隐私担忧，这可以通过非显式的命名标识的资源层级来降低隐私风险，同时PPk完全地去除了谁正在请求数据的信息，除非直接通过一条点对点链路连接到正在请求的主机，否则一台AP将仅知道某个人请求了某些数据，但不知道是谁发出的请求。
+
+除了在应用层AP可自行实现多路径路由外，未来如果NDN网络能逐步替代IP网络，则AP可以兼容选择NDN作为承载（即AP支持类似“ndn:”起始的URI配置），可以获得更好的传输性能。
+
+
+以NDN为代表的CCN 由于自身可能存在的缺点，以及其他未来网络或改良方案的竞争，也面临着很大的
+挑战。例如：CCN 是消费者驱动的。没有基于推的动作，即信息没有推到终端的功能，既然
+以信息为中心，那么从信息流动的角度讲或者从终端用户对信息的使用讲，有时是为了获取
+信息变化自己，有时是为了主动发送信息驱动某对象。网络中很多控制信息都是基于推的（但
+也可能是出于安全的考虑，因为信息的消费者，可以理解为资源的消费者，那么资源提供什
+么服务或者提供什么控制，都可由消费者发送 interest 获取，但 interest 不带数据内容，所
+以控制者的信息又是资源主动请求的，这样可以提高安全性，即我不接受的信息，是不会被
+收到的）；另外 CCN 采用分级的命名方案，这种方案在安全上不如扁平的命名方案【3】；最
+后，CCN 也有一些没有考虑到的问题，比如体系结构的可演化问题等。
+
+下面是一些主要的竞争技术：
+? 开放式可演化网络模式
+CCN 以内容为中心，对内容分发等有明显优点，但目前是否可以判断这种应用模式是肯
+定代表未来，或者内容的标识可以承载并灵活区分处理其他实体对象？否则是否应该开放式
+好些呢？当前可演化的网络体系结构主要有 openflow和 XIA。
+? 改良方案
+CCN 的目标是解决当前互联网上存在的问题，而不是以正确的科学理论为指导而设计。
+因此对问题的解决还可以有其他不同的方案，现在出现的每一种问题，都有基于 IP 的改良
+方案正在研究，这些方案的性能也在不断改善。比如基于 IP 的 CDN，互联网安全的源地址
+验证、IPSec，各种移动方案等。
+
+4、FAQ
+4.1  AP如何保护数据隐私？
+AP只负责对传输数据的签名验证，确保收到的数据确实是合法的生产者所提供，但不涉及对数据内容的加解密以提供额外的隐私保护， 由具体应用来确定是否需要加解密，对于限定消费者才能访问的数据内容，应区分使用不同的ODIN标识并使用生产者和消费者约定方式加密。
+
