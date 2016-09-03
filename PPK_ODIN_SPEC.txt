@@ -34,7 +34,7 @@ ODIN可以被形象地理解为“数据时代的自主域名”。
 
 每个ODIN信息数据块的格式按字节顺序定义如下：
 第1字节   : 消息类型，1个字节。
-第2字节到消息结束为按消息类型区分的不同消息数据，详见下文的“2、ODIN 的消息类型”。    
+第2字节到消息结束为按消息类型区分的不同消息数据，详见下文的“3、ODIN 的消息类型”。    
             
 3、ODIN 的消息类型
 
@@ -129,7 +129,7 @@ ODIN可以被形象地理解为“数据时代的自主域名”。
     注：AP记录项从0开始以依次按1,2..,n顺序编号即可。当URL取值为""即长度为的字符串，表示该AP记录项置空失效，但该记录项不会删除，即不影响后续记录的编号。
     
 消息正文举例：
-{"ver":1,"cmd":"AP","ap_set":{"0":{"url":"http://ppkpub.org/AP1/"},"2":{"url":"http://ppkpub.org/AP2/"}}}
+{"ver":1,"cmd":"AP","ap_set":{"0":{"url":"http://ap1.ppkpub.org/"},"2":{"url":"http://ap2.ppkpub.org/"}}}
 
 3.4 更新ODIN的数据签名验证参数
 比特币源地址：对应有权限更新ODIN标识配置数据的注册者或者管理者
@@ -213,7 +213,7 @@ ODIN可以被形象地理解为“数据时代的自主域名”。
     }
     
 消息正文举例：
-{"cmd":"CU","tx_list":["432821.323","432823.222"]}
+{"ver":1,"cmd":"CU","tx_list":["432821.323","432823.222"]}
 
 3.6 扩展登记二级ODIN标识索引数据块
 比特币源地址：一级ODIN标识配置数据的管理者
@@ -233,15 +233,18 @@ ODIN可以被形象地理解为“数据时代的自主域名”。
     [
         "ver":"说明：数据格式定义版本，初始为1", 
         "cmd":"说明。更新命令类型，取值为EX表示扩展标识", 
-        "ex_set":{
+        "ex_list":[
+          {
             "index":"说明,新增的二级区块数字编号", 
             "hash":"说明：新区块的HASH唯一值",
             "ex_data_uri":"说明：相关的二级扩展ODIN标识记录区块数据URI，比如用ipfs来承载",
-        }
+          }
+          ...
+        ]
     ]
     
 消息正文举例：
-[{"block_index":2,"block_hash":"cb2fcb3248e9388b8a8f8c9a822878d01f65713cb83d0fbedd7cacb51f6ab965",registed_num:98},{"block_index":3,"block_hash":"cb28c9a822878d01f65713cb83d0fbedd7cacb51f6fcb3248e9388b8a8fab965",registed_num:32}]
+{"ver":1,"cmd":"EX","ex_list":[{"index":2,"hash":"cb2fcb3248e9388b8a8f8c9a822878d01f65713cb83d0fbedd7cacb51f6ab965","ex_data_uri":"ipfs:QmaZGNj6G2sgRESZDEQgQybwZrigRW4UHsxquvt1C3qdyt"},{"index":3,"hash":"cbnkle89e8a8f8c9a822878d01f65713cb83d0fbedd7cacb51f6ab965","ex_data_uri":"ipfs:j6G2sgRESZDEQgQybwZrigRW4UHsxquvt1C3qdytHkdfs"}]}
 
 4、FAQ
 4.1  ODIN消息数据的大小有什么限制？
