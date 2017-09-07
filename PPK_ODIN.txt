@@ -121,7 +121,7 @@ ppk:0#
 
 APP的开发者可以将开源的ODIN检索库直接应用到自己的程序内，这样就能直接获取ODIN所对应数据资源的元数据描述和实际数据URL， 并根据元数据的定义来自定义最终展现。
 
-例如，菜鸟币(Newbiecoin)客户端就内嵌了对ODIN标识的支持，可以从这里下载：http://newbiecoin.org/
+例如，作为示例的Java客户端内嵌了对ODIN标识的支持，可以从这里下载：http://ppkpub.org/
 
 
 6.FAQ
