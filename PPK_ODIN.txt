@@ -1,36 +1,35 @@
-一种基于区块链的自主、安全的开放数据索引命名标识符设想--ODIN(Open Data Index Name)
+    一种基于区块链的对等、可信的开放数据索引命名标识符--ODIN(Open Data Index Name)
         
-                  -- PPk开放兴趣小组 ( The PPk Public Group ) 20180306
+                  -- PPk开放技术社区 ( PPk Public Group ) 2018-03-22
                         http://ppkpub.org/
 
 1、ODIN 简介
-ODIN(Open Data Index Name) 是开放数据索引唯一标识的缩写。广义上,ODIN 是指在网络环境 下标识和交换数据内容索引的一种开放性系统,它遵从URI(统一资源标识符) 规范,并为基于数字加密货币区块链（BlockChain）的自主开放、安全可信的数据内容管理和知识产权管理提供了一个可扩展的框架。它包括4 个组成要素:标识符、解析系统、元数据和规则(Policies) 。狭义上,ODIN 是指标识任何数据内容对象的一种永久性标识符。
+ODIN是Open Data Index Name即“开放数据索引命名”的缩写。广义上,ODIN 是指在网络环境下标识和交换数据内容索引的一种开放性系统,它遵从URI(统一资源标识符) 规范,并为基于数字加密货币区块链（Blockchain）的自主开放、安全可信的数据内容管理和价值权益管理提供了一个可扩展的框架。它包括4 个组成要素:标识符、解析系统、元数据和规则(Policies) 。狭义上,ODIN 是指标识任何数据内容对象的一种永久性标识符。
 ODIN可以被形象地理解为“数据时代的自主域名”。
 
 2、ODIN 的主要性质和功能　
 ODIN 系统具有以下显著特性和功能:
-a. 自主性。ODIN 标识符基于去中心化的区块链技术由申请者自主生成并管理，其生成和管理规则是完全开放的，没有中心化的控制机构。除了拥有管理密钥的申请者之外，其他组织和个人都无权控制和篡改。
+a. 自主性。ODIN 标识符基于对等的区块链技术由申请者自主生成并管理，其生成和管理规则是完全开放的，没有中心化的控制机构。除了拥有管理密钥的申请者之外，其他组织和个人都无权控制和篡改。
 b. 安全性。每一个ODIN 标识符的拥有者都对应拥有一对非对称加密技术的公私钥，可以通过私钥对自主发布的数据内容进行签名，接受数据内容的个体可以通过公钥进行验证，以确保收到的数据是来源可信和不被篡改的。
-c. 唯一性。ODIN 标识符能对任何数据内容对象(如文本、图片、声音、数据、影像、软件等) 的开放访问索引进行唯一标识,使数据内容对象能被人们准确地识别和提取。
-d. 永久性。ODIN 标识符一旦生成就将永久不变,不随其所标识的数据内容对象的持有者或存储地址等属性的变更而改变。
+c. 唯一性。采用ODIN协议能依靠区块链技术确保产生唯一标识，并开放索引到任意数据内容对象(如文本、图片、声音、数据、影像、软件等) ,使数据内容对象能被人们准确地识别和提取。
+d. 持久性。ODIN 标识符一旦生成就将永久不变,不随其所标识的数据内容对象的持有者或存储地址等属性的变更而改变。
 e. 兼容性。它可以与现有的一些标识符(如国际标准书号ISBN、国际标准刊号ISSN、国际标准文本代码ISTC、出版者标识符PII 等) 相互兼容。
-f. 互操作性( Interoperable) 。ODIN 的处理系统可以与网络上不同的计算机操作系统在处理同一数据时能保持一致,能与不同时期的技术系统兼容。
-g. 动态更新。ODIN 系统可对其元数据、应用和服务功能进行快速的动态更新。
- 
+f. 互操作性( Interoperable) 。遵循通用的URI协议标准，ODIN 的处理系统可以与网络上不同的计算机操作系统在处理同一数据时能保持一致,能与不同时期的技术系统良好兼容。
+
 3、ODIN 的运行机制
-“PPk开放小组”( The PPk Public Group)定义并发起建立了一套完全开放的ODIN 运行机制, 包括基础技术（PPk System）和扩展应用方面。其中, PPk System 是一个基于区块链的分布式数据内容索引命名与标识系统,它保证数据内容的自主开放性、安全性、唯一性、永久性、可扩展性。
+PPkPub（PPk Public Group，即非营利的PPk开放技术社区）定义并发起建立了一套完全开放的ODIN运行机制, 包括基础系统(PPk ODIN system)和扩展应用方面。PPk ODIN system 是一个基于区块链的分布式数据内容索引命名与标识系统,它保证数据内容的自主开放性、安全性、唯一性、永久性、可扩展性。
 
 首先,每个有意开放数据的数据生产者（Data Producer）可以通过开源的ODIN注册客户端来自主注册获得一个ODIN号（成为ODIN注册者，即ODIN Register）,以此为前缀可以为其开放的每一份数据资源编制一个包含本身ODIN 前缀的,且增加了后缀的ODIN 标识串,并将该ODIN标识串映射到数据资源的元数据和URL 上,这样ODIN 就成为数据资源的一部分,始终与该数字资源共存。然后,已被开放的这些数据资源的ODIN 记录、元数据及其URL 信息可以JSON编码的形式保存在该ODIN注册者的数据库内，这些被集中存贮起来的资源就形成一个ODIN资源标识库。 
  
-当用户根据ODIN标识串寻找一个数据资源或有关这一资源的相关信息时,查询请求就会通过开源的ODIN解析库在区块链上进行定位，然后被传送到该ODIN 拥有者所登记的访问点（Access Point）上进行解析并得到该数据资源的元数据描述和实际数据URL链接。
+当用户根据ODIN标识串寻找一个数据资源或有关这一资源的相关信息时,查询请求就会通过开源的ODIN解析库在区块链上进行定位，然后被传送到该ODIN 拥有者所登记的访问点（Access Point）上按照PTTP（Peer Trusted Transfer Protocol）传输协议进行解析并得到该数据资源的元数据描述和实际数据URL链接。
  
 ODIN拥有者可以完全开放数据资源访问权，也可以通过适当的自定义机制让用户获取数据资源访问权,如通过订购、资源传递、按浏览付费或者预印本付费等方式获得。
  
 
 4、ODIN的编码方式
 
-4.1 一级基础ODIN 
-一级ODIN 的标准结构式为：
+4.1 根ODIN 
+根ODIN 的标准结构式为：
         ppk:[BTC_BLOCK_SN].[BTC_TRANS_INDEX]/[DSS]
 ODIN 分为命名体系、前缀和后缀三部分，用斜杠分开。前缀中又以小圆点分为两部分 [BTC_BLOCK_SN]为该ODIN在比特币区块链上的登记记录所在区块的数字流水号（由比特币网络决定），
  [BTC_TRANS_INDEX]为该ODIN在比特币区块链上的登记记录所在区块内的具体存储位置的阿拉伯数字编号（从0开始寻址）。
@@ -44,7 +43,7 @@ RESOURCE_ID#[DATA_BLOCK_ID.CHUNK_INDEX]
     CHUNK_INDEX 为对应的子数据块在该区块内部的索引编号（从0开始）。
     注："#"及其后续部分可省略，缺省表示对应最新内容区块的第一个子数据块。
 
-下面几例都是符合定义的一级ODIN的合法编码：
+下面几例都是符合定义的根ODIN的合法编码：
 ppk:351474.430/
 ppk:351474.430/#
 ppk:351474.430/#1.0
@@ -52,10 +51,10 @@ ppk:305678.568/ISBN2890321345#1.0
 ppk:305678.1000/ISBN2890321345-P235#2.1
 
 
-一级骨干ODIN可以采用短编码方式，结构式为：
+根ODIN可以采用短编码方式，结构式为：
         ppk:[REG_ORDER_INDEX]/[DSS]
 [REG_ORDER_INDEX]为该ODIN记录在全部ODIN注册记录中以注册时间早晚排序的阿拉伯数字索引值（从0开始）。
-下面几例都是符合定义的一级ODIN的合法缩短编码：
+下面几例都是符合定义的根ODIN的合法缩短编码：
 ppk:1/
 ppk:356/#1.0
 ppk:356/ISBN2890321345#1.0
@@ -67,11 +66,11 @@ ppk:351474.430
 ppk:351474.430#
 ppk:0
 ppk:0#
-这四种特殊编码含义一样，都表示对应一级ODIN标识的解析记录配置数据。
+这四种特殊编码含义一样，都表示对应根ODIN标识的解析记录配置数据。
 
 
 4.2 多级扩展ODIN
-以一级ODIN为基础，一级ODIN的注册者可以利用自有的区块链来扩展自定义二级ODIN，并将二级ODIN注册记录批量打包后形成的新区块的HASH关键字写入上一级骨干区块链获得合法验证并确保唯一性。以此类推，可以形成更多级的ODIN标识。
+以根ODIN为基础，根ODIN的注册者可以利用自选的区块链来扩展自定义二级ODIN。以此类推，可以形成更多级的ODIN标识。
 
 多级ODIN 的标准结构式为：
     ppk:[PARENT_ODIN_PREFIX]/[SUB_BLOCK_SN].[SUB_TRANS_INDEX]/[DSS]
@@ -88,7 +87,7 @@ ppk:0#
 
 多级ODIN自定义结构式为：
     ppk:[PARENT_ODIN_PREFIX]/[SUB_TRANS_ID]/[DSS] 
-[SUB_TRANS_ID]为该ODIN记录在子级区块链上的唯一标识，由所属上级ODIN标识注册者来定义，可以是流水编号，也可以是唯一取值的字符串，需自行保证能与标准结构式区分开,且不能包含# / (  ) "这五个字符。
+[SUB_TRANS_ID]为该ODIN记录在子级区块链或其他技术平台上的唯一标识，由所属上级ODIN标识注册者来定义，可以是流水编号，也可以是唯一取值的字符串，需自行保证能与标准结构式区分开,且不能包含# / (  ) "这五个字符。
 举例：
     ppk:351474.430/22/#
     ppk:1/22/ISBN2890321345#
@@ -100,13 +99,12 @@ ppk:0#
 4.3 对分布式方法调用的特定资源形式定义
 
 在上述ODIN资源标识定义框架下，定义以下特定扩展形式来支持远程方法调用需求：
-  ppk:[PARENT_ODIN_PREFIX]/[FUNCTION_NAME]([arg1],[arg2],...,[argn])#[DATA_BLOCK_ID.CHUNK_INDEX]
+  ppk:[PARENT_ODIN_PREFIX]/[FUNCTION_NAME]([arg1],[arg2],...,[argn])#[RESULT_SN]
   其中： 
     [PARENT_ODIN_PREFIX]为对应上级ODIN前缀，
     [FUNCTION_NAME] 为对应的方法名称,由所属ODIN标识注册者来定义，需自行保证能与标准结构式区分开,且不能包含# / (  ) "这五个字符。
     [arg1],[arg2],...,[argn]为对应方法调用的1个或多个输入参数，
-    DATA_BLOCK_ID 为对应的内容区块编号（从1开始，对于文件File可理解为版本，对于动态数据流Stream可以理解为顺序产生的数据包），
-    CHUNK_INDEX 为对应的子数据块在该区块内部的索引编号（从0开始）。
+    RESULT_SN 为对应的结果唯一流水号，自定义产生，比如采用自增编号也可以采用时间戳等方案
     注："#"及其后续部分可省略，缺省表示需要动态执行指定方法并获得最新结果。
   
   举例：
@@ -115,10 +113,10 @@ ppk:0#
     ppk:1/china/add_book("book_isbn","book_title")#
     
 
-具体应用时，由[PARENT_ODIN_PREFIX]配置所映射的AP(AccessPoint)服务接口来具体处理所对应的方法调用并返回结果。
-以超级账本Fabrci实现一个AP服务接口为例，可以将其接口URI形式定义如下：
-    fabric:[server1_ip:port,server2_ip:port,....]/channel_id/contract_id/function_name(AP_INTEREST_JSON)
-将按上述形式定义的实际URI地址配置到对应ODIN标识配置信息里，按照PPk AP服务接口协议规范即可实现对该接口的具体方法调用获得反馈结果。
+具体应用时，由[PARENT_ODIN_PREFIX]配置所映射的AP(Access Point)节点来按PTTP传输协议具体处理所对应的方法调用并返回结果。
+以超级账本Fabrci实现一个AP节点的PTTP传输协议接口为例，可以将其接口URI形式定义如下：
+    fabric:[server1_ip:port,server2_ip:port,....]/channel_id/contract_id/function_name(PTTP_INTEREST)
+将按上述形式定义的实际URI地址配置到对应ODIN标识配置信息里，按照PTTP传输协议规范即可实现对该接口的具体方法调用获得反馈结果。
 
 5、利用ODIN查找数据
 那么如何根据ODIN号找到原始数据呢？
@@ -138,44 +136,45 @@ ppk:0#
 在此案例的基础上，可以进一步实现更为复杂的资源检索功能，我们将逐步提供相关的示例。
 
 
-5.2 APP内置ODIN支持
+5.2 应用程序内置ODIN支持
 
-APP的开发者可以将开源的ODIN检索库直接应用到自己的程序内，这样就能直接获取ODIN所对应数据资源的元数据描述和实际数据URL， 并根据元数据的定义来自定义最终展现。
+应用程序的开发者可以将开源的ODIN检索库直接应用到自己的程序内，这样就能直接获取ODIN所对应数据资源的元数据描述和实际数据URL， 并根据元数据的定义来自定义最终展现。
 
-例如，作为示例的Java客户端内嵌了对ODIN标识的支持，可以从这里下载：http://ppkpub.org/
+例如，PPk开源工具的Java版客户端示例就内嵌了对ODIN标识的支持，可以从这里下载：http://ppkpub.org/
 
 
 6.FAQ
 
 6.1 PPk是啥意思？
-PPk这个名称来源于 Peer-Peer networK 即“对等/去中心化网络”的缩写。
+PPk这个名称来源于 Peer-Peer network 即“对等网络”的缩写。
 
-我们“PPk开放组”是一个业余兴趣小组，集合了一群对比特币等加密货币感兴趣的P2P技术爱好者。相比加密货币的价格起伏，我们更关注其以区块链为代表的底层技术的潜在价值！
+PPkPub不是一个创业团队，而是一个兴趣驱动、专注“创造”、开放的技术极客社区，依托北京邮电大学网络与交换技术国家重点实验室网络管理研究中心的深厚学研资源，集合了一群对比特币等数字加密货币案例感兴趣的P2P技术爱好者，社区成员多具有通信和互联网行业技术研发从业背景，对于互联网业态的发展趋势有着独立判断和独特理念。相比数字加密货币的价格起伏，我们更关注其中以区块链为代表的创新技术的潜在价值，正融合区块链与网络通信技术跨界融合来做一些有趣的事情！
 
 我们的联系资料：
-邮箱: ppkpub@gmail.com
-网站: ppkpub.org
+电子邮箱: ppkpub@gmail.com
+HTTP网站: http://ppkpub.org/
+PTTP网站: ppk:0/
 
 6.2 如何类比已有案例以方便理解ODIN的功能？
 ODIN可以与域名DNS类比会比较容易理解些。
 
 ODIN会索引到一个或若干个数据源URL，机制上像域名DNS解析， 但是把传统的域名登记机构换成了创新的区块链来实现， 不需要传统域名管理机构了，谁需要都可以自主到区块链上登记，另外可以发挥比特币地址公私钥加密技术的特点来提供更为安全可信的解析结果。 
 
-也可以类比一些能提供域名解析功能的数字加密货币来进行理解，比如Namecoin、BTS等，因为ODIN与它们本质上都是发挥了区块链技术的公开可信不可篡改的特点来提供类似域名的功能。不同点在于ODIN没有另起一个币，而是明确比特币区块链作为一级标识承载区块链，因为比特币区块链具有事实上最强的稳定性和可靠性。以比特币区块链提供的可信基础，ODIN能兼容Namecoin,LTC等其他区块链甚至私有区块链作为二级扩展承载区块链。
+也可以类比一些能提供域名解析功能的数字加密货币来进行理解，比如Namecoin、ENS等，因为ODIN与它们本质上都是发挥了区块链技术的公开可信不可篡改的特点来提供类似域名的功能。不同点在于ODIN明确比特币区块链作为根标识承载区块链，因为比特币区块链具有事实上最强的稳定性和可靠性。以比特币区块链提供的可信基础，ODIN能兼容ETH,BYTOM,Fabric等其他类型区块链甚至传统的IT平台作为二级和多级扩展标识的承载平台。
 
 
 6.3 为什么采用区块链？
 以比特币为代表的区块链的独特之处在于实现了历史上第一个形式上去中心化、逻辑上却达成中心化共识的技术体系，简单理解就是：从彼此无关的不同节点读取到都是完全相同的唯一拷贝。以此为基础，才能定义出类似ODIN这样具有自主、安全关键特性的唯一资源标识。
 
-6.4 采用比特币区块链作为一级骨干是否能确保安全？
+6.4 采用比特币区块链作为基础是否能确保安全？
 比特币作为第一个提出和实现区块链的加密货币，经过多年的运行已形成一个具有超强算力的分布式网络，其算力已经远超传统超级计算服务集群的合计算力且还在持续增加，从而充分保证了其区块链的安全性和稳定性。
 
 理论上，如果比特币网络的超大算力有超过一半被一个个体所控制，该个体就可以篡改近期的若干区块数据（即著名的51%攻击），但其攻击难度随区块增长呈现指数级提高，超过6个区块确认后基本就不可能了，而且攻击者也只能篡改自己相关的交易信息（比如重复消费自己的比特币）或者不记录别人发出的交易，但不能凭空伪造别人比特币地址相关的交易，所以ODIN申请者在向比特币网络广播ODIN注册消息后，只需要等待6个区块就可以规避以上攻击风险以确认注册是否成功，即使在极小概率的情况下比特币网络被攻击成功导致注册不成功，也只需重新发起注册即可，对于注册者来说除耽误了一些操作时间外没有损失。
 
-所以采用比特币区块链作为ODIN的一级骨干区块链是安全可信的。
+所以采用比特币区块链作为ODIN的根区块链是安全可信的。
 
 6.5 比特币价格的大幅调整是否会对ODIN标识体系的稳定运行产生很大影响？
-每条ODIN消息存储到比特币区块链的成本主要是支付给收录该交易的比特币“矿工”的费用，目前是0.0001BTC，相当于30美分或2元人民币，是比较少的，当比特币价格有大幅调整时该项费用也可以适当调整达到相对合理和低的费用（调整客户端的参数配置即可）。
+每条ODIN消息存储到比特币区块链的成本主要是支付给收录该交易的比特币“矿工”的费用，当比特币价格有大幅调整时该项费用也可以适当调整达到相对合理的费用（调整客户端的参数配置即可）。
 另外，通过使用二级扩展标识还可以大幅降低标识的注册和维护成本（可以接近0成本）。
 
 如果未来比特币价格存在大幅走低的可能性，导致矿工关闭矿机使得算力减少，在一定程度上会降低比特币网络的健壮性，但对于ODIN标识来说，只要等待6个区块的确认仍能保证相当高的可信和稳定性。
@@ -200,7 +199,16 @@ ODIN不同于URL（Uniform Resource Locator，
 
 6.9 与其它基于区块链的标识应用像Namecoin,Openname,Onename等案例的差异性在哪？
 ODIN和以上这些标识应用本质上都利用了区块链技术来生成唯一可信标识，也都是完全开放开源的，但在技术方案、应用扩展上各有特点，可以互相借鉴探讨。
-ODIN明确以BTC区块链承载一级标识并以此为基础延伸扩展引入其他加密币区块链或类区块链承载二级标识。
+ODIN明确以BTC区块链承载根标识并以此为基础延伸扩展引入其他加密币区块链或类区块链承载二级标识。
 Openname,Onename缺省采用Namecoin区块链，并支持兼容其它加密币区块链替换作为同级承载。
 
+-------------------------------------------------------------------------------------------------
+Released under the MIT License.
 
+Copyright (C) 2015-2018 PPk Public Group (ppkpub.org). 
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

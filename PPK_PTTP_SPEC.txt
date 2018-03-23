@@ -1,0 +1,384 @@
+    结合ODIN(开放数据索引命名)的PTTP（Peer Trusted Transfer Protocol，对等可信传输协议）技术规范
+
+                  -- PPk开放技术社区 ( PPk Public Group )  （初稿,20180322）
+                        http://ppkpub.org/
+
+1、PTTP协议简介
+    PTTP是Peer Trusted Transfer Protocol（对等可信传输协议）的缩写。PTTP传输协议是融合ODIN标识、区块链和ICN/NDN未来网络体系架构设计等多个领域新兴技术而定义的一种对等可信的网络传输协议，是“融合区块链技术的新型HTTP协议”。
+    每一个采用ODIN标识定义的内容资源URI会被解析映射到一个或若干个AP（Access Point，数据访问点）上，由AP节点按照PTTP协议负责中转或提供具体内容服务。 AP可以理解为对等、可信的PPk网络里的“路由器”和"网站服务器"。 PTTP协议就是AP向外提供数据内容的访问接口标准协议。
+
+2、PTTP协议架构
+    借鉴NDN（Named Data Networking，即命名数据网络）的定义，PTTP协议相关通信采用发布/订阅机制（publish/subscribe）， 是由接收端（即数据消费者，Data Consumer）驱动的。为了接收数据，一个消费者发出一条兴趣（Interest）报文，该报文携带一个ODIN标识，由ODIN标识来识别期望的数据（见图1）。 
+
+                    ----------------------------------
+                    |        ODIN标识符(ODIN)        |
+                    |--------------------------------|
+                    |        负载内容(Payload)       |
+                    |--------------------------------|
+                    |   可选的请求者签名(Signature)  |
+                    ----------------------------------
+                             图1 兴趣报文
+
+    作为PPk网络分阶段实现路线的第一阶段目标，将先实现最方便实现的情况，即消费者以HTTP形式连接存放所需数据的、基于HTTP实现的AP节点获得JSON格式数据报文。例如：一个消费者可请求 ppk:23.567/videos/2381920#，会通过层级解析获知可用的AP节点地址，并以HTTP数据包的形式向AP节点发出JSON格式兴趣报文(PTTP_INTEREST)，AP节点则同样以HTTP数据包的形式发回一条JSON数据报文（PTTP_DATA），它携带数据的ODIN标识(比如ppk:23.567/videos/2381920#2.0)和对应内容，还有对应生产者内容签名私钥所生成的一个签名（见图2）。
+    注：请求者的ODIN标识如果未指定准确的数据块位置，则缺省匹配返回的是对应内容的最新区块N的第一个数据块（即#N.0）。
+
+                    ----------------------------------
+                    |        ODIN标识符(ODIN)        |
+                    |--------------------------------|
+                    |     元数据描述信息(MetaInfo)   | 
+                    |--------------------------------|
+                    |         数据内容(Content)      | 
+                    |--------------------------------|
+                    |        生产者签名(Signature)   |
+                    ----------------------------------
+                             图2 数据报文
+
+
+    ODIN标识对于路由网络而言是不透明的，即路由不知道一个标识的含义（虽然它们知道一个标识各组成部分之间的边界）。这允许应用可以自主选择其需要的具体资源命名方案，并允许命名方案独立于网络而演化。
+
+    为了检索动态产生的数据，消费者必须能够确定性地定位数据的期望片段构造标识，而不需要以前看到该标识或数据。
+    例如: 消费者可请求ppk:23.567/videos_2381920，并得到名字为ppk:23.567/videos_2381920#1.0的一条数据报文（标识尾部增加的“1.0”表示第1个版本区块的第1个片段数据块），之后消费者可指定以后的片段，并请求它们，使用的是第一条数据报文以及消费者应用和生成者应用之间达成的命名惯例等所揭示的信息组合。
+
+    注：AP节点可以支持所有现有的应用，包括“推送”内容的那些应用。例如： 为了发送一封电子邮件，客户端首先向服务器发送一条兴趣报文，来请求对于接受该电子邮件的服务器兴趣。如果服务器是感兴趣的，则它将向客户端发送一条兴趣报文，之后客户端向服务器发送数据报文。
+
+    兴趣报文中的ODIN标识可以采用标准结构式或转义自定义结构式，但解析结果的数据报文中ODIN标识都采用标准结构式。
+
+3. 报文定义
+
+    采用JSON格式定义兴趣和数据报文。
+   
+3.1 兴趣报文(PTTP_INTEREST)
+    AP节点按PTTP协议所接收的兴趣报文请求采用JSON格式定义如下：
+      {
+        "ver":协议版本号,  
+        "hop_limit":6,   //逐跳限制数值，在多个AP间接力传播兴趣报文时将依次减1直到0，当该字段减为0后该兴趣报文将不再被转发。 该字段初始可设为1到255范围内的任意值,缺省为6。AP对于收到HopLimit取值不在1-255范围内的兴趣报文将做忽略处理。       
+        "interest":{  //请求正文
+          "uri":"所请求资源对应的ODIN标识地址字符串",
+          "from":"请求者的身份ODIN标识，可选，为空时对应开放匿名请求",
+          
+          "accept_encrypted":"可选要求的内容加密形式，如MD5withRSA,SHA1withRSA,SHA256withRSA等，如果该字段为空则表示由接受请求的数据发布者自行决定",
+          "accept_pubkey":"可选的对应内容加密形式的公钥，如果accept_encrypted字段取值要求加密，但accept_pubkey不填写，则默认采用from字段填写的身份标识对应声明的公钥来进行加密",
+          
+          "user_agent":"可选的发出请求的用户代理属性,如PPk Javatool 0.615",
+          
+          "utc":到秒值的生成时间戳,,
+        },
+       
+        //请求者对请求正文的签名,对应请求正文里的from所填写的ODIN标识拥有者所公开声明的公钥对应私钥签名产生。
+        //如果from字段为空，则该签名字段也不用填写
+        "sign":"签名算法类型(如MD5withRSA,SHA1withRSA,SHA256withRSA):Base64编码的签名数据",
+      }   
+      
+    示例：
+      一般匿名请求：
+      {
+        "ver":1, 
+        "hop_limit":6,
+        "interest":{
+          "uri":"ppk:479110.1304/public_books#",
+        }
+      }          
+
+      对等声明身份的请求：
+      {
+        "ver":1, 
+        "hop_limit":6,
+        "interest":{
+          "uri":"ppk:479110.1304/register_newdevice('id','pubkey')#",
+          "from":"ppk:479110.1304/user/tom#1.0",
+          "accept_encrypted":"SHA256withRSA",
+          "accept_pubkey":"MIGfMA0GCS...",
+          "user_agent":"PPk Javatool 0.615",
+          "utc":135678832,
+        },
+
+        "sign":"SHA256withRSA:TfdsfR33648.....",
+      }   
+
+     
+      
+3.2 数据报文(PTTP_DATA)
+    AP节点按PTTP协议所返回数据报文应答采用JSON格式定义如下：
+    {
+      "ver":协议版本号, 
+
+      "data":{
+         "uri":"返回数据块的ODIN标识地址字符串，该字段只在返回状态码status_code为2XX或3XX时有效并允许当前应答的数据块可按缓存策略被缓存",
+         
+         "utc":到秒值的生成时间戳,
+         "status_code":返回状态码，沿用HTTP协议定义的状态码定义,
+         "status_info":"返回状态附加描述字符串，可选，沿用HTTP协议定义的状态码定义相关描述",
+         
+         "metainfo":{ //对数据块的元描述信息
+           "block_id":"当前数据区块标识，与ODIN标识地址URI中的相关字段是对应的",
+           "lastblock_id":"上一数据区块标识,该字段取值可以为空字符串，表示没有上一连续区块",
+           "chunk_index":当前数据子块索引编号，从0开始，与ODIN标识地址URI中的相关字段是对应的,
+           "chunk_count":当前区块内数据子块总数,一般取值为大于等于1的整数，特定取值为0时表示是动态流数据，子块数目不确定,
+           "content_type":"子块正文类型，采用HTTP协议相关定义，如text/html,image/jpg等，并扩展定义x-ppk/link类型表示ODIN标识链接URI,x-ppk/manifest表示资源列表，应用开发商也可以自定义更多类型(前缀建议以x-起始以便区分)",
+           "content_encrypted":"内容加密算法形式，如MD5withRSA,SHA1withRSA,SHA256withRSA等，如果该字段为空则表示内容为原文或者应用自行约定",
+           "content_encoding":"内容压缩编码形式，参考HTTP协议相关定义，如gzip,deflate等，如果该字段为空则表示内容为原文",
+           "content_charset":"内容字符集，采用HTTP协议相关定义，如utf-8, iso-8859-1,gb2312等，如果该字段为空则缺省为utf-8",
+           "content_length":子块正文长度,
+           
+           
+           "ap_node":"可选的AP内容发布节点属性，如AP Demo based Fabric1.0", "cache-control":"缓存策略建议，参考http协议的取值定义，可用取值有public、private、no-store、max-age，但注意与http协议不同的是默认为public，不是private"
+         },
+         
+         "content":"子块正文数据，如果是二进制需要采用Base64编码，同时建议先用gzip压缩。对于1M以上大数据块建议采用如IPFS等分布式文件存储服务实际存储，通过PTTP协议只应答内容转向链接地址",
+      },
+
+      "sign":"签名算法类型(如MD5withRSA,SHA1withRSA,SHA256withRSA):Base64编码的签名数据",
+    }
+      
+    附status_code状态码定义如下：
+
+      状态代码有三位数字组成，第一个数字定义了响应的类别，共分五种类别:
+
+      1xx：指示信息--表示请求已接收，继续处理
+      
+      2xx：成功--表示请求已被成功接收、理解、接受
+
+      3xx：重定向--要完成请求必须进行更进一步的操作
+
+      4xx：客户端错误--请求有语法错误或请求无法实现
+
+      5xx：服务器端错误--服务器未能实现合法的请求
+
+      常用状态码和描述信息定义：
+      200 OK                        //客户端请求成功
+      301 Moved Permanently         //被请求的资源已永久移动到新位置
+      302 Moved Temporarily         //被请求的资源需临时重定向到新位置
+      400 Bad Request               //客户端请求有语法错误，不能被服务器所理解
+      401 Unauthorized              //请求未经授权 
+      403 Forbidden                 //服务器收到请求，但是拒绝提供服务
+      404 Not Found                 //请求资源不存在，eg：输入了错误的URI
+      500 Internal Server Error     //服务器发生不可预期的错误
+      503 Server Unavailable        //服务器当前不能处理客户端的请求，一段时间后可能恢复正常
+      
+     cache-control缓存策略取值说明
+      public	所有内容都将被缓存(客户端和代理服务器都可缓存)
+      private	内容只缓存到私有缓存中(仅客户端可以缓存，路由转发节点不可缓存)
+      no-store	所有内容都不会被缓存到路由和客户端缓存
+      max-age=xxx (xxx is numeric)	缓存的内容将在 xxx 秒后失效
+   
+    示例：
+      正常的数据资源应答示例：
+      {
+          "ver":1, 
+
+          "data":{
+            "uri":"ppk:479110.1304/my_record#3.1",
+            
+            "utc":135678832,
+            "status_code":"200",
+            "status_detail":"OK",
+            
+            "metainfo":{ 
+               "block_id":"3",
+               "lastblock_id":"2",
+               "chunk_index":1,
+               "chunk_count":2,
+               "content_type":"text/html",
+               "content_length":6,
+               "ap_node":"AP Demo based Fabric1.0", 
+             },
+             
+             "content":"ABCDEF",
+             
+          },
+
+          "sign":"SHA256withRSA:TfdsfR33648.....",
+       }
+      
+       正常的方法服务资源应答示例：
+       {
+          "ver":1, 
+
+          "data":{
+            "uri":"ppk:479110.1304/register_newdevice('id','pubkey')#20170910125623156.0",
+            
+            "utc":135678832,
+            "status_code":"200",
+            "status_detail":"OK",
+            
+            "metainfo":{ 
+               "block_id":"20170910125623156",
+               "lastblock_id":"",
+               "chunk_index":0,
+               "chunk_count":1,
+               "content_type":"text/html",
+               "content_length":6
+               
+               "cache-control":"no-store",
+             },
+             
+             "content":"ABCDEF",
+             
+          },
+
+         "sign":"SHA256withRSA:TfdsfR33648.....",
+      }
+      
+      所请求资源不存在时的应答示例：
+      {
+          "ver":1, 
+
+          "data":{
+            "uri":"ppk:479110.1304/not_exist_record#1.0",
+            
+            "utc":135678832,
+            "status_code":"404",
+            "status_detail":"Not Found",
+            
+            "metainfo":{ 
+               "block_id":"1",
+               "lastblock_id":"",
+               "chunk_index":0,
+               "chunk_count":1,
+               "content_type":"text/html",
+               "content_length":49,
+             },
+             
+             "content":"<html><font color='#F00'>Not Found</font></html>",
+             
+          },
+
+          "sign":"SHA256withRSA:TfdsfR33648.....",
+      }
+      
+      所请求资源已永久转移到新标识地址时的应答示例：
+      {
+          "ver":1, 
+
+          "data":{
+            "uri":"ppk:479110.1304/my_record#1.0",
+            
+            "utc":135678832,
+            "status_code":"301",
+            "status_detail":"Moved Permanently",
+            
+            "metainfo":{ 
+               "block_id":"1",
+               "lastblock_id":"",
+               "chunk_index":0,
+               "chunk_count":1,
+               "content_type":"x-ppk/link",
+               "content_length":39
+             },
+             
+             "content":"ppk:456793.276/redirect_new_record#1.0",
+             
+          },
+
+          "sign":"SHA256withRSA:TfdsfR33648.....",
+      }
+      
+      所请求资源为x-ppk/manifest列表类型的应答：
+      {
+          "ver":1, 
+
+          "data":{
+            "uri":"ppk:479110.1304/default_resource_list#2.0",
+            
+            "utc":135678832,
+            "status_code":"200",
+            "status_detail":"OK",
+            
+            "metainfo":{ 
+               "block_id":"2",
+               "lastblock_id":"1",
+               "chunk_index":0,
+               "chunk_count":1,
+               "content_type":"x-ppk/manifest",
+               "content_length":149
+             },
+             
+             "content":"{"manifest_version": 1,"title": "my book list","resource_list":[{"uri":"ppk:479110.1304/book1#1.0","hash":"SHA256:DFGS6F....."},{"uri":"ppk:479110.1304/book2#1.0","hash":"sha1:KLD9d....."},{"uri":"magnet:?xt=urn:btih:51df6808c739174c8f264701ba94460c5238d6ce","hash":"btih:PKL56E....."}]}",
+             
+          },
+
+          "sign":"SHA256withRSA:TfdsfR33648.....",
+      }
+
+
+4、PTTP协议的功能点
+
+4.1 建设对等、可信的数据服务节点，灵活支持多种网络协议来接收兴趣报文并反馈内容数据报文
+
+TCP/UDP方式:
+   对应AP_URL形式： socket://ap_host:port/
+   请求: 
+        兴趣报文(PTTP_INTEREST)
+   应答: 
+        数据报文(PTTP_DATA)
+
+HTTP方式:
+   对应AP_URL形式： http(s)://ap_host:port/
+   请求: 
+        以request或form提供pttp_interest字段，取值为对应JSON编码兴趣报文
+   应答: 
+        数据报文(pttp_data)
+        
+待发展的区块链标准协议接口方式:
+   此处以超级账本Fabric为例，其他区块链平台可以参考此思路来具体实现对PTTP协议的支持。
+   假设Fabric1.0能采用URI形式定义如下的对外接口标准：
+   fabric:[server_ip1:port1,ip2:port2,....]/channel_id/contract_id/function_name(argv1,argv2,....,argn)
+   
+   那就可以采用Fabric区块链来承载现有WEB网站的内容，并具体结合PTTP协议实现如下服务接口即可：
+   对应AP_URL形式： fabric:[server_ip1:port1,ip2:port2,....]/channel_id/contract_id/pttp_interest(PTTP_INTEREST) 
+   请求: 
+        兴趣报文(PTTP_INTEREST)
+   应答: 
+        数据报文(PTTP_DATA)
+        
+  
+   
+
+4.2 将ODIN标识作为一项特别约定的内容提供解析服务
+类以于DNS解析WWW网址中的主机域名部分，解析ODIN标识前缀可以获得指定ODIN标识的登记信息（包括：名称、AP列表、数据内容验证参数、登记时间）。
+
+4.2.1 自主解析一级ODIN标识前缀
+一级标识对应AP需要从比特币区块链上同步全部一级ODIN的列表和配置数据，可以自主解析任意一个一级ODIN标识前缀。
+
+4.2.2 递归解析多级扩展ODIN标识前缀
+
+假设一个多级ODIN标识为ppk:305678.1000/21.35/23.678/ISBN2890321345_P218#
+其去掉资源后缀部分后的前缀为 ppk:305678.1000/21.35/23.678
+
+先判断缓存中是否已有3级标识前缀 ppk:305678.1000/21.35/23.678# 起始对应的数据报文
+如果没有，则递归判断缓存中是否已有2级标识前缀 ppk:305678.1000/21.35# 起始对应的数据报文
+   如果没有，则判断是否已有1级标识前缀 ppk:305678.1000# 对应的注册信息
+        如果没有，则返回无效数据
+        如有，则向1级标识AP发出对 ppk:305678.1000/21.35#  的兴趣报文并将收到的数据报文返回使用
+   如有，则向2级标识AP发出对 ppk:305678.1000/21.35/23.678#  的兴趣报文并将收到的数据报文返回使用
+如果有，则返回缓存的数据报文
+
+以此类推即可递归解析多级扩展ODIN标识前，得到的数据报文中的内容是一个JSON字符串,包含指定该ODIN标识前缀的拥有者相关信息（包括：名称、AP列表、数据内容验证参数、登记时间戳UTC）。
+
+5、未来发展
+随着PPk网络的进一步发展，后续将借鉴NDN的定义，在消费者无法直连存放所需数据的AP时，可以向自己所能连接的一台或若干台AP发出兴趣报文，AP将记住请求到达的接口，之后通过在其转发信息表（FIB）(是由一种基于ODIN标识的路由协议传播的)中查找该名字而转发兴趣报文。一旦兴趣报文到达拥有被请求数据的一个节点，则发回一条数据（Data）报文。这条数据报文经兴趣报文所产生的反向路径到达消费者。
+
+注意兴趣或数据报文都没有携带任何主机或接口地址（例如IP地址）：依据兴趣报文中携带的ODIN标识，兴趣报文向数据生产者路由，而数据报文依据在每个路由跳处由兴趣所建立的状态信息得以返回。
+
+未来，PPk网络将固有地支持多路径路由，而IP路由采用单一最佳路径来防止环路。在PPk网络中，兴趣不能永久地环回，原因是标识加上随机数的做法可有效地识别要丢弃的重复副本。数据是不会环回的，原因是数据走的是兴趣的反向路径。因此，一台AP可使用多个接口发出一条兴趣，而不用担忧环回。返回的第一条数据将满足兴趣，并被局部缓存；后到达的则被丢弃。这种能力可以进一步细化完善并称之为转发策略。
+
+在未来PPk网络中路由安全将得到极大提高，首先，对所有数据（包括路由消息）签名，防止了数据被欺骗或篡改。第二，多路径路由缓解了前缀劫持，原因是路由可检测到由前缀劫持所导致的异常，并尝试其它路径来检索数据。第三，PPk消息仅谈论数据以及简单地不会寻址到主机的事实，使之向一个特定的目标发送恶意报文成为困难的事情。为了做到实用高效，针对PPk的攻击一定会将焦点放在拒绝服务上，这将通过特定方案来解决。
+
+在接收到一条兴趣报文时，一台AP会首先检查内容存储，如果存在这样的数据，其名字落在该兴趣的名字范围内，则数据将作为一条响应被发回。与传统IP路由的缓存机制不同的是，AP能够向不同请求者重用数据，原因是这些数据由永久唯一标识加以区别的。缓存标识数据将涉及到隐私担忧，这可以通过非显式的命名标识的资源层级来降低隐私风险，同时PPk完全地去除了谁正在请求数据的信息，除非直接通过一条点对点链路连接到正在请求的主机，否则一台AP将仅知道某个人请求了某些数据，但不知道是谁发出的请求。
+
+除了在应用层，AP节点间可自行实现多路径路由外，未来如果NDN网络能逐步替代IP网络成为“蜂腰”，则AP可以兼容选择NDN作为承载（即AP支持类似“ndn:”起始的URI配置），可以获得更好的传输性能。
+
+6、FAQ
+6.1  AP如何保护数据隐私？
+AP只负责对传输数据的签名验证，确保收到、缓存和转发的数据确实是合法的生产者所提供，但不涉及对数据内容的加解密以提供额外的隐私保护， 由具体应用来确定是否需要加解密，对于限定消费者才能访问的数据内容，应区分使用不同的ODIN标识并使用生产者和消费者约定方式加密。
+
+-------------------------------------------------------------------------------------------------
+Released under the MIT License.
+
+Copyright (C) 2015-2018 PPk Public Group (ppkpub.org). 
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
