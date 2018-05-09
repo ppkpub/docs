@@ -1,13 +1,16 @@
     Ò»ÖÖ»ùÓÚÇø¿éÁ´µÄ¶ÔµÈ¡¢¿ÉÐÅµÄ¿ª·ÅÊý¾ÝË÷ÒýÃüÃû±êÊ¶·û--ODIN(Open Data Index Name)
         
-                  -- PPk¿ª·Å¼¼ÊõÉçÇø ( PPk Public Group ) 2018-03-22
+                  -- PPk¿ª·Å¼¼ÊõÉçÇø ( PPk Public Group ) 2018-05-09
                         http://ppkpub.org/
 
 1¡¢ODIN ¼ò½é
-ODINÊÇOpen Data Index Name¼´¡°¿ª·ÅÊý¾ÝË÷ÒýÃüÃû¡±µÄËõÐ´¡£¹ãÒåÉÏ,ODIN ÊÇÖ¸ÔÚÍøÂç»·¾³ÏÂ±êÊ¶ºÍ½»»»Êý¾ÝÄÚÈÝË÷ÒýµÄÒ»ÖÖ¿ª·ÅÐÔÏµÍ³,Ëü×ñ´ÓURI(Í³Ò»×ÊÔ´±êÊ¶·û) ¹æ·¶,²¢Îª»ùÓÚÊý×Ö¼ÓÃÜ»õ±ÒÇø¿éÁ´£¨Blockchain£©µÄ×ÔÖ÷¿ª·Å¡¢°²È«¿ÉÐÅµÄÊý¾ÝÄÚÈÝ¹ÜÀíºÍ¼ÛÖµÈ¨Òæ¹ÜÀíÌá¹©ÁËÒ»¸ö¿ÉÀ©Õ¹µÄ¿ò¼Ü¡£Ëü°üÀ¨4 ¸ö×é³ÉÒªËØ:±êÊ¶·û¡¢½âÎöÏµÍ³¡¢ÔªÊý¾ÝºÍ¹æÔò(Policies) ¡£ÏÁÒåÉÏ,ODIN ÊÇÖ¸±êÊ¶ÈÎºÎÊý¾ÝÄÚÈÝ¶ÔÏóµÄÒ»ÖÖÓÀ¾ÃÐÔ±êÊ¶·û¡£
+ODINÊÇOpen Data Index Name¼´¡°¿ª·ÅÊý¾ÝË÷ÒýÃüÃû¡±µÄËõÐ´¡£¹ãÒåÉÏ,ODIN ÊÇÖ¸ÔÚ¶ÔµÈÍøÂç»·¾³ÏÂ±êÊ¶ºÍ½»»»Êý¾ÝÄÚÈÝË÷ÒýµÄÒ»ÖÖ¿ª·ÅÐÔÏµÍ³,Ëü×ñ´ÓURI(Í³Ò»×ÊÔ´±êÊ¶·û) 
+¹æ·¶,²¢Îª»ùÓÚÊý×Ö¼ÓÃÜ»õ±ÒÇø¿éÁ´£¨Blockchain£©µÄ×ÔÖ÷¿ª·Å¡¢°²È«¿ÉÐÅµÄÊý¾ÝÄÚÈÝ¹ÜÀíºÍ¼ÛÖµÈ¨Òæ¹ÜÀíÌá¹©ÁËÒ»¸ö¿ÉÀ©Õ¹µÄ¿ò¼Ü¡£Ëü°üÀ¨4 ¸ö×é³ÉÒªËØ:±êÊ¶·û¡¢½âÎöÏµÍ³¡¢
+ÔªÊý¾ÝºÍ¹æÔò(Policies) ¡£ÏÁÒåÉÏ,ODIN ÊÇÖ¸¶ÔµÈ¡¢¿ÉÐÅµØ±êÊ¶ÈÎºÎÊý¾ÝÄÚÈÝ¶ÔÏóµÄÒ»ÖÖÓÀ¾ÃÐÔ±êÊ¶·û¡£
+
 ODIN¿ÉÒÔ±»ÐÎÏóµØÀí½âÎª¡°Êý¾ÝÊ±´úµÄ×ÔÖ÷ÓòÃû¡±¡£
 
-2¡¢ODIN µÄÖ÷ÒªÐÔÖÊºÍ¹¦ÄÜ¡¡
+2¡¢ODIN µÄÖ÷ÒªÌØÐÔºÍ¹¦ÄÜ¡¡
 ODIN ÏµÍ³¾ßÓÐÒÔÏÂÏÔÖøÌØÐÔºÍ¹¦ÄÜ:
 a. ×ÔÖ÷ÐÔ¡£ODIN ±êÊ¶·û»ùÓÚ¶ÔµÈµÄÇø¿éÁ´¼¼ÊõÓÉÉêÇëÕß×ÔÖ÷Éú³É²¢¹ÜÀí£¬ÆäÉú³ÉºÍ¹ÜÀí¹æÔòÊÇÍêÈ«¿ª·ÅµÄ£¬Ã»ÓÐÖÐÐÄ»¯µÄ¿ØÖÆ»ú¹¹¡£³ýÁËÓµÓÐ¹ÜÀíÃÜÔ¿µÄÉêÇëÕßÖ®Íâ£¬ÆäËû×éÖ¯ºÍ¸öÈË¶¼ÎÞÈ¨¿ØÖÆºÍ´Û¸Ä¡£
 b. °²È«ÐÔ¡£Ã¿Ò»¸öODIN ±êÊ¶·ûµÄÓµÓÐÕß¶¼¶ÔÓ¦ÓµÓÐÒ»¶Ô·Ç¶Ô³Æ¼ÓÃÜ¼¼ÊõµÄ¹«Ë½Ô¿£¬¿ÉÒÔÍ¨¹ýË½Ô¿¶Ô×ÔÖ÷·¢²¼µÄÊý¾ÝÄÚÈÝ½øÐÐÇ©Ãû£¬½ÓÊÜÊý¾ÝÄÚÈÝµÄ¸öÌå¿ÉÒÔÍ¨¹ý¹«Ô¿½øÐÐÑéÖ¤£¬ÒÔÈ·±£ÊÕµ½µÄÊý¾ÝÊÇÀ´Ô´¿ÉÐÅºÍ²»±»´Û¸ÄµÄ¡£
@@ -17,13 +20,15 @@ e. ¼æÈÝÐÔ¡£Ëü¿ÉÒÔÓëÏÖÓÐµÄÒ»Ð©±êÊ¶·û(Èç¹ú¼Ê±ê×¼ÊéºÅISBN¡¢¹ú¼Ê±ê×¼¿¯ºÅISSN¡¢¹ú¼Ê±ê
 f. »¥²Ù×÷ÐÔ( Interoperable) ¡£×ñÑ­Í¨ÓÃµÄURIÐ­Òé±ê×¼£¬ODIN µÄ´¦ÀíÏµÍ³¿ÉÒÔÓëÍøÂçÉÏ²»Í¬µÄ¼ÆËã»ú²Ù×÷ÏµÍ³ÔÚ´¦ÀíÍ¬Ò»Êý¾ÝÊ±ÄÜ±£³ÖÒ»ÖÂ,ÄÜÓë²»Í¬Ê±ÆÚµÄ¼¼ÊõÏµÍ³Á¼ºÃ¼æÈÝ¡£
 
 3¡¢ODIN µÄÔËÐÐ»úÖÆ
-PPkPub£¨PPk Public Group£¬¼´·ÇÓªÀûµÄPPk¿ª·Å¼¼ÊõÉçÇø£©¶¨Òå²¢·¢Æð½¨Á¢ÁËÒ»Ì×ÍêÈ«¿ª·ÅµÄODINÔËÐÐ»úÖÆ, °üÀ¨»ù´¡ÏµÍ³(PPk ODIN system)ºÍÀ©Õ¹Ó¦ÓÃ·½Ãæ¡£PPk ODIN system ÊÇÒ»¸ö»ùÓÚÇø¿éÁ´µÄ·Ö²¼Ê½Êý¾ÝÄÚÈÝË÷ÒýÃüÃûÓë±êÊ¶ÏµÍ³,Ëü±£Ö¤Êý¾ÝÄÚÈÝµÄ×ÔÖ÷¿ª·ÅÐÔ¡¢°²È«ÐÔ¡¢Î¨Ò»ÐÔ¡¢ÓÀ¾ÃÐÔ¡¢¿ÉÀ©Õ¹ÐÔ¡£
+PPkPub£¨PPk Public Group£¬¼´·ÇÓªÀûµÄPPk¿ª·Å¼¼ÊõÉçÇø£©¶¨Òå²¢·¢Æð½¨Á¢ÁËÒ»Ì×ÍêÈ«¿ª·ÅµÄODINÔËÐÐ»úÖÆ, °üÀ¨»ù´¡ÏµÍ³(PPk ODIN system)ºÍÀ©Õ¹Ó¦ÓÃ·½Ãæ¡£PPk ODIN system ÊÇÒ»¸ö»ùÓÚÇø¿éÁ´µÄ·Ö²¼Ê½Êý¾ÝÄÚÈÝË÷ÒýÃüÃûÓë±êÊ¶ÏµÍ³,Ëü±£Ö¤Êý¾ÝÄÚÈÝµÄ×ÔÖ÷ÐÔ¡¢°²È«ÐÔ¡¢Î¨Ò»ÐÔ¡¢ÓÀ¾ÃÐÔ¡¢¿ÉÀ©Õ¹ÐÔ¡£
 
-Ê×ÏÈ,Ã¿¸öÓÐÒâ¿ª·ÅÊý¾ÝµÄÊý¾ÝÉú²úÕß£¨Data Producer£©¿ÉÒÔÍ¨¹ý¿ªÔ´µÄODIN×¢²á¿Í»§¶ËÀ´×ÔÖ÷×¢²á»ñµÃÒ»¸öODINºÅ£¨³ÉÎªODIN×¢²áÕß£¬¼´ODIN Register£©,ÒÔ´ËÎªÇ°×º¿ÉÒÔÎªÆä¿ª·ÅµÄÃ¿Ò»·ÝÊý¾Ý×ÊÔ´±àÖÆÒ»¸ö°üº¬±¾ÉíODIN Ç°×ºµÄ,ÇÒÔö¼ÓÁËºó×ºµÄODIN ±êÊ¶´®,²¢½«¸ÃODIN±êÊ¶´®Ó³Éäµ½Êý¾Ý×ÊÔ´µÄÔªÊý¾ÝºÍURL ÉÏ,ÕâÑùODIN ¾Í³ÉÎªÊý¾Ý×ÊÔ´µÄÒ»²¿·Ö,Ê¼ÖÕÓë¸ÃÊý×Ö×ÊÔ´¹²´æ¡£È»ºó,ÒÑ±»¿ª·ÅµÄÕâÐ©Êý¾Ý×ÊÔ´µÄODIN ¼ÇÂ¼¡¢ÔªÊý¾Ý¼°ÆäURL ÐÅÏ¢¿ÉÒÔJSON±àÂëµÄÐÎÊ½±£´æÔÚ¸ÃODIN×¢²áÕßµÄÊý¾Ý¿âÄÚ£¬ÕâÐ©±»¼¯ÖÐ´æÖüÆðÀ´µÄ×ÊÔ´¾ÍÐÎ³ÉÒ»¸öODIN×ÊÔ´±êÊ¶¿â¡£ 
+Ê×ÏÈ,Ã¿¸öÓÐÒâ¿ª·ÅÊý¾ÝµÄÊý¾ÝÉú²úÕß£¨Data Producer£©¿ÉÒÔÍ¨¹ý¿ªÔ´µÄODIN×¢²á¿Í»§¶ËÀ´×ÔÖ÷×¢²á»ñµÃÒ»¸öODIN±êÊ¶£¨³ÉÎªODIN×¢²áÕß£¬¼´ODIN Register£©,ÒÔ´ËÎªÇ°×º¿ÉÒÔÎªÆä¿ª·ÅµÄÃ¿Ò»·ÝÊý¾Ý×ÊÔ´±àÖÆÒ»¸ö°üº¬
+±¾ÉíODINÇ°×ºµÄ,ÇÒÔö¼ÓÁËºó×ºµÄODIN±êÊ¶´®,²¢½«¸ÃODIN±êÊ¶´®Ó³Éäµ½Êý¾Ý×ÊÔ´µÄÔªÊý¾ÝºÍURLÉÏ,ÕâÑùODIN¾Í³ÉÎªÊý¾Ý×ÊÔ´µÄÒ»²¿·Ö,Ê¼ÖÕÓë¸ÃÊý×Ö×ÊÔ´¹²´æ¡£È»ºó,ÒÑ±»¿ª·ÅµÄÕâÐ©Êý¾Ý×ÊÔ´µÄODIN ¼ÇÂ¼¡¢ÔªÊý¾Ý¼°ÆäURL
+ÐÅÏ¢¿ÉÒÔJSON±àÂëµÄÐÎÊ½±£´æÔÚ¸ÃODIN×¢²áÕßµÄÊý¾Ý¿âÄÚ£¬ÕâÐ©±»¼¯ÖÐ´æÖüÆðÀ´µÄ×ÊÔ´¾ÍÐÎ³ÉÒ»¸öODIN×ÊÔ´±êÊ¶¿â¡£ 
  
 µ±ÓÃ»§¸ù¾ÝODIN±êÊ¶´®Ñ°ÕÒÒ»¸öÊý¾Ý×ÊÔ´»òÓÐ¹ØÕâÒ»×ÊÔ´µÄÏà¹ØÐÅÏ¢Ê±,²éÑ¯ÇëÇó¾Í»áÍ¨¹ý¿ªÔ´µÄODIN½âÎö¿âÔÚÇø¿éÁ´ÉÏ½øÐÐ¶¨Î»£¬È»ºó±»´«ËÍµ½¸ÃODIN ÓµÓÐÕßËùµÇ¼ÇµÄ·ÃÎÊµã£¨Access Point£©ÉÏ°´ÕÕPTTP£¨Peer Trusted Transfer Protocol£©´«ÊäÐ­Òé½øÐÐ½âÎö²¢µÃµ½¸ÃÊý¾Ý×ÊÔ´µÄÔªÊý¾ÝÃèÊöºÍÊµ¼ÊÊý¾ÝURLÁ´½Ó¡£
  
-ODINÓµÓÐÕß¿ÉÒÔÍêÈ«¿ª·ÅÊý¾Ý×ÊÔ´·ÃÎÊÈ¨£¬Ò²¿ÉÒÔÍ¨¹ýÊÊµ±µÄ×Ô¶¨Òå»úÖÆÈÃÓÃ»§»ñÈ¡Êý¾Ý×ÊÔ´·ÃÎÊÈ¨,ÈçÍ¨¹ý¶©¹º¡¢×ÊÔ´´«µÝ¡¢°´ä¯ÀÀ¸¶·Ñ»òÕßÔ¤Ó¡±¾¸¶·ÑµÈ·½Ê½»ñµÃ¡£
+ODINÓµÓÐÕß¿ÉÒÔÍêÈ«¿ª·ÅÊý¾Ý×ÊÔ´·ÃÎÊÈ¨£¬Ò²¿ÉÒÔÍ¨¹ýÊÊµ±µÄ×Ô¶¨Òå»úÖÆÈÃÓÃ»§»ñÈ¡Êý¾Ý×ÊÔ´·ÃÎÊÈ¨,ÈçÍ¨¹ý¶©¹º¡¢×ÊÔ´´«µÝ¡¢°´ä¯ÀÀ¸¶·ÑµÈ·½Ê½»ñµÃ¡£
  
 
 4¡¢ODINµÄ±àÂë·½Ê½
@@ -31,7 +36,7 @@ ODINÓµÓÐÕß¿ÉÒÔÍêÈ«¿ª·ÅÊý¾Ý×ÊÔ´·ÃÎÊÈ¨£¬Ò²¿ÉÒÔÍ¨¹ýÊÊµ±µÄ×Ô¶¨Òå»úÖÆÈÃÓÃ»§»ñÈ¡Êý¾Ý×Ê
 4.1 ¸ùODIN 
 ¸ùODIN µÄ±ê×¼½á¹¹Ê½Îª£º
         ppk:[BTC_BLOCK_SN].[BTC_TRANS_INDEX]/[DSS]
-ODIN ·ÖÎªÃüÃûÌåÏµ¡¢Ç°×ººÍºó×ºÈý²¿·Ö£¬ÓÃÐ±¸Ü·Ö¿ª¡£Ç°×ºÖÐÓÖÒÔÐ¡Ô²µã·ÖÎªÁ½²¿·Ö [BTC_BLOCK_SN]Îª¸ÃODINÔÚ±ÈÌØ±ÒÇø¿éÁ´ÉÏµÄµÇ¼Ç¼ÇÂ¼ËùÔÚÇø¿éµÄÊý×ÖÁ÷Ë®ºÅ£¨ÓÉ±ÈÌØ±ÒÍøÂç¾ö¶¨£©£¬
+ODIN ·ÖÎªÃüÃûÌåÏµ¡¢Ç°×ººÍºó×ºÈý²¿·Ö£¬ÓÃÃ°ºÅ¡¢Ð±¸Ü·Ö¿ª¡£Ç°×ºÖÐÓÖÒÔÐ¡Ô²µã·ÖÎªÁ½²¿·Ö [BTC_BLOCK_SN]Îª¸ÃODINÔÚ±ÈÌØ±ÒÇø¿éÁ´ÉÏµÄµÇ¼Ç¼ÇÂ¼ËùÔÚÇø¿éµÄÊý×ÖÁ÷Ë®ºÅ£¨ÓÉ±ÈÌØ±ÒÍøÂç¾ö¶¨£©£¬
  [BTC_TRANS_INDEX]Îª¸ÃODINÔÚ±ÈÌØ±ÒÇø¿éÁ´ÉÏµÄµÇ¼Ç¼ÇÂ¼ËùÔÚÇø¿éÄÚµÄ¾ßÌå´æ´¢Î»ÖÃµÄ°¢À­²®Êý×Ö±àºÅ£¨´Ó0¿ªÊ¼Ñ°Ö·£©¡£
  
 ºó×º[DSS] (Data Suffix String)ÓÉODIN×¢²áÕß¿ÉÑ¡²¢×ÔÐÐ¸ø³öµÄ¸ÃODIN±êÊ¶Ëù¶ÔÓ¦¾ßÌåÊý¾ÝÄÚÈÝ¶¨Î»±êÊ¶£¬ÐèÒª×ÔÖ÷È·±£¾ßÓÐÎ¨Ò»ÐÔ¡£ 
@@ -114,7 +119,7 @@ ppk:0#
     
 
 ¾ßÌåÓ¦ÓÃÊ±£¬ÓÉ[PARENT_ODIN_PREFIX]ÅäÖÃËùÓ³ÉäµÄAP(Access Point)½ÚµãÀ´°´PTTP´«ÊäÐ­Òé¾ßÌå´¦ÀíËù¶ÔÓ¦µÄ·½·¨µ÷ÓÃ²¢·µ»Ø½á¹û¡£
-ÒÔ³¬¼¶ÕË±¾FabrciÊµÏÖÒ»¸öAP½ÚµãµÄPTTP´«ÊäÐ­Òé½Ó¿ÚÎªÀý£¬¿ÉÒÔ½«Æä½Ó¿ÚURIÐÎÊ½¶¨ÒåÈçÏÂ£º
+ÒÔ³¬¼¶ÕË±¾FabricÊµÏÖÒ»¸öAP½ÚµãµÄPTTP´«ÊäÐ­Òé½Ó¿ÚÎªÀý£¬¿ÉÒÔ½«Æä½Ó¿ÚURIÐÎÊ½¶¨ÒåÈçÏÂ£º
     fabric:[server1_ip:port,server2_ip:port,....]/channel_id/contract_id/function_name(PTTP_INTEREST)
 ½«°´ÉÏÊöÐÎÊ½¶¨ÒåµÄÊµ¼ÊURIµØÖ·ÅäÖÃµ½¶ÔÓ¦ODIN±êÊ¶ÅäÖÃÐÅÏ¢Àï£¬°´ÕÕPTTP´«ÊäÐ­Òé¹æ·¶¼´¿ÉÊµÏÖ¶Ô¸Ã½Ó¿ÚµÄ¾ßÌå·½·¨µ÷ÓÃ»ñµÃ·´À¡½á¹û¡£
 
@@ -190,17 +195,18 @@ ODINÐÎÊ½ÉÏºÍDNSÓòÃûÓÐµãÏñ£¬µ«½èÖúÇø¿éÁ´µÄ¶ÀÌØÐÔÊ¹µÃÔËÐÐ»úÖÆÉÏÓÐ±¾ÖÊµÄ²î±ð£¬Ç¿µ÷×
 EMULE¡¢BT/MAGNETµÈP2PÍøÂçÊÇÐÎÊ½ÉÏµÄÈ¥ÖÐÐÄ»¯£¬µ«È´Ã»ÓÐ½øÒ»²½´ï³ÉÂß¼­ÉÏµÄÖÐÐÄ»¯£¬Òò´ËÎÞ·¨Ìá¹©Ò»¸öÂß¼­ÉÏÒ»ÖÂµÄÄ¿Â¼Ë÷Òý·þÎñ¡£±ÈÌØ±ÒÇø¿éÁ´ÊÇ½è¼øÁËEMULE¡¢BTµÈP2PÍøÂçµÄ¾­Ñé£¬²¢½«·Ç¶Ô³Æ¼ÓÃÜµÈ¼¼Êõ¼¯´ó³É×éºÏµ½Ò»ÆðÐÎ³ÉµÄ´´ÐÂ¼¼ÊõÌåÏµ£¬Âß¼­ÉÏÄÜÌá¹©Ò»¸öÎ¨Ò»ÐÔÊý¾ÝË÷ÒýÄ¿Â¼£¬Í¬Ê±ÄÜÌá¹©¸üºÃµÄ°²È«ÐÔ¡£
 
 ÁíÍâ£¬ÒÔ¡°magnet:?¡±¿ªÍ·µÄ´ÅÁ¦Á´½ÓÎªÀý£¬ÕâÖÖÁ´½ÓµÄ¡°Êý×ÖÖ¸ÎÆ¡±ÊÇÍ¨¹ýÎÄ¼þÄÚÈÝµÄHash½á¹ûÀ´Éú³ÉµÄ£¬²¢ÒÔ´ËÀ´¶¨Î»ºÍÊ¶±ðÎÄ¼þµÄ£¬µ±ÎÄ¼þÄÚÈÝ·¢Éú±ä¶¯£¬Æä´ÅÁ¦Á´½ÓµÄ¡°Êý×ÖÖ¸ÎÆ¡±µØÖ·Ò²»á·¢Éú±ä»¯£¬µ¼ÖÂÎÞ·¨Í¨¹ýÔ­ÓÐ´ÅÁ¦Á´½ÓÀ´¶¨Î»µ½ÐÂ°æ±¾µÄÎÄ¼þÄÚÈÝ¡£
-¶øODIN¿ÉÒÔ¼æÈÝ´ÅÁ¦Á´½ÓµØÖ·²¢½«Æä×÷ÎªAPÉèÖÃÑ¡Ïî£¬ÕâÑùµ±ÎÄ¼þÄÚÈÝ·¢Éú¸Ä±äÊ±£¬Ö»Ðè¸ü¸ÄAPÉèÖÃ¼´¿É£¬²»Ó°ÏìODINºÅ£¬Í¨¹ý¼ÈÓÐODINµØÖ·ÈÔÄÜ·ÃÎÊµ½ÐÂÐÞ¸ÄµÄÎÄ¼þ¡£
+¶øODIN¿ÉÒÔ¼æÈÝ´ÅÁ¦Á´½ÓµØÖ·²¢½«Æä×÷ÎªAPÉèÖÃÑ¡Ïî£¬ÕâÑùµ±ÎÄ¼þÄÚÈÝ·¢Éú¸Ä±äÊ±£¬Ö»Ðè¸ü¸ÄAPÉèÖÃ¼´¿É£¬²»Ó°ÏìODIN±êÊ¶£¬Í¨¹ý¼ÈÓÐODINµØÖ·ÈÔÄÜ·ÃÎÊµ½ÐÂÐÞ¸ÄµÄÎÄ¼þ¡£
 
 6.8 ODINÓëURI/URLµÄ²îÒìÐÔÔÚÄÄ£¿
 ODIN²»Í¬ÓÚURL£¨Uniform Resource Locator£¬
 Í³Ò»×ÊÔ´¶¨Î»·û£©£¬ËüÊÇÊý¾Ý×ÊÔ´µÄË÷ÒýÃû³Æ£¬¶øÓëÊµ¼ÊµØÖ·ÎÞ¹Ø£¬ÓëURL µÄ×î´óÇø±ð¾ÍÊÇÊµÏÖÁË¶Ô
 ×ÊÔ´ÊµÌåµÄÓÀ¾ÃÐÔ±êÊ¶¡£Êµ¼ÊÉÏËüÊÇÒ»ÖÖURI£¨Universal Resource Name£¬Í³Ò»×ÊÔ´±êÊ¶·û£©»òURN£¨Universal Resource Name£¬Í³Ò»×ÊÔ´Ãû³Æ£©£¬ÊÇÐÅÏ¢Ë÷ÒýµÄÊý×Ö±êÇ©ºÍÉí·ÝÖ¤¡£ÓÐÁËËü£¬¾ÍÊ¹Êý¾Ý×ÊÔ´¾ßÓÐÁË×ÔÖ÷¡¢°²È«µÄÎ¨Ò»ÐÔºÍ¿É×·×ÙÐÔ¡£
 
-6.9 ÓëÆäËü»ùÓÚÇø¿éÁ´µÄ±êÊ¶Ó¦ÓÃÏñNamecoin,Openname,OnenameµÈ°¸ÀýµÄ²îÒìÐÔÔÚÄÄ£¿
+6.9 ÓëÆäËü»ùÓÚÇø¿éÁ´µÄ±êÊ¶Ó¦ÓÃÏñNamecoin,OnenameµÈ°¸ÀýµÄ²îÒìÐÔÔÚÄÄ£¿
 ODINºÍÒÔÉÏÕâÐ©±êÊ¶Ó¦ÓÃ±¾ÖÊÉÏ¶¼ÀûÓÃÁËÇø¿éÁ´¼¼ÊõÀ´Éú³ÉÎ¨Ò»¿ÉÐÅ±êÊ¶£¬Ò²¶¼ÊÇÍêÈ«¿ª·Å¿ªÔ´µÄ£¬µ«ÔÚ¼¼Êõ·½°¸¡¢Ó¦ÓÃÀ©Õ¹ÉÏ¸÷ÓÐÌØµã£¬¿ÉÒÔ»¥Ïà½è¼øÌ½ÌÖ¡£
 ODINÃ÷È·ÒÔBTCÇø¿éÁ´³ÐÔØ¸ù±êÊ¶²¢ÒÔ´ËÎª»ù´¡ÑÓÉìÀ©Õ¹ÒýÈëÆäËû¼ÓÃÜ±ÒÇø¿éÁ´»òÀàÇø¿éÁ´³ÐÔØ¶þ¼¶±êÊ¶¡£
-Openname,OnenameÈ±Ê¡²ÉÓÃNamecoinÇø¿éÁ´£¬²¢Ö§³Ö¼æÈÝÆäËü¼ÓÃÜ±ÒÇø¿éÁ´Ìæ»»×÷ÎªÍ¬¼¶³ÐÔØ¡£
+Namecoin½¨Á¢ÔÚ×Ô¼º¶ÀÁ¢µÄÇø¿éÁ´ÉÏ£¬µ«ËãÁ¦½ÏÐ¡£¬ÔËÐÐ²»ÎÈ¶¨¡£
+Openname,OnenameÈ±Ê¡²ÉÓÃBitcoinÇø¿éÁ´£¬²¢Ö§³Ö¼æÈÝÆäËü¼ÓÃÜ±ÒÇø¿éÁ´Ìæ»»×÷ÎªÍ¬¼¶³ÐÔØ£¬µ«²»Ö§³Ö¶à¼¶À©Õ¹»úÖÆ¡£
 
 -------------------------------------------------------------------------------------------------
 Released under the MIT License.
