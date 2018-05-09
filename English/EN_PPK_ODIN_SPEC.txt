@@ -1,0 +1,237 @@
+          Root Identifier Specification of Open Data Index Name (ODIN) 
+        
+                  -- PPk Public Group 2018-03-22
+                        Http://ppkpub.org/
+
+1. Introduction to ODIN
+
+ODIN is the abbreviation for Open Data Index Name. In a broad sense, ODIN refers to an open system for identifying and exchanging data content indexes in a peer-to-peer network environment. It complies with the URI (Uniform Resource Identifier) ?specification and provides an extensible framework for autonomous and open management of data content, value and rights in digital cryptocurrency technology based blockchain. It consists of four components, which are the identifier, resolving system, metadata, and policies. In a narrow sense, ODIN refers to a peer-to-peer trusted permanent identifier that identifies any object of data content.
+The easy way to understand ODIN is that it can be regarded as the "autonomous domain name in the data era".
+
+2. Technical proposal of ODIN root identifier
+
+Based on the technical principles of digital cryptocurrencies such as XCP and Mastercoin, the implementation of ODIN root identifier is to encode specific message data according to Bitcoin specification and then store it on the blockchain by broadcasting it to the Bitcoin network as Bitcoin transaction.
+
+Each ODIN root identifier includes the following features:
+(a) Bitcoin source address (corresponding to the ODIN message generator)
+
+(b) A Bitcoin destination address (corresponding to the target entity to which the ODIN message points; when the specific message definition does not need to specify the target entity, the address can be omitted)
+
+(c) A number of 1-of-N multi-signature output Bitcoin address public keys encoded according to the ODIN packet format, which are specifically defined as follows:
+In the first 1-of-N multi-signature output, the first public key is fixed by the sender, and the second one is fixed by the ODIN specific public key (a 33-byte public key, for a HEX string "0320a0de360cc2ae8672db7d557086a4e7c8eca062c0a5a4ba9922dee0aacf3e12", its corresponding address is 1PPkPubRnK2ry9PPVW7HJiukqbSnWzXkbi). The third and more public keys is optional, which  is encoded from  specific ODIN message (the format is: the value of the first byte is 3, the second byte is the effect chunk length of the subsequent valid data, and the bytes from the third byte are the chunk extracted in sequence from the contents of the ODIN message. A total of 33 bytes correspond to a bitcoin compressed public key (if it is less than 33 bytes, the ASCII of space will be added at the end of it until it reaches 33 bytes);
+In the optional second or more 1-of-N multi-signature output, the first public key is fixed by the sender, and the second public key is encoded from specific ODIN message.
+Note: The range of N is between 3 and 16, which is recommended to 3 according to the current Bitcoin specification. For the ODIN data block that cannot be accommodated by a single 1-of-N multi-signature output, they can be stored in the second, third or more extended multi-signature output records. If the size is within 75 bytes, they can also be stored in the subsequent note message of OP_RETURN.
+
+(d) A note message of OP_RETURN (providing an additional storage space of no more than 75 bytes when the standard multi-transaction data block cannot accommodate long ODIN packets)
+
+(e) There is a certain amount of Bitcoin balance in the Bitcoin source address (it is recommended to have more than 0.001 BTC for generating several valid transaction entries sent from the source address to the destination address to be embedded in the ODIN packet. Note: Due to the characteristics of 1-of-N multi-signature in Bitcoin transactions, the Bitcoin will not actually be used in the transaction, which will be recycled in the next ODIN message).
+
+(f) A transaction fee at a fixed rate (default is 0.0001 BTC), which will be paid to the Bitcoin miner who would include this transaction to new block.
+
+(g) A Bitcoin change  address (same as the Bitcoin source address mentioned at (a), used to give the amount of remaining Bitcoin to the account of message sender after the amount is used for generating several transaction entries to meet the embedded ODIN data packets based on the Bitcoin transaction protocol).
+
+The above feature (c) is the key for technology implementation. The ODIN data block is embedded in the multi-signature output data block of the Bitcoin transaction and is a 1-of-N output. The first public key of each data block is fixed to the sender, and thus the output currency can be redeemed for reuse. For a details of bitcoin multi-signature transactions, please refer to Bitcoin protocol specifications.
+
+The format of the data block of each ODIN root identifier is defined in the order of byte as follows:
+The first byte: message type, 1 byte.
+The second byte until the end of the message is the different message data by message type. For details, see Section 3 Message types of ODIN root identifier.    
+            
+3. Message types of ODIN root identifier
+
+3.1 Register a new ODIN root identifier
+Bitcoin source sddress: Corresponding to the ODIN root identifier register
+Bitcoin destination address: Corresponding to the ODIN root identifier administrator (optional, if it is omitted, it means that the administrator is the same as the register)
+
+The format of the data block of the message is defined in the order of byte as follows:
+The first byte: Message type, 1 byte, its value is the ASCII of character R
+The second byte: Data format of message body, 1 byte.
+           Value: ASCII of character T or G,
+                     T stands for "UTF-8 encoded text string",
+                     G stands for "binary data compressed by the gzip, which needs decompression to obtain original UTF-8 encoded text string".
+The third and subsequent bytes: The data length in byte of message body, which is defined in variable-length integer (Varint) of the bitcoin protocol. When the value is less than 253, one byte is used for storage; when the value is greater than or equal to 253 while less than 65536, three bytes are used for storage, and the first byte is fixed at 253.The following two bytes are used to store the actual data value (lower bit first and then the higher ones); when the value is greater than or equal to 65536 while less than 4294967295, 5 bytes are used for the storage with the first byte fixed at 254.The subsequent four bytes are used to store the actual data value (lower bit first and then the higher bit).
+The subsequent bytes until the end are the message body data stored in bytes. It relies on the value of the data format of the 2nd byte to obtain the original message text, a UTF-8 encoded JSON format string, corresponding to a JSON object data, described as follows:
+    {
+        "ver": " Description: data format definition, initially 1" 
+        "title": "Description: string of  identifier label", 
+        "email": "Description: public contact email of identifier owner , optional",
+        "auth": "Description: configuration permissions, see the note below for its value",
+    }
+    
+    Note: The value of the configuration permission can be the ASCII of character 0, 1 or 2 
+        0 indicates that "either of the register and administrator can update the configuration of identifier-related information".
+        1 means "only the administrator can modify the configuration of identifier-related information"
+        2 means "confirmations from both the register and administrator are required to update the configuration of identifier-related information."
+    
+Example of message body:
+{"ver":1,"title":"PPk-Sample","email":"ppkpub@gmail.com","auth":"0""
+
+Note: In order to ensure the uniqueness and validity of the short number of root identifier, as long as the first byte of ODIN  message data is R, then it needs to be recorded as a new ODIN root identifier, even if its subsequent message body is not available. For the ODIN root identifier that is incorrectly registered, subsequent modifications are allowed to make it correct.
+
+3.2 Updating basic information of ODIN root identifier
+Bitcoin source address: corresponding to the register or administrator who has the permission to update the configuration of ODIN root identifier
+Bitcoin destination address: corresponding to the new administrator of ODIN identifier (optional, if it is omitted, it means that the administrator's identity will not be changed)
+
+The format of the message data block is defined in the order of byte as follows:
+The first byte: Message type, 1 byte, its value is the ASCII of character U
+Bytes 2 to 31: Similar with the standard ODIN root identifier like "351474.430", with 30 bytes. If the identifier itself is less than 30 bytes, the ASCII of space will be added to its right side until it reaches 30 bytes.
+The 32nd byte: Data format of message body, 1 byte.
+                        Value: ASCII of character T or G,
+                            T stands for "UTF-8 encoded text string",
+                           G stands for "binary data compressed by the gzip, which needs decompression to obtain original UTF-8 encoded text string".
+The 33rd and subsequent bytes: The data length in byte of message body, which is defined in variable-length integer (Varint) of the bitcoin protocol. When the value is less than 253, one byte is used for storage; when the value is greater than or equal to 253 while less than 65536, three bytes are used for storage, and the first byte is fixed at 253.The following two bytes are used to store the actual data value (lower bit first and then the higher ones); when the value is greater than or equal to 65536 while less than 4294967295, 5 bytes are used for the storage with the first byte fixed at 254.The subsequent four bytes are used to store the actual data value (lower bit first and then the higher bit).
+The subsequent bytes until the end are the message body data stored in bytes. It relies on the value of the data format of the 32nd byte to obtain the original message text, a UTF-8 encoded JSON format string, corresponding to a JSON object data, described as follows:
+
+Message body definition:  
+    JSON format string, corresponding to a JSON object data, as follows:
+    {
+        "ver": "Description: data format definition, initially 1" 
+        "cmd": "Description. Updating command type; the value BI means to update the basic information, 
+        "title": "Description: string of identifier label", 
+        "email": "public contact email of identifier owner , optional",
+        "auth": "Description: configuration permissions, see the note below for its value",
+    }
+    
+    Note:
+    1. Incremental update mode is adopted, only the words listed in the request will be appended or updated, others that are not in the update request will remain unchanged
+    2. The value of the configuration permission can be the ASCII of character 0, 1 or 2 
+        0 indicates that "either of the register and administrator can update the configuration of identifier-related information",
+        1 means "only the administrator can modify the configuration of identifier-related information",
+        2 means "confirmations from both the register and administrator are required to update the configuration of identifier-related information".
+    
+Example of message body:
+{"ver":1,"cmd":"BI","title":"PPk-Update-Sample"}
+
+3.3 Updating the access point configuration of the ODIN root Identifier
+Bitcoin source address: corresponding to the register or administrator who has the permission to update the configuration of ODIN root identifier
+Bitcoin destination address: null
+
+The format of the message data block is defined in the order of byte as follows:
+The first byte : Message type, 1 byte, its value is the ASCII of character U
+Bytes 2 to 31: Similar with the standard ODIN root identifier like "351474.430", with 30 bytes. If the identifier itself is less than 30 bytes, the ASCII of space will be added to its right side until it reaches 30 bytes.
+The 32nd byte: Data format of message body, 1 byte.
+           Value: ASCII of character T or G,
+                     T stands for "UTF-8 encoded text string",
+                     G stands for "binary data compressed by the gzip, which needs decompression to obtain original UTF-8 encoded text string".
+The 33rd and subsequent bytes: The length of the message body data byte, defined by the variable-length integer (Varint) of the bitcoin protocol. When the value is less than 253, one byte is used for storage; when the value is greater than or equal to 253 while less than 65536, three bytes are used for storage, and the first byte is fixed at 253.The following two bytes are used to store the actual data value (lower bit first and then the higher ones); when the value is greater than or equal to 65536 while less than 4294967295, 5 bytes are used for the storage with the first byte fixed at 254.The subsequent four bytes are used to store the actual data value (lower bit first and then the higher bit).
+The subsequent bytes until the end are the message body data stored in bytes. It relies on the value of the data format of the 32nd byte to obtain the original message text, a UTF-8 encoded JSON format string, corresponding to a JSON object data, described as follows:
+
+Message body definition:  
+    JSON format string, corresponding to a JSON object data, as follows:
+    {
+        "ver": "Description: data format definition, initially 1" 
+        "cmd": "Description.  Updating command type; the value AP means to update the basic information of AP access point's configuration table. 
+        "ap_set":{
+          "AP Record Number": {"url":"Corresponding URL"},
+          "AP Record Number": {"url":"Corresponding URL"},
+          ...
+          "AP Record Number": {"url":"Corresponding URL"},
+        }
+    }
+    Note: AP records are numbered from 0 and then sequentially numbered by 1,2..,n.When the value of the URL is "", that is, a string of zero length, it means that it would be a blank record, but the record will not be deleted, and therefore it will not affect the numbering of subsequent records.
+    
+Example of message body:
+{"ver":1,"cmd":"AP","ap_set":{"0":{"url":"http://ap1.ppkpub.org/"},"1":{"url":""},"2":{"url ":"http://ap2.ppkpub.org/"}}}
+
+3.4 Updating data signature verification parameters of the ODIN Root Identifier
+Bitcoin source address: corresponding to the register or administrator who has the permission to update the configuration of ODIN root identifier
+Bitcoin destination address: null
+
+The format of the message data block is defined in the order of byte as follows:
+The first byte: Message type, 1 byte, its value is the ASCII of character U
+Byte 2 to 31: Similar with the standard ODIN root identifier like "351474.430", with 30 bytes. If the identifier itself is less than 30 bytes, the ASCII of space will be added to its right side until it reaches 30 bytes.
+The 32nd byte: Data format of message body, 1 byte.
+           Value: ASCII of character T or G,
+                     T stands for "UTF-8 encoded text string",
+                     G stands for "binary data compressed by the gzip, which needs decompression to obtain original UTF-8 encoded text string".
+The 33rd and subsequent bytes: The length of the message body data byte, defined by the variable-length integer (Varint) of the bitcoin protocol.When the value is less than 253, one byte is used for storage; when the value is greater than or equal to 253 while less than 65536, three bytes are used for storage, and the first byte is fixed at 253.The following two bytes are used to store the actual data value (lower bit first and then the higher ones); when the value is greater than or equal to 65536 while less than 4294967295, 5 bytes are used for the storage with the first byte fixed at 254.The subsequent four bytes are used to store the actual data value (lower bit first and then the higher bit).
+The subsequent bytes until the end are the message body data stored in bytes. It relies on the value of the data format of the 32nd byte to obtain the original message text, a UTF-8 encoded JSON format string, corresponding to a JSON object data, described as follows:
+Message body definition:   
+    JSON format string, corresponding to a JSON object data, as follows: 
+    {
+        "ver": "Description: data format definition, initially 1" 
+        "cmd": "Description. Updating command type; the value VD means to update the verification parameter of the data provided by the AP access point. 
+        "vd_set":{
+            "algo": "Description: The type of asymmetric signature authentication algorithm used by the AP to publish data, and its default is MD5withRSA, with SHA1withRSA and SHA256withRSA optional",
+          "cert_uri": "Description: The corresponding URI of the public key certificate required for authentication. It should be ensured that the corresponding resource content remains unchanged. The default is to use the decentralized file system ipfs to carry a large certificate, or you can use the URL in the format of 'data:' to directly embed a Base64 encoded binary public key string",
+        }
+    }
+    
+Example of message body:
+  {"ver":1,"cmd":"VD","vd_set":{"algo":"MD5withRSA","cert_uri":"ipfs:QmaZGNj6G2sgRESZDEQgQybwZrigRW4UHsxquvt1C3qdyt"}}
+or
+  {"ver":1,"cmd":"VD","vd_set":{"algo":"MD5withRSA","cert_uri":"data:,E48A37882B123499011339DD338920............. .2011BBS"}}
+
+
+3.5 Transfer of the register of ODIN root identifier
+Bitcoin source address: Corresponding to the original register of ODIN root identifier
+Bitcoin destination address: Corresponding to the new register of the ODIN root identifier
+
+The format of the message data block is defined in the order of byte as follows:
+The first byte: Message type, 1 byte, its value is the ASCII of character U
+Byte 2 to 31: Similar with the standard ODIN root identifier like "351474.430", with 30 bytes. If the identifier itself is less than 30 bytes, the ASCII of space will be added to its right side until it reaches 30 bytes.
+The 32nd byte: Data format of message body, 1 byte.
+           alue: ASCII of character T or G,
+                     T stands for "UTF-8 encoded text string",
+                     G stands for "binary data compressed by the gzip, which needs decompression to obtain original UTF-8 encoded text string".
+The 33rd and subsequent bytes: The length of the message body data byte, defined by the variable-length integer (Varint) of the bitcoin protocol.When the value is less than 253, one byte is used for storage; when the value is greater than or equal to 253 while less than 65536, three bytes are used for storage, and the first byte is fixed at 253.The following two bytes are used to store the actual data value (lower bit first and then the higher ones); when the value is greater than or equal to 65536 while less than 4294967295, 5 bytes are used for the storage with the first byte fixed at 254.The subsequent four bytes are used to store the actual data value (lower bit first and then the higher bit).
+The subsequent bytes until the end are the message body data stored in bytes. It relies on the value of the data format of the 32nd byte to obtain the original message text, a UTF-8 encoded JSON format string, corresponding to a JSON object data, described as follows:
+Message body definition:  
+    JSON format string, corresponding to a JSON object data, as follows:
+    {
+        "ver": "Description: Data format definition, initially 1" 
+        "cmd": "Description. Updating the command type; the value TR means to transfer the register", 
+    }
+    
+Example of message body:
+{"ver":1,"cmd":"TR"}
+
+Note:
+1. The original register is required to confirm the settings of the permission to update the identifier and obtain the new register's signature to confirm the transaction so that the transfer will take effect.
+2. Once the register-related transfer is confirmed by the new register and recorded by the block and has taken effect, if there are still some ineffective affairs related to register transfer of the ODIN root identifier, then these corresponding affairs will automatically expire.
+
+
+3.6 Confirming the update operation of the ODIN root identifier
+Bitcoin source address: The current register, current administrator, or new register who is the target of the transfer related to the update operation of ODIN root identifier that is to be confirmed
+Bitcoin destination address: null
+
+The format of the message data block is defined in the order of byte as follows:
+The first byte: Message type, 1 byte, its value is the ASCII of character U
+Bytes 2 to 31: Similar with the standard ODIN root identifier like "351474.430", with 30 bytes. If the identifier itself is less than 30 bytes, the ASCII of space will be added to its right side until it reaches 30 bytes.
+The 32nd byte: Data format of message body, 1 byte.
+           Value: ASCII of character T or G,
+                     T stands for "UTF-8 encoded text string",
+                     G stands for "binary data compressed by the gzip, which needs decompression to obtain original UTF-8 encoded text string".
+The 33rd and subsequent bytes: The data length in byte of the message body, which is defined in variable-length integer (Varint) of the Bitcoin protocol.When the value is less than 253, one byte is used for storage; when the value is greater than or equal to 253 while less than 65536, three bytes are used for storage, and the first byte is fixed at 253.The following two bytes are used to store the actual data value (lower bit first and then the higher ones); when the value is greater than or equal to 65536 while less than 4294967295, 5 bytes are used for the storage with the first byte fixed at 254.The subsequent four bytes are used to store the actual data value (lower bit first and then the higher bit).
+The subsequent bytes until the end are the message body data stored in bytes. It relies on the value of the data format of the 32nd byte to obtain the original message text, a UTF-8 encoded JSON format string, corresponding to a JSON object data, described as follows:
+Message body definition:  
+    JSON format string, corresponding to a JSON object data, as follows:
+    {
+        "ver": "Description: Data format definition version, initially 1" 
+        "cmd": "Description. Updating command type; the value CU means to confirm the operation for a second time", 
+        "tx_list":[
+          "The first pending operation corresponds to the transaction record identifier,"
+          "The second pending operation corresponds to the transaction record identifier,"
+          бн,
+          "More pending operation corresponds to the transaction record identifier,"
+
+        ]
+    }
+    
+Example of message body:
+{"ver":1,"cmd":"CU","tx_list":["432821.323","432823.222"]}
+
+4. FAQ
+4.1 What are the restrictions on the message size of the ODIN root identifier?
+According to definition of the existing Bitcoin protocol, a single block cannot exceed 1MB and a single transaction block is generally around 1KB. An excessively large packet may wait for a long time before it is successfully written into the blockchain. All those beyond the restrictions will be rejected by the Bitcoin network.
+In normal circumstances, the length of a single ODIN message's original text or compressed data should not exceed 65,535 bytes. It is recommended to be smaller than 1 KB. For messages over 1 KB, we can increase the payment to Bitcoin network miners in order to speed up the time spent on recording ??into the blockchain. 
+
+-------------------------------------------------- -----------------------------------------------
+Released under the MIT License.
+
+Copyright (C) 2015-2018 PPk Public Group (ppkpub.org). 
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge , publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

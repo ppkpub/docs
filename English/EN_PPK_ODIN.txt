@@ -1,0 +1,214 @@
+ 
+ODIN(Open Data Index Name) : A Peer Trusted Name System based Blockchain
+        
+                  -- PPk Public Group 2018-05-09
+                        Http://ppkpub.org/
+
+1. Introduction to ODIN
+ODIN is the abbreviation for Open Data Index Name. In a broad sense, ODIN refers to an open system for identifying and exchanging data content indexes in a peer-to-peer network environment. It complies with the URI (Uniform Resource Identifier) ?specification and provides an extensible framework for autonomous and open management of data content, value and rights in digital cryptocurrency technology based blockchain. It consists of four components, which are the identifier, resolving system, metadata, and policies. In a narrow sense, ODIN refers to a peer-to-peer trusted permanent identifier that identifies any object of data content.
+The easy way to understand ODIN is that it can be regarded as the "autonomous domain name in the data era".
+
+2. Main features and functions of ODIN¡¡
+The ODIN system has the following outstanding features and functions.
+a. Autonomy. ODIN identifiers are generated and managed autonomously by applicants based on peer-to-peer blockchain technology. The rules for the generation and management of ODIN are completely open and there is no centralized control mechanism. Except for applicants who have management keys, other organizations and individuals have no right to control or modify them.
+b. Security . Each owner of an ODIN identifier possesses a pair of public and private keys based on asymmetric encryption technologies. The privately-published data can be signed by a private key, while individuals who receive the data can perform verification through the public key to ensure that the received data are from trusted sources and have not been tampered with.
+c. Uniqueness. ODIN protocol can ensure the uniqueness of identification based on blockchain technology. By opening indexes for any data objects (such as text, images, audio, data, videos, software, etc.), data objects can be accurately recognized and extracted.
+d. Persistence. The ODIN identifier will remain unchanged permanently once it is generated. It will not change with the attributes such as the holder or storage address of the data object it identifies.
+e. Compatibility. It can be compatible with existing identifiers (such as ISBN, ISSN, ISTC, publisher identifier PII, etc).
+f. Interoperable. Following the universal URI standard, the processing system of ODIN can be consistent with different computer operating systems on the network while processing the same data, and is compatible with the technological systems of different periods.
+
+3. ODIN operating mechanism
+PPkPub (PPk Public Group, which is a non-profit  open technology community) has defined and established a completely open ODIN operating mechanism, including the PPk ODIN system and extended applications. PPk ODIN system is a distributed data indexing and labeling system based on blockchain. It guarantees the autonomous, security, uniqueness, permanence, and extensibility of the data.
+
+First of all, each data producer who would publish the data can obtain an ODIN identifier (becoming an ODIN Register) through the open source ODIN registration terminal, which will be used as a prefix for each data resource. Each data resource will consist of an ODIN identification string that contains its ODIN prefix and a suffix. The ODIN identification string will be mapped to the metadata and URL of the data resource. Thereby, this makes ODIN a part of the data resource, which will always coexists with the digital resources. Then, the ODIN records, metadata, and their URL information of these open data resources can be stored in the database of the ODIN register in a JSON-encoded form, and these pooled resources form an ODIN resource identifier library. 
+
+When a user searches for a data resource or relevant information about this resource based on the ODIN identification string, the request will be located on the blockchain via the open source ODIN parsing library and then transmitted to the ODIN owner's registered Access Point. It will then be parsed according to the PTTP (Peer Trusted Transfer Protocol) transmission protocol and obtain the metadata description and actual data URL link of the data resource.
+
+ODIN owners can fully open the access to data resources and can also allow users to access data resources through self-defined mechanisms, such as ordering, resource transfer, pay-per-view,etc.
+
+
+4. ODIN Schemes
+
+4.1 Root ODIN 
+The standard structure of the root ODIN is:
+        ppk:[BTC_BLOCK_SN].[BTC_TRANS_INDEX]/[DSS]
+ODIN consists of three parts, which are the naming system, prefix and suffix, separated by colon and slashes. The prefix is divided into two parts by a dot. [BTC_BLOCK_SN] is the digital serial number of the block where the ODIN registration record on the Bitcoin blockchain is located (determined by the Bitcoin network).
+[BTC_TRANS_INDEX] is the Arabic number of the specific storage location in the block where the ODIN registration record on the Bitcoin blockchain is located (addressed from 0).
+
+The suffix [DSS] (Data Suffix String) is selected by the ODIN register and the corresponding data location identifier of the ODIN identifier can also defined by the register. However, its uniqueness should be ensured by the register. 
+[DSS] naming rule: 
+RESOURCE_ID#[DATA_BLOCK_ID.CHUNK_INDEX]
+    Among them: 
+    RESOURCE_ID is the identifier of corresponding resource defined by the ODIN register, which can be a serial number or a unique string. It must be ensured that this identifier can be distinguished from the standard structure and cannot contain the characters of #, /, (, ), or ".
+    DATA_BLOCK_ID is the serial number of the corresponding content block (starting from 1; for files, it can be regarded as version; for the dynamic data stream, it can be regarded as the packet generated sequentially).
+    CHUNK_INDEX is the index number of the corresponding subdata block inside the block (starting from 0).
+    Note: "#" and its subsequent parts can be omitted. If they are omitted, the first sub-block of the latest data block will be set as the default.
+
+The following are examples that conform to the root ODIN coding rules:
+    ppk:351474.430/
+    ppk:351474.430/#
+    ppk:351474.430/#1.0
+    ppk: 305678.568/ISBN2890321345# 1.0
+    ppk: 305678.1000/ISBN2890321345-P235#2.1
+
+
+The root ODIN can be coded in a short form, with its structure as follows:
+        ppk:[REG_ORDER_INDEX]/[DSS]
+[REG_ORDER_INDEX] is the Arabic numeric index (starting from 0) for the ODIN record that is sorted by the registration time in all ODIN registration records.
+The following are examples that conform to the short-form coding rule of root ODIN:
+    ppk:1/
+    ppk:356/#1.0
+    ppk:356/ISBN2890321345#1.0
+
+The ODIN naming structure enables each data resource to have an autonomous, secure and unique indexing identifier across the entire network. Different from the URL, ODIN is the index name of the data resource, which is irrelevant to the actual address. Actually, it is a type of URI (Universal Resource Identifier) or URN (Universal Resource Name), which is a digital label and ID for information index. With it, data resources are unique and traceable.
+
+Special case:
+    ppk:351474.430
+    ppk:351474.430#
+    ppk:0
+    ppk:0#
+The meanings of these four special codes are the same, which represent the data configuration of the resolving record corresponding to the root ODIN ID.
+
+
+4.2 Extended multi-level ODIN
+Based on the root ODIN, the register of the root ODIN can use the optional blockchain to define the customized secondary ODIN. Similarly, more levels of ODIN identifiers can be formed.
+
+The standard structure of a multi-level ODIN is:
+    ppk:[PARENT_ODIN_PREFIX]/[SUB_BLOCK_SN].[SUB_TRANS_INDEX]/[DSS]
+    
+[PARENT_ODIN_PREFIX] corresponds to the parent ODIN prefix;
+[SUB_BLOCK_SN] and [SUB_TRANS_INDEX] are corresponding serial number of self-defined block in the parent blockchain of sub ODIN and the number used to record its location within the block respectively.
+The suffix [DSS] (Data Suffix String) can be selected by the upper-level ODIN register and the data locating identifier can be self defined. Its uniqueness should be ensured, and the naming rules is similar as mentioned before. 
+    
+Examples:
+    ppk:351474.430/21.35/#
+    ppk:351474.430/21.35/ISBN2890321345#
+    ppk:351474.430/21.35/ISBN2890321345#1.0
+    ppk: 305678.1000/23.678/235.32/ISBN2890321345-P218#2.1
+
+The self-defined multi-level ODIN structure is:
+    ppk: [PARENT_ODIN_PREFIX]/[SUB_TRANS_ID]/[DSS] 
+[SUB_TRANS_ID] is the unique identifier of the ODIN in the secondary blockchain or other technology platform. It is defined by the parent ODIN register, which can be a serial number or a string with unique values. It must be ensured that this identifier can be distinguished from the standard structure and cannot contain the characters of #, /, (, ), or ".
+Examples:
+    ppk:351474.430/22/#
+    ppk:1/22/ISBN2890321345#
+    ppk:1/22/ISBN2890321345#2.1
+    ppk:1/china/books/#
+    ppk:1/china/books/#
+    ppk:1/china/books/ISBN2890321345-P218#
+    
+4.3 Specific Resource Form Definitions for Distributed Method Invocations
+
+Under the framework of ODIN resource identifier definition, the following specific extensions are defined to support remote invocation requirements:
+  ppk:[PARENT_ODIN_PREFIX]/[FUNCTION_NAME]([arg1],[arg2],...,[argn])#[RESULT_SN]
+  among which, 
+    [PARENT_ODIN_PREFIX] corresponds to the parent ODIN prefix,
+    [FUNCTION_NAME] is the corresponding method name defined by the ODIN register. It must be ensured that this identifier can be distinguished from the standard structure and cannot contain the characters of #, /, (, ), or ".
+    [arg1],[arg2],...,[argn] is one or more input parameters called by the corresponding method.
+    RESULT_SN is the unique serial number of the corresponding result, which is self-defined, such as auto-increment number or time stamp.
+    Note: "#" and its subsequent parts can be omitted. If they are omitted, the default is to dynamically execute the specified method and get the latest result.
+  
+  Examples:
+    ppk:351474.430/21.35/sum(1,2,3)#
+    ppk: 351474.430/21.35/sum(1,2,3)#1.0
+    ppk:1/china/add_book("book_isbn","book_title")#
+    
+
+For specific applications, the corresponding called method will be processed base on PTTP protocol through the mapped AP (Access Point) node configured by [PARENT_ODIN_PREFIX] and will return the result.
+Take the PTTP protocol interface of an AP node implemented by Hyperledger Fabric as an example. Its URI can be defined as follows:
+    fabric:[server1_ip:port,server2_ip:port,....]/channel_id/contract_id/function_name(PTTP_INTEREST)
+The actual URI address defined in the above form is configured into the corresponding configuration information of the ODIN identifier. According to the PTTP protocol specification, a specific method calling of the interface can be achieved to obtain the result feedback.
+
+5. Using ODIN to find data
+So how to find the original data according to the ODIN number?
+
+The way to find the original data through ODIN is very simple.
+
+5.1 Through an ODIN search website
+
+Individuals who can build a website can use the open source ODIN search library to set up an ODIN search website.
+
+For example, to login to the http://ppkpub.org/odin/ prototype, enter the ODIN number in the box of "Query ODIN", and then click the "Go" button. The ODIN system will display the corresponding ODIN registration information.
+
+Example: When we enter the ODIN number "0" in the "Query ODIN" and click the "Go" button, the relevant information of this ODIN number will be displayed.
+
+To get the same result of the above example, we can also simply entered http://ppkpub.org/odin/?odin=0 in the browser address. 
+
+Based on this case, more complex resource search functions can be implemented. We will provide related examples later in the article.
+
+
+5.2 Application Built-in ODIN Support
+
+Application developers can directly apply the open source ODIN search library to their own programs so that they can directly obtain the metadata descriptions and actual data URLs of the data sources corresponding to ODIN. Meanwhile, the final presentation can be customized according to the definition of metadata.
+
+For example, the Java version of the client terminal of PPk open source tool provides the support for ODIN identifier, which can be downloaded at http://ppkpub.org/.
+
+
+6. FAQ
+
+6.1 What is PPk?
+The name PPk originates from Peer-Peer network.
+
+PPkPub is not an entrepreneurial team, but a geek community driven by interest and dedicated to "creativity". Based on the rich research and learning resources of the Network Management Research Center of State Key Laboratory of Networking and Switching Technology, Beijing University of Posts and Telecommunications, PPkPub attracts a group of P2P technology enthusiasts who are interested in digital cryptocurrency such as Bitcoin. Many of our community members have a background in the R&D of communications and Internet technologies and have independent and unique understandings of the development trend of the Internet industry. Compared to the price fluctuations of digital cryptocurrencies, we are more concerned about the potential value of the innovative technologies represented by the blockchain. We are trying to integrate blockchain and network communication technologies to achieve something exciting!
+
+Contact us:
+    E-mail: ppkpub@gmail.com
+    HTTP website: http://ppkpub.org/
+    PTTP website: ppk:0/
+
+6.2 How to compare existing cases to facilitate the understanding of ODIN functions?
+ODIN can be easily understood by drawing an analogy between Domain Name System (DNS) and ODIN.
+
+ODIN will retrieve one or several data source URLs, and the mechanism is like domain name resolution by DNS. However, the traditional domain name registration agency is replaced with an innovative blockchain, which makes traditional domain name management agencies unnecessary and allows the registration on the blockchain whenever needed. In addition, it also adopts the characteristics of public-private key encryption technology in Bitcoin address to provide more secure and reliable resolution results. 
+
+Some digital cryptocurrencies that can provide domain name resolution, such as Namecoin, ENS, etc., are also comparable, as ODIN and these technologies fundamentally all take the advantage of the features of open, trustworthiness and unchangeability of blockchain technology to provide similar domain name services. The difference lies in ODIN's explicit use of the Bitcoin blockchain as a root identifier for carrying blockchains, because the Bitcoin blockchain actually has the highest stability and reliability. Based on the trustworthy foundation provided by the Bitcoin blockchain, ODIN can be compatible with ETH, BYTOM, Fabric, and other types of blockchains and even traditional IT platforms for secondary and extended multi-level identifier.
+
+
+6.3 Why use blockchain?
+The uniqueness of blockchain represented by Bitcoin lies in the realization of a technical system which is decentralized in form while achieves centralized consensus logically. In brief, it obtains the same copy from different nodes that are not related to each other. Only based on this, it is possible to define unique resource identifiers such as ODIN that have the autonomous and safety features.
+
+6.4 Is it safe to use Bitcoin blockchain as a basis?
+Bitcoin, as the first cryptocurrency that proposed and implemented blockchains, has formed an extremely powerful distributed computing network over the past years. Its processing capacity has far exceeded that of traditional super computer clusters and still continues to increase, which will fully guarantee the security and stability of its blockchain.
+
+Theoretically, if more than half of the Bitcoin network's large computing power is controlled by an individual, the individual can then tamper with recent block data (known as the 51% attack). However, the attack difficulty increases exponentially with block growth. It is basically impossible to tamper when more than 6 blocks have been confirmed. Moreover, the attacker can only tamper with their own transaction information (such as repeatedly spending their own Bitcoins) or do not record the transactions performed by others, but they cannot forge the transactions related to other people's Bitcoin addresses. Therefore, ODIN applicants only need to wait for 6 blocks to avoid the above attack risk and confirm the success of registration after he broadcasts ODIN registration messages to the Bitcoin network. For unsuccessful registration caused by the attack on Bitcoin network, which is at extremely low possibility, a simple new registration needs to be launched. For the applicant, there is no loss except for some operation time.
+
+For all mentioned above, it is safe and reliable to use Bitcoin blockchain as ODIN's root blockchain.
+
+6.5 Will the price volatility of Bitcoin have significant influences on the stable operation of the ODIN identifier system?
+The cost of storing each ODIN message to Bitcoin blockchain mainly comes from the cost paid to the Bitcoin ¡°miner¡± who has involved in the transaction. When the Bitcoin price has significantly changed, this fee can also be adjusted to a relatively reasonable level (this can be done by adjusting the parameters at the client's terminal).
+In addition, the registration and maintenance costs of the identifier can also be significantly reduced by using extended secondary identifier (the cost can be reduced to almost zero).
+
+If there the price of bitcoin falls sharply in the future and a large number of mining machines are shut down, causing a decrease in computing power and reducing the robustness of the Bitcoin network, for the ODIN identifier, it will still remain high reliability and stability as it only needs to wait for the confirmation from 6 blocks. 
+
+Therefore, the volatility of Bitcoin price will have a slight negative impact on the stable operation of the ODIN identifier system However, appropriate rules can be used tp effectively avoid such risks.
+
+6.6 What is the difference between ODIN and existing DNS system?
+The existing DNS system is centralized in terms of organizational form and logic, and it cannot provide autonomy compared with the blockchain that hosts ODIN. The DNS protocol has a long history, and there are also many shortcomings in security and other aspects. As the basic protocol of the existing Internet, considering the importance of its stability, it is difficult to make major changes in DNS system.
+
+ODIN is similar to DNS domain formally. However, due to the uniqueness of the blockchain, there are substantial differences in their operating mechanisms. ODIN emphasizes autonomy and security, which acts as the ¡°autonomous domain names in the data era¡±.
+
+6.7 What makes it different from P2P networks such as EMULE and BT/MAGNET?
+The P2P networks such as EMULE and BT/MAGNET are decentralized in form, but they have not been logically decentralized so they cannot provide a logically consistent directory indexing service. The Bitcoin blockchain is based on the experience of P2P networks such as EMULE and BT, and combines the techniques such as asymmetric encryption to form an innovative technology system that provides a unique data indexing catalog logically while offering better security.
+
+In addition, take the the magnet URI started with "magnet:?" as an example. The "digital fingerprint" of this link is generated through the Hash result of the file content, and is used to locate and identify the file. When the file content changes, the address of the "digital fingerprint" of the magnet link also changes, making it impossible to locate the new version of the file through the original magnet link.
+ODIN can be compatible with magnet link address by using it as the optional setting of AP. In this way, when the content of the file changes, you only need to change the AP setting without affecting the ODIN identifier. Thereby you can still access the newly modified file through the existing ODIN URI.
+
+6.8 What is the difference between ODIN and URI/URL?
+ODIN is different from URL (Uniform Resource Locator), as it is the index name of the data resource but has nothing to do with the actual address. ODIN's ability to identify the resource entity permanently distinguishes it from URL.
+Actually, it is a type of URI (Universal Resource Name) or URN (Universal Resource Name), which is a digital label and ID of an information index. With it, data resources will be autonomous, safe, unique and traceable.
+
+6.9 What's the difference between ODIN and other blockchain-based identification applications like Namecoin, Onename?
+ODIN and the above identification applications essentially use the same blockchain technology to generate unique and trustworthy identifiers. They are all open-source. However, they have their own features in terms of technical solutions and application extensions, which are worth learning from each other.
+ODIN uses the BTC blockchain to carry the root identifier and extends it by introducing other cryptocurrency blockchains or blockchains analogue to carry secondary identifiers.
+Namecoin rely on self-build blockchain which has lower computing power and  stability compared to BTC.Onename use BTC blockchain by default, and support the replacement of other cryptocurrency blockchains  but  without the suppprt to multi-level structure.
+
+-------------------------------------------------- -----------------------------------------------
+Released under the MIT License.
+
+Copyright (C) 2015-2018 PPk Public Group (ppkpub.org). 
+
+Permission is hereby granted, free of charge, to any person getting a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge , publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
