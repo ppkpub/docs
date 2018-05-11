@@ -102,33 +102,36 @@
     {
       "ver":协议版本号, 
 
-      "data":{
-         "uri":"返回数据块的ODIN标识地址字符串，该字段只在返回状态码status_code为2XX或3XX时有效并允许当前应答的数据块可按缓存策略被缓存",
-         
-         "utc":到秒值的生成时间戳,
-         "status_code":返回状态码，沿用HTTP协议定义的状态码定义,
-         "status_info":"返回状态附加描述字符串，可选，沿用HTTP协议定义的状态码定义相关描述",
-         
-         "metainfo":{ //对数据块的元描述信息
-           "block_id":"当前数据区块标识，与ODIN标识地址URI中的相关字段是对应的",
-           "lastblock_id":"上一数据区块标识,该字段取值可以为空字符串，表示没有上一连续区块",
-           "chunk_index":当前数据子块索引编号，从0开始，与ODIN标识地址URI中的相关字段是对应的,
-           "chunk_count":当前区块内数据子块总数,一般取值为大于等于1的整数，特定取值为0时表示是动态流数据，子块数目不确定,
-           "content_type":"子块正文类型，采用HTTP协议相关定义，如text/html,image/jpg等，并扩展定义x-ppk/link类型表示ODIN标识链接URI,x-ppk/manifest表示资源列表，应用开发商也可以自定义更多类型(前缀建议以x-起始以便区分)",
-           "content_encrypted":"内容加密算法形式，如MD5withRSA,SHA1withRSA,SHA256withRSA等，如果该字段为空则表示内容为原文或者应用自行约定",
-           "content_encoding":"内容压缩编码形式，参考HTTP协议相关定义，如gzip,deflate等，如果该字段为空则表示内容为原文",
-           "content_charset":"内容字符集，采用HTTP协议相关定义，如utf-8, iso-8859-1,gb2312等，如果该字段为空则缺省为utf-8",
-           "content_length":子块正文长度,
-           
-           
-           "ap_node":"可选的AP内容发布节点属性，如AP Demo based Fabric1.0", "cache-control":"缓存策略建议，参考http协议的取值定义，可用取值有public、private、no-store、max-age，但注意与http协议不同的是默认为public，不是private"
-         },
-         
-         "content":"子块正文数据，如果是二进制需要采用Base64编码，同时建议先用gzip压缩。对于1M以上大数据块建议采用如IPFS等分布式文件存储服务实际存储，通过PTTP协议只应答内容转向链接地址",
-      },
+      "data":"数据正文字符串，JSON编码,具体定义见下文";
 
-      "sign":"签名算法类型(如MD5withRSA,SHA1withRSA,SHA256withRSA):Base64编码的签名数据",
+      "sign":"签名算法类型(如MD5withRSA,SHA1withRSA,SHA256withRSA等):对data字符串的签名，Base64编码字符串",
     }
+    
+    其中data数据正文字符串的JSON格式定义如下：
+    {
+       "uri":"返回数据块的ODIN标识地址字符串，该字段只在返回状态码status_code为2XX或3XX时有效并允许当前应答的数据块可按缓存策略被缓存",
+       
+       "utc":到秒值的生成时间戳,
+       "status_code":返回状态码，沿用HTTP协议定义的状态码定义,
+       "status_info":"返回状态附加描述字符串，可选，沿用HTTP协议定义的状态码定义相关描述",
+       
+       "metainfo":{ //对数据块的元描述信息
+         "block_id":"当前数据区块标识，与ODIN标识地址URI中的相关字段是对应的",
+         "lastblock_id":"上一数据区块标识,该字段取值可以为空字符串，表示没有上一连续区块",
+         "chunk_index":当前数据子块索引编号，从0开始，与ODIN标识地址URI中的相关字段是对应的,
+         "chunk_count":当前区块内数据子块总数,一般取值为大于等于1的整数，特定取值为0时表示是动态流数据，子块数目不确定,
+         "content_type":"子块正文类型，采用HTTP协议相关定义，如text/html,image/jpg等，并扩展定义x-ppk/link类型表示ODIN标识链接URI,x-ppk/manifest表示资源列表，应用开发商也可以自定义更多类型(前缀建议以x-起始以便区分)",
+         "content_encrypted":"内容加密算法形式，如MD5withRSA,SHA1withRSA,SHA256withRSA等，如果该字段为空则表示内容为原文或者应用自行约定",
+         "content_encoding":"内容编码形式，参考HTTP协议相关定义，如gzip,base64,deflate等，如果该字段为空则表示内容为原文",
+         "content_charset":"内容字符集，采用HTTP协议相关定义，如utf-8, iso-8859-1,gb2312等，如果该字段为空则缺省为utf-8",
+         "content_length":子块正文长度,
+         
+         
+         "ap_node":"可选的AP内容发布节点属性，如AP Demo based Fabric1.0", "cache-control":"缓存策略建议，参考http协议的取值定义，可用取值有public、private、no-store、max-age，但注意与http协议不同的是默认为public，不是private"
+       },
+       
+       "content":"子块正文数据，如果是二进制需要采用Base64编码，同时建议先用gzip压缩。对于1M以上大数据块建议采用如IPFS等分布式文件存储服务实际存储，通过PTTP协议只应答内容转向链接地址",
+    },
       
     附status_code状态码定义如下：
 
@@ -162,143 +165,121 @@
       max-age=xxx (xxx is numeric)	缓存的内容将在 xxx 秒后失效
    
     示例：
-      正常的数据资源应答示例：
       {
           "ver":1, 
 
-          "data":{
-            "uri":"ppk:479110.1304/my_record#3.1",
-            
-            "utc":135678832,
-            "status_code":"200",
-            "status_detail":"OK",
-            
-            "metainfo":{ 
-               "block_id":"3",
-               "lastblock_id":"2",
-               "chunk_index":1,
-               "chunk_count":2,
-               "content_type":"text/html",
-               "content_length":6,
-               "ap_node":"AP Demo based Fabric1.0", 
-             },
-             
-             "content":"ABCDEF",
-             
-          },
+          "data":"{.....}",
 
           "sign":"SHA256withRSA:TfdsfR33648.....",
        }
       
-       正常的方法服务资源应答示例：
-       {
-          "ver":1, 
-
-          "data":{
-            "uri":"ppk:479110.1304/register_newdevice('id','pubkey')#20170910125623156.0",
-            
-            "utc":135678832,
-            "status_code":"200",
-            "status_detail":"OK",
-            
-            "metainfo":{ 
-               "block_id":"20170910125623156",
-               "lastblock_id":"",
-               "chunk_index":0,
-               "chunk_count":1,
-               "content_type":"text/html",
-               "content_length":6
-               
-               "cache-control":"no-store",
-             },
-             
-             "content":"ABCDEF",
-             
-          },
-
-         "sign":"SHA256withRSA:TfdsfR33648.....",
+      其中data数据正文字符串示例如下：
+      静态数据资源示例：
+      {
+        "uri":"ppk:479110.1304/my_record#3.1",
+        
+        "utc":135678832,
+        "status_code":"200",
+        "status_detail":"OK",
+        
+        "metainfo":{ 
+           "block_id":"3",
+           "lastblock_id":"2",
+           "chunk_index":1,
+           "chunk_count":2,
+           "content_type":"text/html",
+           "content_length":6,
+           "ap_node":"AP Demo based Fabric1.0", 
+         },
+         
+         "content":"ABCDEF",
+         
+      }
+      
+      动态方法服务示例：
+      {
+        "uri":"ppk:479110.1304/register_newdevice('id','pubkey')#20170910125623156.0",
+        
+        "utc":135678832,
+        "status_code":"200",
+        "status_detail":"OK",
+        
+        "metainfo":{ 
+           "block_id":"20170910125623156",
+           "lastblock_id":"",
+           "chunk_index":0,
+           "chunk_count":1,
+           "content_type":"text/html",
+           "content_length":6
+           
+           "cache-control":"no-store",
+         },
+         
+         "content":"ABCDEF",  
       }
       
       所请求资源不存在时的应答示例：
       {
-          "ver":1, 
-
-          "data":{
-            "uri":"ppk:479110.1304/not_exist_record#1.0",
-            
-            "utc":135678832,
-            "status_code":"404",
-            "status_detail":"Not Found",
-            
-            "metainfo":{ 
-               "block_id":"1",
-               "lastblock_id":"",
-               "chunk_index":0,
-               "chunk_count":1,
-               "content_type":"text/html",
-               "content_length":49,
-             },
-             
-             "content":"<html><font color='#F00'>Not Found</font></html>",
-             
-          },
-
-          "sign":"SHA256withRSA:TfdsfR33648.....",
+        "uri":"ppk:479110.1304/not_exist_record#1.0",
+        
+        "utc":135678832,
+        "status_code":"404",
+        "status_detail":"Not Found",
+        
+        "metainfo":{ 
+           "block_id":"1",
+           "lastblock_id":"",
+           "chunk_index":0,
+           "chunk_count":1,
+           "content_type":"text/html",
+           "content_length":49,
+         },
+         
+         "content":"<html><font color='#F00'>Not Found</font></html>",
+         
       }
       
       所请求资源已永久转移到新标识地址时的应答示例：
       {
-          "ver":1, 
-
-          "data":{
-            "uri":"ppk:479110.1304/my_record#1.0",
-            
-            "utc":135678832,
-            "status_code":"301",
-            "status_detail":"Moved Permanently",
-            
-            "metainfo":{ 
-               "block_id":"1",
-               "lastblock_id":"",
-               "chunk_index":0,
-               "chunk_count":1,
-               "content_type":"x-ppk/link",
-               "content_length":39
-             },
-             
-             "content":"ppk:456793.276/redirect_new_record#1.0",
-             
-          },
-
-          "sign":"SHA256withRSA:TfdsfR33648.....",
+        "uri":"ppk:479110.1304/my_record#1.0",
+        
+        "utc":135678832,
+        "status_code":"301",
+        "status_detail":"Moved Permanently",
+        
+        "metainfo":{ 
+           "block_id":"1",
+           "lastblock_id":"",
+           "chunk_index":0,
+           "chunk_count":1,
+           "content_type":"x-ppk/link",
+           "content_length":39
+         },
+         
+         "content":"ppk:456793.276/redirect_new_record#1.0",
+         
       }
       
       所请求资源为x-ppk/manifest列表类型的应答：
       {
-          "ver":1, 
-
-          "data":{
-            "uri":"ppk:479110.1304/default_resource_list#2.0",
-            
-            "utc":135678832,
-            "status_code":"200",
-            "status_detail":"OK",
-            
-            "metainfo":{ 
-               "block_id":"2",
-               "lastblock_id":"1",
-               "chunk_index":0,
-               "chunk_count":1,
-               "content_type":"x-ppk/manifest",
-               "content_length":149
-             },
-             
-             "content":"{"manifest_version": 1,"title": "my book list","resource_list":[{"uri":"ppk:479110.1304/book1#1.0","hash":"SHA256:DFGS6F....."},{"uri":"ppk:479110.1304/book2#1.0","hash":"sha1:KLD9d....."},{"uri":"magnet:?xt=urn:btih:51df6808c739174c8f264701ba94460c5238d6ce","hash":"btih:PKL56E....."}]}",
-             
-          },
-
-          "sign":"SHA256withRSA:TfdsfR33648.....",
-      }
+          "uri":"ppk:479110.1304/default_resource_list#2.0",
+          
+          "utc":135678832,
+          "status_code":"200",
+          "status_detail":"OK",
+          
+          "metainfo":{ 
+             "block_id":"2",
+             "lastblock_id":"1",
+             "chunk_index":0,
+             "chunk_count":1,
+             "content_type":"x-ppk/manifest",
+             "content_length":149
+           },
+           
+           "content":"{"manifest_version": 1,"title": "my book list","resource_list":[{"uri":"ppk:479110.1304/book1#1.0","hash":"SHA256:DFGS6F....."},{"uri":"ppk:479110.1304/book2#1.0","hash":"sha1:KLD9d....."},{"uri":"magnet:?xt=urn:btih:51df6808c739174c8f264701ba94460c5238d6ce","hash":"btih:PKL56E....."}]}",
+           
+        }
 
 
 4、PTTP协议的功能点
