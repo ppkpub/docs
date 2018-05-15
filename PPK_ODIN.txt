@@ -123,6 +123,32 @@ ppk:0#
     fabric:[server1_ip:port,server2_ip:port,....]/channel_id/contract_id/function_name(PTTP_INTEREST)
 将按上述形式定义的实际URI地址配置到对应ODIN标识配置信息里，按照PTTP传输协议规范即可实现对该接口的具体方法调用获得反馈结果。
 
+
+4.4 根标识的英文转义编码方案
+
+为更好地满足在应用ODIN标识初期方便记忆区分的需求，ODIN根标识支持英文字母转义命名，参考电话按键上的英文与数字对应编码方案，对I,L,O这些易和数字混淆的字母做调整后的具体编码方案如下：
+字母O    o     ->  数字0
+字母IL   il    ->  数字1
+字母ABC  abc   ->  数字2
+字母DEF  def   ->  数字3
+字母GH   gh    ->  数字4
+字母JK   jk    ->  数字5
+字母MN   mn    ->  数字6
+字母PQRS pqrs  ->  数字7
+字母TUV  tuv   ->  数字8
+字母WXYZ wxyz  ->  数字9
+
+
+支持从英文名称单向转义到数字标识：
+如： btm 对应 286  
+     qq  对应 77  
+     abc,aaa 都对应 222
+     abcde.com 对应 22233.206  
+
+也可以英文数字混用： 如 ab123 对应 22123
+
+
+
 5、利用ODIN查找数据
 那么如何根据ODIN号找到原始数据呢？
 

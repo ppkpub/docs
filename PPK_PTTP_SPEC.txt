@@ -129,7 +129,6 @@
          
          "ap_node":"可选的AP内容发布节点属性，如AP Demo based Fabric1.0", "cache-control":"缓存策略建议，参考http协议的取值定义，可用取值有public、private、no-store、max-age，但注意与http协议不同的是默认为public，不是private"
        },
-       
        "content":"子块正文数据，如果是二进制需要采用Base64编码，同时建议先用gzip压缩。对于1M以上大数据块建议采用如IPFS等分布式文件存储服务实际存储，通过PTTP协议只应答内容转向链接地址",
     },
       
