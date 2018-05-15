@@ -1,6 +1,6 @@
     结合ODIN(开放数据索引命名)的PTTP（Peer Trusted Transfer Protocol，对等可信传输协议）技术规范
 
-                  -- PPk开放技术社区 ( PPk Public Group )  （初稿,20180322）
+                  -- PPk开放技术社区 ( PPk Public Group )  （初稿,20180515）
                         http://ppkpub.org/
 
 1、PTTP协议简介
@@ -104,7 +104,7 @@
 
       "data":"数据正文字符串，JSON编码,具体定义见下文";
 
-      "sign":"签名算法类型(如MD5withRSA,SHA1withRSA,SHA256withRSA等):对data字符串的签名，Base64编码字符串",
+      "sign":"签名算法类型(如MD5withRSA,SHA1withRSA,SHA256withRSA等):对data字符串的签名对应Base64编码字符串",
     }
     
     其中data数据正文字符串的JSON格式定义如下：
@@ -295,7 +295,7 @@ TCP/UDP方式:
 HTTP方式:
    对应AP_URL形式： http(s)://ap_host:port/
    请求: 
-        以request或form提供pttp_interest字段，取值为对应JSON编码兴趣报文
+        以request或form提供pttp_interest字段(内容发布端需能处理request和form两种请求方式)，取值为对应JSON编码兴趣报文
    应答: 
         数据报文(pttp_data)
         
