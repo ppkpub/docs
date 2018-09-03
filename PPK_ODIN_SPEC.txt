@@ -1,6 +1,6 @@
                   开放数据索引命名(ODIN)根标识符技术规范
         
-                  -- PPk开放技术社区 ( PPk Public Group )  2018-03-22
+                  -- PPk开放技术社区 ( PPk Public Group )  2018-08-21
                         http://ppkpub.org/
 
 1、ODIN简介
@@ -152,7 +152,7 @@ ODIN是Open Data Index Name即“开放数据索引命名”的缩写。广义上,ODIN 是指在对等网
         "ver":"说明：数据格式定义版本，初始为1", 
         "cmd":"说明。更新命令类型，取值VD表示更新AP访问点所提供数据的验证参数", 
         "vd_set":{
-            "algo":"说明：通过AP发布数据时所用非对称签名验证算法类型，缺省为MD5withRSA，可选SHA1withRSA，SHA256withRSA",
+            "algo":"说明：通过AP发布数据时所用非对称签名验证算法类型，缺省为SHA256withRSA，可选SHA1withRSA等",
             "cert_uri":"说明：验证所需要的公钥证书对应URI，需保证对应资源内容是持久不变的，缺省用去中心化的文件系统ipfs来承载内容较大的证书，也可以用'data:'形式URL来直接内嵌Base64编码的二进制公钥字符串",
         }
     }
