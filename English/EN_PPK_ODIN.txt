@@ -119,6 +119,29 @@ Take the PTTP protocol interface of an AP node implemented by Hyperledger Fabric
     fabric:[server1_ip:port,server2_ip:port,....]/channel_id/contract_id/function_name(PTTP_INTEREST)
 The actual URI address defined in the above form is configured into the corresponding configuration information of the ODIN identifier. According to the PTTP protocol specification, a specific method calling of the interface can be achieved to obtain the result feedback.
 
+4.4 English alphabet escaping coding scheme for root ODIN×Ô
+
+In order to better meet the needs of memory the root ODIN,  we defined an english alphabet escaping coding scheme for root ODIN. The scheme below is modified from the english  alphabet and digital corresponding coding scheme on the telephone button:
+    O    o     ->  Number 0
+    ILA  ila   ->  Number 1
+    BCZ  bcz   ->  Number 2
+    DEF  def   ->  Number 3
+    GH   gh    ->  Number 4
+    JKS  jks   ->  Number 5
+    MN   mn    ->  Number 6
+    PQR  pqr   ->  Number 7
+    TUV  tuv   ->  Number 8
+    WXY  wxy   ->  Number 9
+
+
+Only support one-way escaping from english alphabet to digital number.
+Examples:
+    btm -> 286  
+    qq  -> 77  
+    bcz,bbz,ccz -> 222
+    abcde.com -> 12233.206  
+    ab123 -> 12123
+
 5. Using ODIN to find data
 So how to find the original data according to the ODIN number?
 

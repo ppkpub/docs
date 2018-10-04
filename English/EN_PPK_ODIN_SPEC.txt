@@ -151,7 +151,7 @@ Message body definition:
         "ver": "Description: data format definition, initially 1" 
         "cmd": "Description. Updating command type; the value VD means to update the verification parameter of the data provided by the AP access point. 
         "vd_set":{
-            "algo": "Description: The type of asymmetric signature authentication algorithm used by the AP to publish data, and its default is MD5withRSA, with SHA1withRSA and SHA256withRSA optional",
+            "algo": "Description: The type of asymmetric signature authentication algorithm used by the AP to publish data, and its default is SHA256withRSA, with SHA1withRSA optional",
           "cert_uri": "Description: The corresponding URI of the public key certificate required for authentication. It should be ensured that the corresponding resource content remains unchanged. The default is to use the decentralized file system ipfs to carry a large certificate, or you can use the URL in the format of 'data:' to directly embed a Base64 encoded binary public key string",
         }
     }
