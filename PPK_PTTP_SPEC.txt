@@ -1,6 +1,6 @@
     结合ODIN(开放数据索引命名)的PTTP（Peer Trusted Transfer Protocol，对等可信传输协议）技术规范
 
-                  -- PPk开放技术社区 ( PPk Public Group )  （初稿,20180821）
+                  -- PPk开放技术社区 ( PPk Public Group )  （初稿,20181015）
                         http://ppkpub.org/
 
 1、PTTP协议简介
