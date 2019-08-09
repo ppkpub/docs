@@ -280,13 +280,11 @@ ppk:joy/btmid/YourName#
 <P><BR>
 </P>
 <P>   
-一般按照以下3步就能快速开启将奥丁号作为自主身份的新体验：</P>
+一般按照以下2步就能快速开启将奥丁号作为自主身份的新体验：</P>
 <P>   
 (1)选择一个自己注册的奥丁号，设为自己的自主身份标识；</P>
 <P>   
-(2)给该奥丁号关联一对公私钥，其中私钥安全存放于用户手机，而将公钥发布到网络上；</P>
-<P>   
-(3)访问支持奥丁号的应用服务，自主验证登录成功后，即可正常使用。</P>
+(2)访问支持奥丁号的应用服务，自主验证登录成功后，即可正常使用。</P>
 <P><BR>
 </P>
 <P>    具体操作过程说明详见下文。</P>
@@ -296,6 +294,9 @@ ppk:joy/btmid/YourName#
 使用根奥丁号作为自主身份，体验奥丁号自主拍卖工具</strong></a></P>
 <P><BR>
 </P>
+<P><strong>	5.1.1 默认使用根奥丁号的注册者BTC公私钥来验证登录</strong></p>
+<P>	因为每个BTC地址都对应一对公私钥，可以默认支持验证登录。注册者的私钥受保护地存放在浏览器内部，用于生成验证所需签名信息；公钥在注册奥丁号时已随相应的交易内容被发布到网络上。这样应用服务就可以通过奥丁号关联获取开放的公钥，用来验证你的私钥签名，确认你是对应相应身份标识的合法访问者。
+</p>
 <P>	打开PPk浏览器，点击&ldquo;设置&rdquo;界面里的&ldquo;开放自主的用户身份&rdquo;区域的&ldquo;从我注册的奥丁号中选取&rdquo;按钮，如下图所示：</P>
 <P>	<center><IMG SRC="help_ppkbrowser_html_75a74d26.gif" NAME="图形19" WIDTH=269 HEIGHT=232 BORDER=0></center><BR CLEAR=LEFT>从&ldquo;我注册的奥丁号&rdquo;列表里点击选择一个自己的奥丁号，进入查看其属性，如下图所示：</P>
 <P><center><IMG SRC="help_ppkbrowser_html_2938d385.gif" NAME="图形20" WIDTH=268 HEIGHT=224 BORDER=0></center><BR CLEAR=LEFT><BR>
@@ -329,16 +330,24 @@ ppk:joy/swap/
 <P> <center><IMG SRC="help_ppkbrowser_html_1baa321.gif" NAME="图形31" WIDTH=270 HEIGHT=219 BORDER=0></center><BR CLEAR=LEFT>
  
 登录界面将自动列出你在PPk浏览器里已设定的自主身份标识，如上图示例里的“ppk:74689#”。现在点击“使用支持奥丁号的APP自主验证身份”绿色按钮，将弹出提示所使用身份信息的对话框，如下图所示：</P>
-<P><center><IMG SRC="help_ppkbrowser_html_2019062701.jpg" NAME="图形32" WIDTH=244 HEIGHT=275 BORDER=0></center><BR CLEAR=LEFT><BR>
+<P><center><IMG SRC="help_ppkbrowser_html_m5e09091.gif" NAME="图形32" WIDTH=244 HEIGHT=275 BORDER=0></center><BR CLEAR=LEFT><BR>
 </P>
-<P>
-  说明你的奥丁号作为身份标识已被应用接受，可以使用一部分体验功能（如参与竞拍报价）了。如果需要使用完整功能，则需要进一步给你的身份标识关联设置验证密钥，将在下一步具体介绍。</p>
+<P>点击“确定”按钮提交签名，通过验证后看到如下图所示，就说明指定奥丁号的登录已经成功了。</p>
+<P><center><IMG SRC="help_ppkbrowser_html_3ec5aace.gif" NAME="图形28" WIDTH=241 HEIGHT=145 BORDER=0></center><BR CLEAR=LEFT><BR>
+</P>
 <p>现在点击“确定”按钮关闭该提示对话框，应用网页将自动切换到对应用户登录成功后的主页，并可以点击网页右上角的弹出菜单按钮，查看到用户的已登录状态信息，如下图所示：</P>
 <P> <center><IMG SRC="help_ppkbrowser_html_71362178.gif" NAME="图形34" WIDTH=270 HEIGHT=165 BORDER=0></center><BR CLEAR=LEFT>
   说明在这个示例应用里，你已经用自主注册的根奥丁号（如 ppk:74689#）作为用户身份，体验登录成功了。</P>
 
+<P><strong>	5.1.2 设置单独的身份验证公私钥来登录</strong></p>
 <P>   
-下一步，为了能够实现自主验证身份的完整功能，需要新生成一对密钥（公钥和私钥），私钥受保护地存放在浏览器内部，用于生成验证所需签名信息；公钥作为奥丁号的关联配置信息被发布到网络上。这样应用服务就可以通过奥丁号关联获取开放的公钥，用来验证你的私钥签名，确认你是对应相应身份标识的合法访问者。</P>
+在上一节所介绍的使用默认的注册者BTC公私钥来验证身份外，用户如需要也可以采用成熟的RSA加密算法，单独生成一对密钥（公钥和私钥）来用于身份验证，私钥受保护地存放在浏览器内部，用于生成验证所需签名信息；公钥作为奥丁号的关联配置信息被发布到网络上。这样应用服务就可以通过奥丁号关联获取开放的公钥，用来验证你的私钥签名，确认你是对应相应身份标识的合法访问者。</P>
+
+<P>   
+打开PPk浏览器，点击“设置”按钮，进入设置界面，查看里面的“开放自主的用户身份”区域，将显示你“当前使用的身份标识”对应已设置的奥丁号，如下图所示：</P>
+<P> <center><IMG SRC="help_ppkbrowser_html_m5e283f44.gif" NAME="图形22" WIDTH=269 HEIGHT=332 BORDER=0></center><BR CLEAR=LEFT>
+   
+</P>
 <P>   
 点击上图底部的&ldquo;查看/配置密钥&rdquo;按钮，系统将自动为你生成所需密钥，如下图所示：</P>
 <P> <center><IMG SRC="help_ppkbrowser_html_5653e73e.gif" NAME="图形23" WIDTH=267 HEIGHT=359 BORDER=0></center><BR CLEAR=LEFT>
@@ -368,7 +377,7 @@ ppk:joy/swap/
 <P><center><IMG SRC="help_ppkbrowser_html_3ec5aace.gif" NAME="图形28" WIDTH=241 HEIGHT=145 BORDER=0></center><BR CLEAR=LEFT><BR>
 </P>
 <P>   
-完成奥丁号的自主验证设置后，现在就可以登录具体的应用服务使用完整功能了。这里以PPk奥丁号自主拍卖交易工具为例来说明。</P>
+完成新密钥的设置后，现在就可以登录具体的应用服务使用完整功能了。这里以PPk奥丁号自主拍卖交易工具为例来说明。</P>
 <P><BR>
 </P>
 <P>    在PPk浏览器里地址栏里输入
@@ -395,11 +404,11 @@ ppk:joy/swap/
 点击&ldquo;确定&rdquo;按钮关闭该提示对话框，应用网页将自动切换到对应用户登录成功后的主页，并可以点击网页右上角的弹出菜单按钮，查看到用户的已登录状态信息，如下图所示：</P>
 <P> <center><IMG SRC="help_ppkbrowser_html_71362178.gif" NAME="图形34" WIDTH=270 HEIGHT=165 BORDER=0></center><BR CLEAR=LEFT>
   说明在这里示例应用里，你已经用自主注册的根奥丁号（如
-ppk:74689#）作为用户身份，通过自主验证登录成功，并可以使用完整功能了。</P>
+ppk:74689#）作为用户身份，通过自主验证登录成功了。</P>
 <P><BR>
 </P>
 <P><a name="s052"><strong>5.2
-使用扩展奥丁号作为用户身份</strong></a></P>，
+使用扩展奥丁号作为用户身份</strong></a></P>
 <P>   
 这里以PPk-JoyAsset比原数字资产自主拍卖交易工具原型为例，来说明如何通过比原链注册获得扩展奥丁号，然后配合PPk浏览器来自主验证身份并登陆应用服务。</P>
 <P><BR>
