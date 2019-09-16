@@ -1,0 +1,190 @@
+PTAP02 - Universal digital cryptocurrency application interface protocol (draft 20190916）
+
+By defining the interface standard based ODIN , we can unify the application service interfaces of different COINs or TOKENs. So the application can easily support different COINs or TOKENs, and achieve more flexible and easily interaction between applications and digital assets. 
+Similar to the ERC20 standard, the various TOKEN service interfaces on Ethereum are unified, which makes it possible for the project to easily issue TOKEN  and the exchange to easily add TOKEN, which further promotes the ICO application outbreak.
+
+Assume that the ODIN identifier of one currency is 
+    ppk:YOUR_COIN/   
+
+Then the service interface definition prototype provided by the currency is： 
+    ppk:YOUR_COIN/THE_FUNCTION_NAME(HEX_ENCODED_ARGUMENT)#   
+
+Argument: 
+    encoded string. See the corresponding interface definition for details.
+
+Return：
+    The repsonse content is in JSON format, UTF-8 encoding.
+    When the call is successful, the status code of PTTP data is 200.
+    When the call is failed, the status code of PTTP data takes the value 4XX, and there is a status_detail with corresponding error description. 
+
+  
+The application interfaces are defined as below:
+
+1.Default homepage
+
+   ppk:YOUR_COIN/
+
+   Visit "ppk:YOUR_COIN/" to open the home page corresponding to the cryptocurrency. The visitor can log in as the ODIN owner ,then register the wallet address corresponding to the cryptocurrency .
+   For example: ppk:joy/btm/
+
+   
+2.Get basic definition data
+
+  ppk:YOUR_COIN/metadata()#   
+
+  Return：
+    JSON encoded string.The example is as follows：
+    (a)COIN（For example Bytom）
+      {
+       "name"=>"Bytom",  //Default English name 
+       "name_cn"=>"比原",  //Optional Chinese name
+       "symbol":"BTM",    //Currency symbol
+       "type"=>"coin",  //Type, selectable value is coin, token or asset
+       
+       "total_supply": "140700000000000000"  ,  //Supply, the unit is the smallest like satoshi. use string to avoid too large numbers. Optional
+       "base_miner_fee":100000,  //Minimum miner cost, integer, the unit is the smallest like satoshi.
+       "min_transfer_amount":100000,  //Minimum transfer amount, integer, the unit is the smallest like satoshi.
+       "decimals"=>8, // the number of decimal places for the smallest unit like satoshi 
+       
+       "max_data_length":1000,  //Maximum bytes of the remark data attachecd to the transaction.
+
+       "tx_explorer_url":"https://blockmeta.com/tx/"        //Suggested  URL prefix for querying transaction.
+      }
+  
+    (b)TOKEN（similar to ERC20 token,here assume  the replaceable token based Bytom as an example.）
+      {
+       "name"=>"BytomUSD",  
+       "name_cn"=>"比原美元",  
+       "symbol":"BTMUSD",    
+       "type"=>"token",  
+       "base_coin_uri"=>"ppk:joy/btm/", 
+
+       "total_supply": "10000000000"  , 
+       "min_transfer_amount":1, 
+       "decimals"=>2, 
+       
+       "tx_explorer_url":"https://blockmeta.com/tx/"      
+      }
+  
+      Notice:
+      “base_coin_uri” is the base currency identifier for the token/asset, such as bitocin or ppk:btm/
+  
+    (c)ASSET（similar to ERC721 token,here assume the non-replaceable token based Bytom as an example.）
+      {
+       "name"=>"BytomPhotoAsset1#", 
+       "name_cn"=>"数字照片收藏品1#", 
+       "symbol":"BPA1",   
+       "type"=>"asset",  /
+       "base_coin_uri"=>"ppk:joy/btm/",
+       
+       "total_supply": "1"  , 
+       "min_transfer_amount":1, 
+       "decimals"=>0,
+       
+       "tx_explorer_url":"https://blockmeta.com/tx/"      
+      }
+  
+      Notice：For the non-replaceable token,  min_transfer_amount should be 1 and decimals should be 0
+   
+3.Get market price data
+
+  ppk:YOUR_COIN/marketPrice()#   
+
+  Return：
+    JSON encoded string.The example is as follows：
+       {
+        "bitcoin":"0.00000757",  //The price of the cryptocurrency to Bitcoin , using the value of the string to avoid the problem of scientific counting when JSON encoding
+        "USD":"0.0782132",   //The price of the cryptocurrency to USA Dollar, Optional
+        "CNY":"0.523636",    //The price of the cryptocurrency to Chinese Yuan, Optional
+       }
+   
+4. Verify an address string is correct  
+
+   ppk:YOUR_COIN/checkAddress(Public waleet address string in HEX encoded)#   
+   
+   To be added later
+  
+5. Get the public address of the public key  
+
+   ppk:YOUR_COIN/addressOfPubkey(Public key string in HEX encoded)#   
+   
+   To be added later
+
+6. Get the specified address balance 
+   ppk:YOUR_COIN/balanceOf(Public waleet address string in HEX encoded)
+   
+   To be added later
+
+7.Bind a wallet address to the specified ODIN identifier   
+
+  ppk:YOUR_COIN/bindAddress(string in HEX encoded)#
+  
+  Argument：
+    JSON encoded string.
+      {
+        "original":"the original string for binding address", 
+        "sign":"the signature of the original string by the ODIN owner",
+      }  
+      
+    The original string for binding address defined as below：
+      {
+        "owner_uri":"the specified ODIN identifier ",
+        "coin_uri":"Corresponding currency identifier",
+        "address":"the wallet address of the currency",
+        "timestamp":Declare the timestamp (to the second value)
+      }  
+    Notice:The timestamp needs to be verified within 1 hour before and after the current time to prevent replication of historical signature data attacks.
+  
+  Return：
+    PTTP status code
+  
+
+8. Query the currency address binded to the specified ODIN identifier
+
+   ppk:YOUR_COIN/bindedAddress(The ODIN URI string in HEX encoded)#
+   
+   Return：
+   JSON encoded string.The example is as follows：
+   {
+    "owner_uri":"the specified ODIN identifier", 
+    "coin_uri":"Corresponding currency identifier", 
+    "address":"the wallet address of the currency", 
+    "original":"The original string for binding address", 
+    "sign":"the signature of the original string by the ODIN owner", 
+   }
+   
+9. Generate a QR code for payment
+
+   ppk:YOUR_COIN/qrCodeOfPay(string in HEX encoded)#
+   
+   Argument：
+     JSON encoded string.
+     {
+        "from_uri":"the sender wallet address URI, for example: ppk:bch/1PPkPubRnK2ry9PPVW7HJiukqbSnWzXkbi",
+        "to_uri":"the recevier wallet address URI",
+        "asset_uri":"Specified asset identifier, for example: ppk:YOUR_COIN/,  ppk:YOUR_COIN/token_id, or ppk:YOUR_COIN/asset_id ",
+        "amount_satoshi": The transfer amount, integer,  0 for minimum amount , the unit is the smallest like satoshi,
+        "fee_satoshi": The miner cost, integer,  0 for minimum cost , the unit is the smallest like satoshi,
+        "data":"Optional remark data, for example: the receipt detail of the payment"
+     }
+    
+    
+   Return：
+     JSON encoded string.The example is as follows：
+     {
+      "qr_code":"the text string of the QR code"
+     }
+    
+    
+10. Query information of the transaction generated by the specified QR code
+
+    ppk:YOUR_COIN/txOfQrCode(string in HEX encoded)#
+  
+    Argument：
+     JSON encoded string samed to previous define. 
+    
+    Return：
+      JSON encoded string.The example is as follows：
+      {
+        "txid":"the transaction ID"
+      }
