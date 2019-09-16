@@ -1,0 +1,148 @@
+﻿PTAP02 通用数字加密资产应用接口定义（草案20190910）
+
+类似ERC20标准统一了以太坊上各种TOKEN的服务接口，使得交易所可以很方便地增加新TOKEN，配合了当时很多项目方快速发币和上币的投资交易需求,进一步带动了ICO应用爆发。
+通过定义基于ODIN和PTTP协议的接口标准，来统一不同COIN或TOKEN的支付应用服务接口，将使得应用可以很方便地增加支持不同的COIN或TOKEN满足最基本的扫码支付需求，为进一步实现更为灵活、方便的跨链数字资产服务提供了一个基础。
+
+假设币种自主注册的奥丁号标识为 ppk:YOUR_COIN/   
+则该币种所提供服务接口定义原型为： ppk:YOUR_COIN/THE_FUNCTION_NAME(HEX_ENCODED_ARGUMENT)#   
+
+传入参数：HEX编码字符串，具体内容见相应的接口定义。
+应答：
+接口应答内容采用JSON格式，UTF-8编码。
+调用成功时，接口统一返回PTTP应答状态码status_code取值200
+调用出错时，接口返回PTTP应答状态码status_code取值4XX，并有相应错误描述status_detail
+
+  
+应用接口具体定义如下：
+
+1.币种的缺省主页  ppk:YOUR_COIN/   
+
+   访问 ppk:YOUR_COIN/ 即可打开该标识对应的主页，访问者可以用奥丁号作为身份登录，并关联登记该奥丁号对应的该币种地址
+   举例: ppk:joy/btm/
+
+   
+2.获取基础定义数据  ppk:YOUR_COIN/metadata()#   
+
+  返回结果：
+  JSON字符串，说明示例如下：
+  (a)coin原生币种（以比原为例）
+  {
+   "name"=>"Bytom",  //币种显示缺省名称，一般为英文
+   "name_cn"=>"比原",  //可选中文名称
+   "symbol":"BTM",    //币种代号
+   "type"=>"coin",  //类型，可选取值为coin，token或asset
+   
+   "total_supply": "140700000000000000"  ,  //供应量,以类似satoshi的最小单位,采用字符串避免大数问题，可选
+   "base_miner_fee":100000,  //最小矿工费用，整数，类似satoshi的最小单位。对于token/asset可选，不填则使用对应base_coin_uri所指向的基础币种的定义
+   "min_transfer_amount":100000,  //最小转账金额，整数，以类似satoshi的最小单位
+   "decimals"=>8, //类似satoshi的最小单位换算到标准单位的小数位数 ，如1BTC换算satoshi的小数位数为8
+   
+   "max_data_length":1000,  //最多可附带备注字节数
+
+   "tx_explorer_url":"https://blockmeta.com/tx/"        //建议的交易查询地址前缀
+  }
+  
+  (b)token代币（以比原上的可换型代币为例）
+  {
+   "name"=>"BytomUSD",  //币种显示缺省名称，一般为英文
+   "name_cn"=>"比原美元",  //可选中文名称
+   "symbol":"BTMUSD",    //币种代号
+   "type"=>"token",  //类型，可选取值为coin，token或asset
+   "base_coin_uri"=>"ppk:joy/btm/", //类型，对于token/asset需要填写对应的基础币种标识，如 bitocin或ppk:btm/ 等  
+
+   "total_supply": "10000000000"  ,  //供应量,以类似satoshi的最小单位,采用字符串避免大数问题,可选   
+   "min_transfer_amount":1,  //最小转账金额，整数，以类似satoshi的最小单位
+   "decimals"=>2, //类似satoshi的最小单位换算到标准单位的小数位数 ，如1BTC换算satoshi的小数位数为8
+   
+   "tx_explorer_url":"https://blockmeta.com/tx/"        //建议的交易查询地址前缀
+  }
+  
+  (c)asset资产（以比原上的非可换型资产为例）
+  {
+   "name"=>"BytomPhotoAsset1#",  //币种显示缺省名称，一般为英文
+   "name_cn"=>"数字照片收藏品1#",  //可选中文名称
+   "symbol":"BPA1",    //资产代号
+   "type"=>"asset",  //资产类型，可选取值为coin，token或asset
+   "base_coin_uri"=>"ppk:joy/btm/", //类型，对于token/asset需要填写对应的基础币种标识，如 bitocin或ppk:btm/ 等  
+   
+   "total_supply": "1"  ,  //供应量,以类似satoshi的最小单位,采用字符串避免大数问题,可选
+   "min_transfer_amount":1,  //最小转账金额，整数，以类似satoshi的最小单位
+   "decimals"=>0, //类似satoshi的最小单位换算到标准单位的小数位数 ，如1BTC换算satoshi的小数位数为8
+   
+   "tx_explorer_url":"https://blockmeta.com/tx/"        //建议的交易查询地址前缀
+  }
+  
+  注：对于非可换型asset, min_transfer_amount填为1 ,decimals填0
+   
+3.获取市场参考价格数据  ppk:YOUR_COIN/marketPrice()#   
+  返回结果：
+   JSON字符串，说明如下：
+   {
+    "bitcoin":"0.00000757"， //以比特币作为交易单位的价格,采用字符串取值避免JSON编码时变为科学计数法的问题,
+    "USD":"0.0782132"，  //以美元作为交易单位的价格，可选
+    "CNY":"0.523636"，   //以人民币作为交易单位的价格，可选
+   }
+   
+4. 验证地址合法性  ppk:YOUR_COIN/checkAddress(公开地址字符串)#   
+  具体定义待加
+  
+5. 得到公钥对应地址  ppk:YOUR_COIN/addressOfPubkey(公钥字符串)#   
+  具体定义待加
+
+6. 获得指定地址余额 ppk:YOUR_COIN/balanceOf()
+  具体定义待加
+
+7.给指定奥丁号关联绑定一个该币种地址:     ppk:YOUR_COIN/bindAddress(HEX编码JSON字符串)#
+  JSON字符串参数定义如下：
+  {
+    "original":"绑定地址声明原文", 
+    "sign":"对应奥丁号拥有者的签名",
+  }  
+  
+  注：绑定地址声明原文字符串对应JSON格式定义如下：
+  {
+    "owner_uri":"指定奥丁号",
+    "coin_uri":"对应币种标识",
+    "address":"该币种地址",
+    "timestamp":声明时间戳（到秒值）(需验证该时间戳在当前时间前后1小时内，以防止复制历史签名数据攻击)
+  }  
+  
+  
+
+8. 查询指定奥丁号所绑定的该币种地址:      ppk:YOUR_COIN/bindedAddress(HEX编码的指定奥丁号字符串)#
+   返回结果：
+   JSON字符串，说明如下：
+   {
+    "owner_uri":"指定奥丁号"，
+    "coin_uri":"对应币种标识"，
+    "address":"该币种地址"，
+    "original":"绑定地址声明原文"，
+    "sign":"对应奥丁号拥有者的签名"，
+   }
+   
+9. 生成用于扫码生成交易的付款用二维码： ppk:YOUR_COIN/qrCodeOfPay(HEX编码JSON字符串)#
+   JSON字符串参数定义如下：
+   {"from_uri":"交易发送者地址URI",
+    "to_uri":"交易接收者地址URI",
+    "asset_uri":"指定资产标识，可以填写ppk:YOUR_COIN/，或者ppk:YOUR_COIN/token_id，或者ppk:YOUR_COIN/asset_id ",
+    "amount_satoshi": 整数，转账金额,填写0表示自动填写最小费用，单位对应类似satoshi的最小单位
+    "fee_satoshi":整数，手续费金额,填写0表示自动填写最小费用，单位对应类似satoshi的最小单位
+    "data":"备注填写 确认接收报价相关信息"
+    }
+    
+    
+    获得结果：
+    JSON字符串，说明如下：
+    {
+     "qr_code":"用于生成二维码的文本内容"
+    }
+    
+    
+10. 查询指定二维码所产生的交易ID等信息  ppk:YOUR_COIN/txOfQrCode(HEX编码JSON字符串)#
+   JSON字符串参数定义同上
+    
+   获得结果：
+    JSON字符串，说明如下：
+    {
+     "txid":"交易ID"
+    }

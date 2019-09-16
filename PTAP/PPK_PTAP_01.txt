@@ -1,0 +1,29 @@
+PTAP01 兼容DID的自主身份标识应用接口定义（草案20190910）
+
+采用PTTP协议访问一个奥丁号（例如 ppk:12345# 或 ppk:joy/12345#等），所获得PTTP应答数据报文将相应支持DID协议相关定义，来支持身份标识相关认证和授权应用。
+
+
+数据报文中的正文内容(content)是一个JSON编码字符串,包含指定该ODIN标识前缀的拥有者相关身份验证信息，具体定义如下：
+    {
+        "ver":"说明：ODIN标识协议定义版本，初始为1",
+        "title":"说明：可选的标识名称字符串", 
+        "authentication": [{
+            // used to authenticate as did
+            "type": "bitcoin_secp256k1",   //对应bitcoin算法
+            "publicKeyHex": "231e...."  //对应公钥（HEX编码)
+          }],
+    }
+    
+    或者
+    {
+        "ver":"说明：ODIN标识协议定义版本，初始为1",
+        "title":"说明：可选的标识名称字符串", 
+        "authentication": [{
+            // used to authenticate as did
+            "type": "RsaVerificationKey2018", //对应RSA算法
+            "publicKeyPem": "-----BEGIN PUBLIC KEY...END PUBLIC KEY-----\r\n"  //对应公钥（BASE64编码)
+          }],
+    }
+
+
+待进一步补充完善
