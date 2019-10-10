@@ -79,7 +79,7 @@
   &emsp;&emsp;&bull; <a href="https://github.com/ppkpub/docs/tree/master/English">English documents</a><br>
   
   <br>
-  <strong>PPk ODIN Project</strong><br>
+  <strong>PPk ODIN Project(开放数据索引命名)</strong><br>
   &emsp;&emsp;<strong>ODIN</strong>是基于区块链的自主、唯一、安全、持久的命名标识协议，是“对等、可信的<strong>新型DNS</strong>”。<br>
   &emsp;&emsp;&bull; <a href="https://ppkpub.github.io/docs/PPT_PPk_ODIN_Introduce_20180322.pdf">(PDF) ODIN（开放数据索引命名）简介</a><br>
   &emsp;&emsp;&bull; <a href="https://github.com/ppkpub/docs/blob/master/PPK_ODIN.txt">(TXT) ODIN(开放数据索引命名)基础定义</a><br>
@@ -89,7 +89,7 @@
   &emsp;&emsp;&bull; <a href="https://github.com/ppkpub/sdk/tree/master/php-odin-api-service">(PHP) 解析ODIN命名标识的JSON-API服务的PHP代码(通过同步访问ODIN JAVA管理工具的SQLITE数据库来实现)</a><br>
   &emsp;&emsp;&bull; <a href="https://github.com/ppkpub/sdk/tree/master/php-odin-lib">(PHP) 一级ODIN标识的解析示例源码（PHP语言调用blockchain.info提供的区块链相关API实现）</a><br>
   <br>
-  <strong>PPk PTTP Project</strong><br>
+  <strong>PPk PTTP Project(对等可信传输协议)</strong><br>
   &emsp;&emsp;<strong>PTTP</strong>是融合ODIN标识、区块链和ICN/NDN未来网络体系架构设计等多个领域新兴技术而定义的一种对等可信的网络传输协议，是“融合区块链技术的<strong>新型HTTP协议</strong>”。<br>
   &emsp;&emsp;&bull; <a href="https://github.com/ppkpub/docs/blob/master/PPK_PTTP_SPEC.txt">(TXT) 结合ODIN(开放数据索引命名)的PTTP（对等可信传输协议）技术规范（初稿）</a> </font><br>
   &emsp;&emsp;&bull; <a href="https://github.com/ppkpub/AP/tree/master/btm">结合Bytom比原链实现的融合PPk协议应用示例源码</a><br>
@@ -98,6 +98,25 @@
   &emsp;&emsp;&emsp;&emsp;&bull; <a href="https://github.com/ppkpub/AP/tree/master/php2_coin_api">2.Coin应用服务接口</a><br>
   &emsp;&emsp;&bull; <a href="https://github.com/ppkpub/AP/tree/master/ethereum">以太坊智能合约的支持PTTP协议AP节点示例源码</a><br>
   <br>
+  
+  <strong>PTAP (对等可信应用扩展协议)</strong><br>
+
+<p class="content-detail">
+&emsp;&emsp;PTAP（Peer Trusted Application Protocols）是基于PPk技术社区所定义的<a href="https://github.com/ppkpub/docs/blob/master/PPK_ODIN.txt">ODIN命名标识</a>和<a href="https://github.com/ppkpub/docs/blob/master/PPK_PTTP_SPEC.txt">PTTP传输协议</a>，为具体应用而定义的扩展协议，带有具体编号（如PTAP02）。
+每一个扩展协议描述了内容提供节点即AP(Access Point)按照PTTP协议提供特定应用内容时，对应的资源标识（URI）和应答内容相关的标准定义。
+</p>
+<p class="content-detail">
+&emsp;&emsp;PTAP are extended protocols defined for specific applications based on the <a href="https://github.com/ppkpub/docs/blob/master/English/EN_PPK_ODIN.txt">ODIN naming </a>and <a href="https://github.com/ppkpub/docs/blob/master/PPK_PTTP_SPEC.txt">PTTP transport</a> protocol.Each PTAP protocol has a specific number (eg PTAP02). Each PTAP protocol describes the standard definition of requested resource identifier (the URI scheme based ODIN uased as PTTP request) and responsed data (the content of PTTP data package) , when the AP(Access Point,the service provider node) provides a specific application content according to the PTTP protocol.
+</p>
+<p class="content-detail">
+  &emsp;&emsp;&bull; PTAP01 - <a href="https://github.com/ppkpub/docs/tree/master/PTAP/PPK_PTAP_01.txt">兼容DID的通用身份标识登录和认证应用协议（草案）</a><!-- | <a href="EN_PPK_PTAP_01.txt">DID-compliant universal identity login and authentication application protocol (draft)</a>--><br>
+  &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;开源示例(Open sources:): <a href="https://github.com/ppkpub/sdk/blob/master/php-oauth/client.php">兼容oAuth的登录应用</a> , <a href="https://github.com/ppkpub/OdinSwapTool/blob/master/login.php">自主验证链上身份的应用</a>
+  <br>
+  &emsp;&emsp;&bull; PTAP02 - <a href="https://github.com/ppkpub/docs/tree/master/PTAP/PPK_PTAP_02.txt">通用数字加密资产应用接口协议（草案）</a> | <a href="https://github.com/ppkpub/docs/tree/master/PTAP/EN_PPK_PTAP_02.txt">Universal digital cryptocurrency application interface protocol (draft)</a><br>
+  &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;开源示例(Open sources:): <a href="https://github.com/ppkpub/OdinSwapTool">应用(Application) </a> , <a href="https://github.com/ppkpub/AP/tree/master/php2_coin_api">币种应用接口服务(Cryptocurrency API Service) </a>
+  <br>
+</p>
+
   <strong>下载</strong><br>
   &emsp;&emsp;&bull; <a href="http://pan.baidu.com/s/1o7A8Gn4" target="_blank">百度网盘</a><br>
   &emsp;&emsp;&bull; <a href="https://share.weiyun.com/5n5tssd" target="_blank">微云网盘</a><br>
