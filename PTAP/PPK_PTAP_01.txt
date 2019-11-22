@@ -1,4 +1,4 @@
-﻿PTAP01 兼容DID的自主身份标识应用接口定义（草案 20191120）
+PTAP01 兼容DID的自主身份标识应用接口定义（草案 20191120）
 
 采用PTTP协议访问一个奥丁号（例如 ppk:12345# 或 ppk:joy/12345#等），所获得PTTP应答数据报文将相应支持DID协议相关定义，来支持身份标识相关认证和授权应用。
 
@@ -28,7 +28,7 @@
     然后用奥丁号登录的实现步骤如下：
 
 （A）用户访问应用，后者将前者导向认证服务提供者的地址,
-     例如：https://tool2.ppkpub.org/oauth/authorize.php?response_type=code&client_id=testclient&state=testpass&redirect_uri=https://tool2.ppkpub.org/oauth/client.php
+     例如：https://tool2.ppkpub.org/oauth/authorize.php?response_type=code&client_id=testclient&state=testclient&redirect_uri=https://tool2.ppkpub.org/oauth/client.php
      
 （B）用户选择是否给予应用授权。
 
