@@ -1,53 +1,113 @@
-PTAP01 兼容DID的自主身份标识应用接口定义（草案 20191120）
+PTAP01 兼容DID的自主身份标识应用接口定义（草案 20191206）
 
-采用PTTP协议访问一个奥丁号（例如 ppk:12345# 或 ppk:joy/12345#等），所获得PTTP应答数据报文将相应支持DID协议相关定义，来支持身份标识相关认证和授权应用。
+一、兼容oAuth的第三方验证实现流程
+参考传统oAuth验证流程，通过使用第三方提供的ODIN身份验证服务，应用前端代码实现上非常简单。
 
-数据报文中的正文类型(content_type)取值为"text/json"：
-数据报文中的正文内容(content)是一个JSON编码字符串,包含指定该ODIN标识前缀的拥有者相关身份验证信息，具体定义如下：
-    {
-        "ver":"说明：ODIN标识协议定义版本，初始为1",
-        "title":"说明：可选的标识名称字符串", 
-        "authentication": [{
-            // used to authenticate as did
-            "type": "bitcoin_secp256k1",   //对应bitcoin算法
-            "publicKeyHex": "231e...."  //对应公钥（HEX编码)
-          },{
-            // used to authenticate as did
-            "type": "RsaVerificationKey2018", //对应RSA算法
-            "publicKeyPem": "-----BEGIN PUBLIC KEY...END PUBLIC KEY-----\r\n"  //对应公钥（BASE64编码)
-          }],
-    }
-    注：上述authentication数组可以提供一个或多个公钥凭证，应用可以依序验证私钥签名直到有匹配记录。
+应用先选择一个开放的奥丁号认证服务节点进行登记，
+如 国际节点 https://tool.ppkpub.org/oauth/
+   中国节点 https://ppk001.sinaapp.com/oauth/ 
+也可以使用源码自行搭建认证服务节点。
 
-一、兼容oAuth的第三方验证登录流程
-    参考传统oAuth验证流程，通过使用第三方提供的ODIN身份验证服务，应用前端代码实现上非常简单。
+获得后面调用oAuth协议需要的应用标识(client_id) 和 认证密钥 (client_secret)。
 
-    应用先选择奥丁号开放认证服务提供者进行登记，如 https://tool2.ppkpub.org/oauth/
-    提交”重定向URI”（redirection URI）后，获得后面调用oAuth协议需要的 client_id 和 client_secret
-    
-    然后用奥丁号登录的实现步骤如下：
+下面以最常用的oAuth授权码模式（authorization code）作为示例，其它验证模式可以按照oAuth标准定义参考实现。
 
-（A）用户访问应用，后者将前者导向认证服务提供者的地址,
-     例如：https://tool2.ppkpub.org/oauth/authorize.php?response_type=code&client_id=testclient&state=testclient&redirect_uri=https://tool2.ppkpub.org/oauth/client.php
+1.1 给已注册用户关联奥丁号
+ 假设你的用户属性显示网址为： https://www.YourSite.com/userinfo.html
+ 参考实现步骤如下：
+（A）在用户属性显示网页，建议增加显示“关联奥丁号”一栏和相应的修改按钮，点击“修改”按钮将页面导向到所选的认证服务提供者的地址, 例如：
+https://tool.ppkpub.org/oauth/authorize.php?response_type=code&client_id=xxxxxxxx&state=userinfo&redirect_uri=https://www.YourSite.com/userinfo.html
+
+  注: 注: state字段取值可以自行填写，能自行区分不同的应用功能即可。
      
-（B）用户选择是否给予应用授权。
+（B）用户给予授权，认证服务器将用户导向到指定的”重定向URI”（redirection URI），同时附上一个授权码(code)，如下所示：
 
-（C）假设用户给予授权，认证服务器将用户导向应用事先指定的”重定向URI”（redirection URI），同时附上一个授权码(code)。
+     https://www.YourSite.com/userinfo.html?code=xxxxxxxx
 
-（D）应用收到授权码，附上早先的”重定向URI”，向认证服务器申请令牌(access_token)。这一步是在应用的后台服务器上完成的，对用户不可见。
-     例如：
-     将类似如下数组
-        [
+（C）应用的前端页面解析网址参数，判断收到授权码时，以AJAX方式通过应用的后台API服务器，向奥丁号认证服务节点确认新关联的奥丁号，并更新显示。
+
+     应用后端服务器的API接口输入参数：
+         code: 上一步获得的授权码
+         redirect_uri: 对应请求时指定的”重定向URI”， 如 https://www.YourSite.com/userinfo.html
+     
+     输出结果：
+         status: 成功取值OK，其他取值 ERROR
+         user_odin_uri: 成功时返回新关联的奥丁号，前端页面相应更新显示
+         
+     注：如果前端页面不是静态HTML，而是采用PHP,node.js等动态运行产生，也可以省略AJAX方式，直接由后端实现验证并显示结果网页。
+     
+     应用后端服务器的具体实现参考：
+     (1)将类似如下键值数组
             "grant_type" : "authorization_code",
             "code" : "上一步获得的授权码(code)",
-            "client_id" : "testclient",
-            "client_secret" : "testpass",
-            "redirect_uri" : "https://tool2.ppkpub.org/oauth/client.php"
-        ]
-    以表单形式POST到 https://tool2.ppkpub.org/oauth/token.php
+            "client_id" : "登记获得的应用标识",
+            "client_secret" : "登记获得的认证密钥",
+            "redirect_uri" : "https://www.YourSite.com/userinfo.html"
+    以表单形式POST到 https://tool.ppkpub.org/oauth/token.php
+    授权认证服务器核对了授权码和重定向URI，确认无误后，向应用提供访问令牌（access token）和更新令牌（refresh token）
+    应答为json格式，示例如下：
+     {
+      "access_token":"0bf3ea9f460ebb770e53f2795392d88afd878000",
+      "expires_in":3600,
+      "token_type":"Bearer",
+      "scope":null,
+      "refresh_token":"f953d5fd6d4ed0fa83c20afe2fcd5a1b74374ec6"
+     } 
+     判断是否存在 access_token字段有效取值，是则正常处理，否则按出错处理。
      
-（E）认证服务器核对了授权码和重定向URI，确认无误后，向应用提供访问令牌（access token）和更新令牌（refresh token）
-     应答为json格式，示例如下：
+
+    (2)使用访问令牌（access token）从认证服务器获得对应获得授权的用户资料信息（如奥丁号，昵称和头像图片网址等）
+    例如： https://tool.ppkpub.org/oauth/resource.php?client_id=xxxxxxxx&state=userinfo&access_token=上一步获得的访问令牌
+    所发出的GET请求里的字段取值建议如下：
+     content_type: text/html;charset=UTF-8
+     accept-encoding: * 
+    
+    应答为json格式，示例如下：
+    {
+     "success":true, 
+     "userInfo":{
+        "user_odin_uri" : "ppk:12345#"
+     }
+    }
+    当success为true时按正常处理，其他情况都按出错处理，具体可打印应答信息查看。
+    
+    (3) 将新的user_odin_uri更新保存到数据库里的对应用户记录，然后返回应答：
+    
+    
+    
+1.2 实现用奥丁号登录
+
+ 假设你的用户登录网址为： https://www.YourSite.com/login.html
+ 参考实现步骤如下：
+
+（A）用户访问应用的登录网页，后者将前者导向选定的认证服务提供者的地址,
+     例如：https://tool.ppkpub.org/oauth/authorize.php?response_type=code&client_id=xxxxxxxx&state=login&redirect_uri= https://www.YourSite.com/login.html
+     
+     注: state字段取值可以自行填写，能自行区分不同的应用功能即可。
+     
+（B）用户给予授权，认证服务器将用户导向到指定的”重定向URI”（redirection URI），同时附上一个授权码(code)，如下所示：
+
+      https://www.YourSite.com/login.html?code=xxxxxxxx
+
+（C）应用的前端页面解析网址参数，判断收到授权码时，以AJAX方式通过应用的后台API服务器，向奥丁号认证服务节点登录的奥丁号及所关联的用户。
+     应用后端服务器的API接口输入参数：
+         code: 上一步获得的授权码
+         redirect_uri: 对应请求时指定的”重定向URI”， 如  https://www.YourSite.com/login.html
+     
+     输出结果：
+         status: 成功取值OK，出错取值 ERROR
+     注：如果前端页面不是静态HTML，而是采用PHP,node.js等动态运行产生，也可以省略AJAX方式，直接由后端实现验证并显示结果网页。
+     
+     应用后端服务器的具体实现参考：
+     (1)将类似如下键值数组
+            "grant_type" : "authorization_code",
+            "code" : "上一步获得的授权码(code)",
+            "client_id" : "初始登记获得的应用标识",
+            "client_secret" : "初始登记获得的认证密钥",
+            "redirect_uri" : " https://www.YourSite.com/login.html"
+    以表单形式POST到 https://tool.ppkpub.org/oauth/token.php
+    授权认证服务器核对了授权码和重定向URI，确认无误后，向应用提供访问令牌（access token）和更新令牌（refresh token）
+    应答为json格式，示例如下：
      {
       "access_token":"0bf3ea9f460ebb770e53f2795392d88afd878000",
       "expires_in":3600,
@@ -56,24 +116,56 @@ PTAP01 兼容DID的自主身份标识应用接口定义（草案 20191120）
       "refresh_token":"f953d5fd6d4ed0fa83c20afe2fcd5a1b74374ec6"
      } 
 
-（F）应用使用访问令牌（access token）从认证服务器获得对应获得授权的用户资料信息（如奥丁号，昵称和头像图片网址等）
-    例如： https://tool2.ppkpub.org/oauth/resource.php?client_id=testclient&state=testpass&access_token=e63f3e4674010429
+    (2)使用访问令牌（access token）从认证服务器获得对应获得授权的用户资料信息（如奥丁号，昵称和头像图片网址等）
+    例如： https://tool.ppkpub.org/oauth/resource.php?client_id=xxxxxxxx&state=login&access_token=上一步获得的访问令牌
     应答为json格式，示例如下：
     {
      "success":true, 
-     "userInfo":[
-        "user_odin_uri" : "ppk:12345#",
-        "username" : "tester",
-        "avatar" : "http://ppkpub.org/images/user.png"
-     ]
+     "userInfo":{
+        "user_odin_uri" : "ppk:12345#"
+     }
     }
+    (3) 更新用户登录状态，然后返回应答：
 
-参考示例源码： https://github.com/ppkpub/sdk/blob/master/php-oauth/client.php
- 
-注：建议使用https来提高前后端交互过程的信息安全
+参考示例源码： 
+动态页面(php)
+https://github.com/ppkpub/sdk/blob/master/php-oauth/client.php
+
+静态页面(html+js)
+https://github.com/ppkpub/sdk/blob/master/php-oauth/client.html
+
+配合静态页面的后台API(php)
+https://github.com/ppkpub/sdk/blob/master/php-oauth/client_api.php
+
+注：建议使用https来提高前后端交互验证过程的信息安全
 
 二、应用自主验证登录参考流程
+
+采用PTTP协议自主访问一个奥丁号（例如 ppk:12345# 或 ppk:joy/12345#等），所获得PTTP应答数据报文将相应兼容DID协议相关定义，来支持身份标识相关认证和授权应用。
+
+数据报文中的正文类型(content_type)取值为"text/json"：
+数据报文中的正文内容(content)是一个JSON编码字符串,包含指定该ODIN标识前缀的拥有者相关身份验证信息，具体定义如下：
+    {
+        "ver":"说明：ODIN标识协议定义版本，初始为1",
+        "title":"说明：可选的标识名称字符串", 
+        "authentication": [ //验证参数数组
+          {
+            "type": "Secp256k1VerificationKey2018",   //对应bitcoin采用的secp256k1椭圆曲线算法
+            "publicKeyHex": "231e...."  //对应公钥（HEX编码)
+          },
+          {
+            "type": "RsaVerificationKey2018", //对应RSA算法
+            "publicKeyPem": "-----BEGIN PUBLIC KEY...END PUBLIC KEY-----\r\n"  //对应公钥（PEM格式)
+          }
+       ],
+    }
+    注：
+    (1)上述authentication数组可以提供一个或多个公钥凭证，应用可以依序验证私钥签名直到有匹配记录。
+    (2)公钥类型定义参考DID规范：  
+    https://w3c-ccg.github.io/ld-cryptosuite-registry/#signature-suites-and-verification-methods
+    
 应用可以完全自主实现对奥丁号的登录验证，相比oAuth方案在实现上相对复杂些，但可以获得更完整的自主性。
+下面只列出了用户以奥丁号登录的实现过程，给用户关联登记奥丁号的实现过程是类似的，可以参考前面oAuth验证方式中关联和登录两个功能的分别实现过程。
 
 2.1 登录入口页面(Login page)：
  参考示例源码： https://github.com/ppkpub/OdinSwapTool/blob/master/login.php
