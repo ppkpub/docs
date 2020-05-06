@@ -1,6 +1,6 @@
     结合ODIN(开放数据索引命名)的PTTP（Peer Trusted Transfer Protocol，对等可信传输协议）技术规范
 
-                  -- PPk开放技术社区 ( PPk Public Group )  （初稿,20181015）
+                  -- PPk开放技术社区 ( PPk Public Group )  2020-05-05
                         http://ppkpub.org/
 
 1、PTTP协议简介
@@ -13,14 +13,14 @@
                     ----------------------------------
                     |        ODIN标识符(ODIN)        |
                     |--------------------------------|
-                    |        负载内容(Payload)       |
+                    |   可选的请求参数设置(Option)   |
                     |--------------------------------|
                     |   可选的请求者签名(Signature)  |
                     ----------------------------------
                              图1 兴趣报文
 
-    作为PPk网络分阶段实现路线的第一阶段目标，将先实现最方便实现的情况，即消费者以HTTP形式连接存放所需数据的、基于HTTP实现的AP节点获得JSON格式数据报文。例如：一个消费者可请求 ppk:23.567/videos/2381920#，会通过层级解析获知可用的AP节点地址，并以HTTP数据包的形式向AP节点发出JSON格式兴趣报文(PTTP_INTEREST)，AP节点则同样以HTTP数据包的形式发回一条JSON数据报文（PTTP_DATA），它携带数据的ODIN标识(比如ppk:23.567/videos/2381920#2.0)和对应内容，还有对应生产者内容签名私钥所生成的一个签名（见图2）。
-    注：请求者的ODIN标识如果未指定准确的数据块位置，则缺省匹配返回的是对应内容的最新区块N的第一个数据块（即#N.0）。
+    作为PPk网络分阶段实现路线的第一阶段目标，将先实现最方便实现的情况，即消费者以HTTP形式连接存放所需数据的、基于HTTP实现的AP节点获得JSON格式数据报文。例如：一个消费者可请求 ppk:23.567/videos/2381920*，会通过层级解析获知可用的AP节点地址，并以HTTP数据包的形式向AP节点发出JSON格式兴趣报文(PTTP_INTEREST)，AP节点则同样以HTTP数据包的形式发回一条JSON数据报文（PTTP_DATA），它携带数据的ODIN标识(比如ppk:23.567/videos/2381920*2.0)和对应内容，还有对应生产者内容签名私钥所生成的一个签名（见图2）。
+    注：请求者的ODIN标识如果未指定准确的数据块位置，则缺省匹配返回的是对应内容的最新区块N的第一个数据块（即*N.0）。
 
                     ----------------------------------
                     |        ODIN标识符(ODIN)        |
@@ -37,99 +37,131 @@
     ODIN标识对于路由网络而言是不透明的，即路由不知道一个标识的含义（虽然它们知道一个标识各组成部分之间的边界）。这允许应用可以自主选择其需要的具体资源命名方案，并允许命名方案独立于网络而演化。
 
     为了检索动态产生的数据，消费者必须能够确定性地定位数据的期望片段构造标识，而不需要以前看到该标识或数据。
-    例如: 消费者可请求ppk:23.567/videos_2381920，并得到名字为ppk:23.567/videos_2381920#1.0的一条数据报文（标识尾部增加的“1.0”表示第1个版本区块的第1个片段数据块），之后消费者可指定以后的片段，并请求它们，使用的是第一条数据报文以及消费者应用和生成者应用之间达成的命名惯例等所揭示的信息组合。
+    例如: 消费者可请求ppk:23.567/videos_2381920，并得到名字为ppk:23.567/videos_2381920*1.0的一条数据报文（标识尾部增加的“1.0”可表示第1个版本数据区块的第1个片段数据子块），之后消费者可指定以后的片段，并请求它们，使用的是第一条数据报文以及消费者应用和生成者应用之间达成的命名惯例等所揭示的信息组合。
 
     注：AP节点可以支持所有现有的应用，包括“推送”内容的那些应用。例如： 为了发送一封电子邮件，客户端首先向服务器发送一条兴趣报文，来请求对于接受该电子邮件的服务器兴趣。如果服务器是感兴趣的，则它将向客户端发送一条兴趣报文，之后客户端向服务器发送数据报文。
 
-    兴趣报文中的ODIN标识可以采用标准结构式或转义自定义结构式，但解析结果的数据报文中ODIN标识都采用标准结构式。
+    兴趣报文中的ODIN标识可以采用标准结构式或转义自定义结构式，解析结果的数据报文中ODIN标识会对应返回，如果内容提供方需要转移到其他标识，需采用301或302状态码来体现，不能直接应答新的标识和对应内容，客户端会检查请求和应答的标识两者是否一致，不一致会判断为异常应答。
 
 3. 报文定义
 
     采用JSON格式定义兴趣和数据报文。
+    
+    涉及字符编码统一采用UTF-8。
    
 3.1 兴趣报文(PTTP_INTEREST)
     AP节点按PTTP协议所接收的兴趣报文请求采用JSON格式定义如下：
       {
-        "ver":协议版本号,  
-        "hop_limit":6,   //逐跳限制数值，在多个AP间接力传播兴趣报文时将依次减1直到0，当该字段减为0后该兴趣报文将不再被转发。 该字段初始可设为1到255范围内的任意值,缺省为6。AP对于收到HopLimit取值不在1-255范围内的兴趣报文将做忽略处理。       
-        "interest":{  //请求正文
-          "uri":"所请求资源对应的ODIN标识地址字符串",
-          "from":"请求者的身份ODIN标识，可选，为空时对应开放匿名请求",
+        //协议版本号, 最新为2
+        "ver":2, 
+        
+        //逐跳限制数值，在多个AP间接力传播兴趣报文时将依次减1直到0，当该字段减为0后该兴趣报文将不再被转发。 该字段初始可设为1到255范围内的任意值,缺省为6。AP对于收到hop取值不在1-255范围内的兴趣报文将做忽略处理。  
+        "hop":6, 
+        
+        //签名使用的标准规范定义，
+        //取值"none"或该字段不存在时表示报文没有签名；
+        //取值"past.v1.public."表示带有签名并符合PAST( Platform-Agnostic Security Tokens, https://paseto.io/)标准规范
+        //并对应PAST规范的v1版本和采用公钥数字签名(public-key digital signature)
+        "spec": "past.v1.public.",
+        
+        "uri":"所请求资源对应的ODIN标识地址字符串",
+        
+        //JSON编码的可选请求参数正文字符串
+        "option":json_encode({  
+          "iss":"签发请求者的身份ODIN标识，为空时对应开放匿名请求",
+          "iat":到秒值的生成UNIX时间戳(issued at)
+          "exp":到秒值的过期UNIX时间戳(expires)
           
-          "accept_encrypted":"可选要求的内容加密形式，如MD5withRSA,SHA1withRSA,SHA256withRSA等，如果该字段为空则表示由接受请求的数据发布者自行决定",
-          "accept_pubkey":"可选的对应内容加密形式的公钥，如果accept_encrypted字段取值要求加密，但accept_pubkey不填写，则默认采用from字段填写的身份标识对应声明的公钥来进行加密",
+          "user_agent":"发出请求的用户代理属性,如PPk Javatool 0.615",
           
-          "user_agent":"可选的发出请求的用户代理属性,如PPk Javatool 0.615",
+          "latest_uri":请求最新版本时，可附上当前缓存的最新版本URI，如果最新版本没有改变会收到应答302指向该缓存以复用"
           
-          "utc":到秒值的生成时间戳,,
-        },
-       
-        //请求者对请求正文的签名,对应请求正文里的from所填写的ODIN标识拥有者所公开声明的公钥对应私钥签名产生。
-        //如果from字段为空，则该签名字段也不用填写
-        "sign":"签名算法类型(如MD5withRSA,SHA1withRSA,SHA256withRSA):Base64编码的签名数据",
+        }),
+        
+        //按照签名规范对"INTEREST"+uri+option合并的字符串进行签名，其结果所对应字符串
+        //具体编码格式参见相应的签名规范定义,对于PAST是BASE64URL编码
+        //请求没有签名时不需要signature字段
+        "signature":"......"
       }   
       
     示例：
-      一般匿名请求：
+      匿名请求：
       {
-        "ver":1, 
-        "hop_limit":6,
-        "interest":{
-          "uri":"ppk:479110.1304/public_books#",
-        }
+        "ver":2, 
+        
+        "hop":6,
+        
+        "spec": "none",
+        
+        "uri":"ppk:479110.1304/public_books*",
       }          
 
       对等声明身份的请求：
       {
-        "ver":1, 
-        "hop_limit":6,
-        "interest":{
-          "uri":"ppk:479110.1304/register_newdevice('id','pubkey')#",
-          "from":"ppk:479110.1304/user/tom#1.0",
-          "accept_encrypted":"SHA256withRSA",
-          "accept_pubkey":"MIGfMA0GCS...",
-          "user_agent":"PPk Javatool 0.615",
-          "utc":135678832,
-        },
+        "ver":2, 
+        
+        "hop":6,
+        
+        "spec": "past.v1.public.",
+        
+        "uri":"ppk:479110.1304/register_newdevice('id','pubkey')*",
+        
+        "option":json_encode({
+          "iss":"ppk:479110.1304/user/tom*1.0",
+          "iat":1585112622,
+          "exp":1585135636,
+          "user_agent":"PPk Javatool 0.815",
+        }),
 
-        "sign":"SHA256withRSA:TfdsfR33648.....",
+        "signature":"TfdsfR33648.....",
       }   
 
+注: 匿名请求的兴趣报文可以简化为只填写所请求资源对应的ODIN标识地址字符串URI，如 ppk:479110.1304/public_books*
+    其他参数将由处理请求的AP节点自行按默认取值处理
      
       
 3.2 数据报文(PTTP_DATA)
     AP节点按PTTP协议所返回数据报文应答采用JSON格式定义如下：
     {
-      "ver":协议版本号, 
+      //协议版本号,最新为2
+      "ver":2,
+      
+      //签名使用的标准规范定义，
+      //取值"none"或该字段不存在时表示报文没有签名；
+      //取值"past.v1.public."表示带有签名并符合PAST( Platform-Agnostic Security Tokens, https://paseto.io/)标准规范
+      //并对应PAST规范的v1版本和采用公钥数字签名(public-key digital signature)
+      "spec": "past.v1.public.",
+      
+      //返回数据块的ODIN标识地址字符串
+      "uri":"ppk:.....",
+      
+      //JSON编码的数据描述字符串 ,具体定义见下文
+      "metainfo":json_encode({......}),
+      "content":"内容数据，如果是二进制需要采用Base64编码，同时可选用gzip压缩。对于1M以上大数据块建议采用如IPFS等分布式文件存储服务实际存储，通过PTTP协议只应答内容转向链接地址",
 
-      "data":"数据正文字符串，JSON编码,具体定义见下文";
-
-      "sign":"签名算法类型(如MD5withRSA,SHA1withRSA,SHA256withRSA等):对data字符串的签名对应Base64编码字符串",
+      //按照签名规范对"DATA"+uri+metainfo+content合并的字符串进行签名
+      //具体编码格式参见相应的签名规范定义,对于PAST是BASE64URL编码
+      //报文没有签名时不需要signature字段
+      "signature":"......"
     }
     
-    其中data数据正文字符串的JSON格式定义如下：
+    其中metainfo数据正文字符串的JSON格式定义如下：
     {
-       "uri":"返回数据块的ODIN标识地址字符串，该字段只在返回状态码status_code为2XX或3XX时有效并允许当前应答的数据块可按缓存策略被缓存",
+        "iat":到秒值的生成时间戳,
+        "status_code":返回状态码，沿用HTTP协议定义的状态码定义,
+        "status_info":"返回状态附加描述字符串，可选，沿用HTTP协议定义的状态码定义相关描述",
+
+        "block_id":"当前数据区块标识，与ODIN标识地址URI中的相关字段是对应的",
+        "lastblock_id":"上一数据区块标识,该字段取值可以为空字符串，表示没有上一连续区块",
+        "chunk_index":当前数据子块索引编号，从0开始，与ODIN标识地址URI中的相关字段是对应的,
+        "chunk_count":当前区块内数据子块总数,一般取值为大于等于1的整数，特定取值为0时表示是动态流数据，子块数目不确定,
+        "content_type":"子块正文类型，采用HTTP协议相关定义，如text/html,image/jpg等，并扩展定义x-ppk/link类型表示ODIN标识链接URI,x-ppk/manifest表示资源列表，应用开发商也可以自定义更多类型(前缀建议以x-起始以便区分)",
+        "content_encoding":"内容编码形式，参考HTTP协议相关定义，如gzip,base64,deflate等，如果该字段为空则表示内容为原文",
+        "content_charset":"内容字符集，采用HTTP协议相关定义，如utf-8, iso-8859-1,gb2312等，如果该字段为空则缺省为utf-8",
+        "content_length":子块正文长度,
+
+        "ap_node":"可选的AP内容发布节点属性，如AP Demo based Fabric1.0", "cache_as_latest":"最新内容的缓存策略建议，参考http协议的取值定义，可用取值有public、private、no-store、max-age，但注意与http协议不同的是默认为public，不是private"
        
-       "utc":到秒值的生成时间戳,
-       "status_code":返回状态码，沿用HTTP协议定义的状态码定义,
-       "status_info":"返回状态附加描述字符串，可选，沿用HTTP协议定义的状态码定义相关描述",
-       
-       "metainfo":{ //对数据块的元描述信息
-         "block_id":"当前数据区块标识，与ODIN标识地址URI中的相关字段是对应的",
-         "lastblock_id":"上一数据区块标识,该字段取值可以为空字符串，表示没有上一连续区块",
-         "chunk_index":当前数据子块索引编号，从0开始，与ODIN标识地址URI中的相关字段是对应的,
-         "chunk_count":当前区块内数据子块总数,一般取值为大于等于1的整数，特定取值为0时表示是动态流数据，子块数目不确定,
-         "content_type":"子块正文类型，采用HTTP协议相关定义，如text/html,image/jpg等，并扩展定义x-ppk/link类型表示ODIN标识链接URI,x-ppk/manifest表示资源列表，应用开发商也可以自定义更多类型(前缀建议以x-起始以便区分)",
-         "content_encrypted":"内容加密算法形式，如MD5withRSA,SHA1withRSA,SHA256withRSA等，如果该字段为空则表示内容为原文或者应用自行约定",
-         "content_encoding":"内容编码形式，参考HTTP协议相关定义，如gzip,base64,deflate等，如果该字段为空则表示内容为原文",
-         "content_charset":"内容字符集，采用HTTP协议相关定义，如utf-8, iso-8859-1,gb2312等，如果该字段为空则缺省为utf-8",
-         "content_length":子块正文长度,
-         
-         
-         "ap_node":"可选的AP内容发布节点属性，如AP Demo based Fabric1.0", "cache-control":"缓存策略建议，参考http协议的取值定义，可用取值有public、private、no-store、max-age，但注意与http协议不同的是默认为public，不是private"
-       },
-       "content":"子块正文数据，如果是二进制需要采用Base64编码，同时建议先用gzip压缩。对于1M以上大数据块建议采用如IPFS等分布式文件存储服务实际存储，通过PTTP协议只应答内容转向链接地址",
     },
       
     附status_code状态码定义如下：
@@ -154,131 +186,128 @@
       401 Unauthorized              //请求未经授权 
       403 Forbidden                 //服务器收到请求，但是拒绝提供服务
       404 Not Found                 //请求资源不存在，eg：输入了错误的URI
+      410 Deleted                   //如果请求的资源已永久删除，服务器就会返回此响应，或者用404代替
+      413 Request Entity Too Large  //服务器无法处理请求，因为请求实体过大，超出服务器的处理能力。
       500 Internal Server Error     //服务器发生不可预期的错误
       503 Server Unavailable        //服务器当前不能处理客户端的请求，一段时间后可能恢复正常
+      505 Unsupported PTTP version  //服务器不支持请求中所用的 PTTP 协议版本
       
-     cache-control缓存策略取值说明
-      public	所有内容都将被缓存(客户端和代理服务器都可缓存)
-      private	内容只缓存到私有缓存中(仅客户端可以缓存，路由转发节点不可缓存)
-      no-store	所有内容都不会被缓存到路由和客户端缓存
-      max-age=xxx (xxx is numeric)	缓存的内容将在 xxx 秒后失效
+     cache_as_latest 内容作为最新版本缓存的策略取值说明
+      public	内容会作为最新版本被缓存(客户端和代理服务器都可缓存)，下次请求该标识资源最新版本时将优先使用该缓存内容
+      private	内容只会作为最新版本缓存到私有缓存中(仅客户端可以缓存，路由转发节点不作为最新版本缓存)
+      no-store	内容不会作为最新版本缓存到路由和客户端缓存，下次请求该标识资源最新版本时会发起新访问
+      max-age=xxx (xxx is numeric)	缓存的最新内容将在 xxx 秒后失效(即不再做为最新版本), 可与public和private组合使用，如 public,max-age=30
    
     示例：
       {
-          "ver":1, 
+        "ver"  : 2, 
 
-          "data":"{.....}",
-
-          "sign":"SHA256withRSA:TfdsfR33648.....",
-       }
-      
-      其中data数据正文字符串示例如下：
-      静态数据资源示例：
-      {
-        "uri":"ppk:479110.1304/my_record#3.1",
+        "spec" : "past.v1.public.",
         
-        "utc":135678832,
+        "uri" : "ppk:....",
+
+        "metainfo" : "{......}",
+
+        "content"  : "......",
+
+        "signature":"TfdsfR33648.....",
+      }
+      
+    其中"uri"、"metainfo"和"content"组合的示例如下：
+      静态数据资源示例：
+      "uri":"ppk:479110.1304/my_record*3.1",
+      
+      "metainfo":{
+        "iat":135678832,
         "status_code":"200",
         "status_detail":"OK",
-        
-        "metainfo":{ 
-           "block_id":"3",
-           "lastblock_id":"2",
-           "chunk_index":1,
-           "chunk_count":2,
-           "content_type":"text/html",
-           "content_length":6,
-           "ap_node":"AP Demo based Fabric1.0", 
-         },
-         
-         "content":"ABCDEF",
-         
+
+        "block_id":"3",
+        "lastblock_id":"2",
+        "chunk_index":1,
+        "chunk_count":2,
+        "content_type":"text/html",
+        "content_length":6,
+        "ap_node":"AP Demo based Fabric1.0", 
       }
+      
+      "content":"ABCDEF",
       
       动态方法服务示例：
-      {
-        "uri":"ppk:479110.1304/register_newdevice('id','pubkey')#20170910125623156.0",
-        
-        "utc":135678832,
+      "uri":"ppk:479110.1304/register_newdevice('id','pubkey')*",
+      "metainfo":{ 
+        "iat":135678832,
         "status_code":"200",
         "status_detail":"OK",
-        
-        "metainfo":{ 
-           "block_id":"20170910125623156",
-           "lastblock_id":"",
-           "chunk_index":0,
-           "chunk_count":1,
-           "content_type":"text/html",
-           "content_length":6
-           
-           "cache-control":"no-store",
-         },
-         
-         "content":"ABCDEF",  
-      }
+
+
+        "block_id":"20170910125623156",
+        "lastblock_id":"",
+        "chunk_index":0,
+        "chunk_count":1,
+        "content_type":"text/html",
+        "content_length":6
+
+        "cache_as_latest":"no-store",
+      },
+
+      "content":"ABCDEF",  
       
       所请求资源不存在时的应答示例：
-      {
-        "uri":"ppk:479110.1304/not_exist_record#1.0",
-        
-        "utc":135678832,
+      "uri":"ppk:479110.1304/not_exist_record*1.0",
+      
+      "metainfo":{ 
+        "iat":135678832,
         "status_code":"404",
         "status_detail":"Not Found",
         
-        "metainfo":{ 
-           "block_id":"1",
-           "lastblock_id":"",
-           "chunk_index":0,
-           "chunk_count":1,
-           "content_type":"text/html",
-           "content_length":49,
-         },
-         
-         "content":"<html><font color='#F00'>Not Found</font></html>",
-         
-      }
+        "block_id":"1",
+        "lastblock_id":"",
+        "chunk_index":0,
+        "chunk_count":1,
+        "content_type":"text/html",
+        "content_length":49,
+        
+        "cache_as_latest":"public,max-age=3600",
+      },
+
+      "content":"<html><font color='*F00'>Not Found</font></html>",
       
       所请求资源已永久转移到新标识地址时的应答示例：
-      {
-        "uri":"ppk:479110.1304/my_record#1.0",
-        
-        "utc":135678832,
+      "uri":"ppk:479110.1304/my_record*1.0",
+      
+      "metainfo":{ 
+        "iat":135678832,
         "status_code":"301",
         "status_detail":"Moved Permanently",
         
-        "metainfo":{ 
-           "block_id":"1",
-           "lastblock_id":"",
-           "chunk_index":0,
-           "chunk_count":1,
-           "content_type":"x-ppk/link",
-           "content_length":39
-         },
+        "block_id":"1",
+        "lastblock_id":"",
+        "chunk_index":0,
+        "chunk_count":1,
+        "content_type":"text/html",
+        "content_length":39,
+      },
          
-         "content":"ppk:456793.276/redirect_new_record#1.0",
-         
-      }
+      "content":"ppk:456793.276/redirect_new_record*1.0",
       
       所请求资源为x-ppk/manifest列表类型的应答：
-      {
-          "uri":"ppk:479110.1304/default_resource_list#2.0",
-          
-          "utc":135678832,
-          "status_code":"200",
-          "status_detail":"OK",
-          
-          "metainfo":{ 
-             "block_id":"2",
-             "lastblock_id":"1",
-             "chunk_index":0,
-             "chunk_count":1,
-             "content_type":"x-ppk/manifest",
-             "content_length":149
-           },
+      "uri":"ppk:479110.1304/default_resource_list*2.0",
+      
+      "metainfo":{ 
+        "iat":135678832,
+        "status_code":"200",
+        "status_detail":"OK",
+
+        "block_id":"2",
+        "lastblock_id":"1",
+        "chunk_index":0,
+        "chunk_count":1,
+        "content_type":"x-ppk/manifest",
+        "content_length":149,
+      },
            
-           "content":"{"manifest_version": 1,"title": "my book list","resource_list":[{"uri":"ppk:479110.1304/book1#1.0","hash":"SHA256:DFGS6F....."},{"uri":"ppk:479110.1304/book2#1.0","hash":"sha1:KLD9d....."},{"uri":"magnet:?xt=urn:btih:51df6808c739174c8f264701ba94460c5238d6ce","hash":"btih:PKL56E....."}]}",
-           
-        }
+      "content":"{\"manifest_version\": 1,\"title\": \"my book list\",\"resource_list\":[{\"uri\":\"ppk:479110.1304/book1*1.0\",\"hash\":\"SHA256:DFGS6F.....\"},{\"uri\":\"ppk:479110.1304/book2*1.0\",\"hash\":\"sha1:KLD9d.....\"},{\"uri\":\"magnet:?xt=urn:btih:51df6808c739174c8f264701ba94460c5238d6ce\",\"hash\":\"btih:PKL56E.....\"}]}",
 
 
 4、PTTP协议的功能点
@@ -295,9 +324,9 @@ TCP/UDP方式:
 HTTP方式:
    对应AP_URL形式： http(s)://ap_host:port/
    请求: 
-        以request或form提供pttp_interest字段(内容发布端需能处理request和form两种请求方式)，取值为对应JSON编码兴趣报文
+        以request或form提供pttp字段(内容发布端需能处理request和form两种请求方式)，取值为对应JSON编码兴趣报文
    应答: 
-        数据报文(pttp_data)
+        数据报文(PTTP_DATA)
         
 待发展的区块链标准协议接口方式:
    此处以超级账本Fabric为例，其他区块链平台可以参考此思路来具体实现对PTTP协议的支持。
@@ -305,7 +334,7 @@ HTTP方式:
    fabric:[server_ip1:port1,ip2:port2,....]/channel_id/contract_id/function_name(argv1,argv2,....,argn)
    
    那就可以采用Fabric区块链来承载现有WEB网站的内容，并具体结合PTTP协议实现如下服务接口即可：
-   对应AP_URL形式： fabric:[server_ip1:port1,ip2:port2,....]/channel_id/contract_id/pttp_interest(PTTP_INTEREST) 
+   对应AP_URL形式： fabric:[server_ip1:port1,ip2:port2,....]/channel_id/contract_id/pttp(PTTP_INTEREST) 
    请求: 
         兴趣报文(PTTP_INTEREST)
    应答: 
@@ -315,45 +344,7 @@ HTTP方式:
    
 
 4.2 将ODIN标识作为一项特别约定的内容提供解析服务
-类以于DNS解析WWW网址中的主机域名部分，解析ODIN标识前缀可以获得指定ODIN标识的登记信息（包括：名称、AP列表、数据内容验证参数、登记时间）。
-
-4.2.1 自主解析一级ODIN标识前缀
-一级标识对应AP需要从比特币区块链上同步全部一级ODIN的列表和配置数据，可以自主解析任意一个一级ODIN标识前缀。
-
-4.2.2 递归解析多级扩展ODIN标识前缀
-
-假设一个多级ODIN标识为ppk:305678.1000/21.35/23.678/ISBN2890321345_P218#
-其去掉资源后缀部分后的前缀为 ppk:305678.1000/21.35/23.678
-
-先判断缓存中是否已有3级标识前缀 ppk:305678.1000/21.35/23.678# 起始对应的数据报文
-如果没有，则递归判断缓存中是否已有2级标识前缀 ppk:305678.1000/21.35# 起始对应的数据报文
-   如果没有，则判断是否已有1级标识前缀 ppk:305678.1000# 对应的注册信息
-        如果没有，则返回无效数据
-        如有，则向1级标识对应AP发出对 ppk:305678.1000/21.35#  的兴趣报文并将收到的数据报文返回使用
-   如有，则向2级标识对应AP发出对 ppk:305678.1000/21.35/23.678#  的兴趣报文并将收到的数据报文返回使用
-如果有，则返回缓存的数据报文
-
-以此类推即可递归解析多级扩展ODIN标识前缀，得到的数据报文中的正文内容(content)是一个JSON编码字符串,包含指定该ODIN标识前缀的拥有者相关信息（包括：名称、AP列表、数据内容验证参数、登记时间戳UTC），具体定义如下：
-    {
-        "ver":"说明：ODIN标识协议定义版本，初始为1",
-        "title":"说明：可选的标识名称字符串",         
-        "ap_set":{
-          "AP记录项编号":{"url":"对应AP服务URL"},
-          "AP记录项编号":{"url":"对应AP服务URL"},
-          ...
-          "AP记录项编号":{"url":"对应AP服务URL"},
-        },
-        "vd_set":{
-            "algo":"说明：通过AP发布数据时所用非对称签名验证算法类型，缺省为SHA256withRSA，可选SHA1withRSA，SHA3withRSA等",
-            "pubkey":"说明：验证所需要的公钥"
-        }
-    }
-    
-注：
-(1) "ap_set"参数项一般从0开始以依次按1,2..,n顺序编号即可，也可以自定义编号。当URL取值为""即长度为的字符串，表示该AP记录项置空，但该记录项不会删除，即不影响后续记录的编号。
-(2) "ap_set"参数项如果在JSON数据中不存在，则缺省从父级ODIN标识继承。
-(3) "vd_set"参数项如果在JSON数据中不存在，则缺省从父级ODIN标识继承。
-(4) 如果"vd_set"参数项的"pubkey"取值为空字符串或不提供，则表示忽略该ODIN标识子级资源的签名验证。
+类以于DNS解析WWW网址中的主机域名部分，采用PTTP协议可解析ODIN标识路径前缀，获得对应的标识登记信息（包括：名称、AP列表、数据内容验证参数、登记时间），详见ODIN标识的技术规范。
 
 5、未来发展
 随着PPk网络的进一步发展，后续将借鉴NDN的定义，在消费者无法直连存放所需数据的AP时，可以向自己所能连接的一台或若干台AP发出兴趣报文，AP将记住请求到达的接口，之后通过在其转发信息表（FIB）(是由一种基于ODIN标识的路由协议传播的)中查找该名字而转发兴趣报文。一旦兴趣报文到达拥有被请求数据的一个节点，则发回一条数据（Data）报文。这条数据报文经兴趣报文所产生的反向路径到达消费者。
@@ -372,10 +363,52 @@ HTTP方式:
 6.1  AP如何保护数据隐私？
 AP只负责对传输数据的签名验证，确保收到、缓存和转发的数据确实是合法的生产者所提供，但不涉及对数据内容的加解密以提供额外的隐私保护， 由具体应用来确定是否需要加解密，对于限定消费者才能访问的数据内容，应区分使用不同的ODIN标识并使用生产者和消费者约定方式加密。
 
+6.2 PTTP协议传送HTML内容时，HTML页面内锚点定位可能会导致URL多出"#..."发生混淆，如何避免？
+
+关于HTML页面内锚点定位，传统方法是锚点用<a>标签，在href属性中写入DIV的id。如下：
+    <h2>
+        <a href="#div1">to div1</a>
+    </h2>
+    <div id="div1">div1</div>
+这种方法的缺点是点击锚点之后，浏览器的URL会发生变化，如果刷新可能会出现问题。　
+    
+建议页面内锚点定位使用js的srollIntoView方法，直接用:
+
+    <a href="javascript:document.getElementById('div1').scrollIntoView();">to div1</a>
+
+这种方法的好处，是URL不会变，同时能够响应相应的scroll事件，不需要定义算法什么的。
+
+6.3 标识中的资源版本有什么作用？
+标识的资源版本由内容提供方来定义，并结合该内容作为最新版本缓存的策略取值控制策略来优化访问效率。
+
+显式带有版本的标识（如ppk:123/static.jpg#1.0）所对应资源的有效数据块，需保证不同时间请求下的一致性，并会被PPK网络上的参与节点自动缓存尽可能长的时间，实际缓存时长由各节点根据自身情况（如容量、处理效率等）自行决定。
+同时，对于带版本和不带版本（如ppk:123/variable#）的所有标识对应数据块，提供方都可以设置cache_as_latest字段，声明该内容是否可作为最新版本缓存以及缓存时效，并在下次请求该标识对应内容资源的最新版本时判断是否使用缓存。
+
+对于静态文件，提供方可采用传统网站使用的命名和存放形式，不用显式指定版本，每次应答会默认使用文件修改时间戳做为最新版本号。如果需要可以在原始文件名后加上"#x.x#"的版本控制信息（如"test.png#2.0#.png"），来自行控制所提供内容的版本，AP服务程序会自动适配，并判断是否是最新版本。
+
+对于动态方法，提供方默认不显式设置应答的数据版本，每次应答都为最新版本。如果需要，提供方可以自行定义动态方法的数据版本（比如用流水号或时间戳），确保每个版本的数据是确定的，并支持请求方获取指定版本号的历史数据。
+
+对于设定需要作为最新版本缓存的静态和动态内容，可将cache_as_latest字段取值合适的时长，不容易改变的可以尽可能设更长时间，来提高请求方的访问效率；发生改变可能性大的可以设置较短时间甚至不作为最新版本缓存，满足获取最新内容的业务需求。
+当提供方没有设置cache_as_latest字段时，默认不作为最新版本缓存，即每次请求对应资源的最新版本（即标识不带具体版本号）时都需要发起新请求。
+
+请求方在访问时，所提交的兴趣标识的资源版本默认不填，表示要获取该资源的最新版本。获得结果后，根据应答数据块的标识是否带有版本结合cache_as_latest字段缓存策略相应处理，步骤如下：
+1.如果应答数据块的标识带有版本，则缓存该应答数据块，同时对于状态码2XX或301，本地缓存时间应尽可能设的长(不少于1年)或者为本地特殊值0表示长期缓存;对于除301外的其它3XX状态码，本地缓存时间建议不少于1小时；对于其他状态，建议缓存10分钟。
+  再进一步判断如果cache_as_latest字段取值有效且为需要更新最新版本缓存的情况（max_age>0，且不存在源生成时间戳(iss)较新的本地已缓存的最新数据块），则从应答数据块的标识去掉版本号后得到最新版本含义的标识，并相应生成该标识的一个新数据块，状态码status_code设为302, 内容content取值为所收到应答数据块的标识，最后缓存该数据块（时效为iss+max_age）。
+2.如果应答数据块的标识不带有版本，判断如果cache_as_latest字段取值有效且为需要缓存的情况（iss+max_age>0），则相应缓存（时效为iss+max_age）。
+
+
+请求方可以指定标识的资源版本，但是否被支持由请求方具体定义和实现，不被支持时会收到特定状态应答（如404，503）。
+
+6.4 PTTP协议支持使用传统域名吗？
+支持，只需在ppk:前缀后使用传统域名即可访问，具体访问结果视对应域名拥有者实现的情况而定。
+默认情况下，会直接显示该域名对应的HTTP/HTTPS网站链接的内容。
+域名拥有者也可以按PTTP协议规范实现AP内容服务，与使用链上ODIN标识的实现方式和访问效果一样。
+
+
 -------------------------------------------------------------------------------------------------
 Released under the MIT License.
 
-Copyright (C) 2015-2018 PPk Public Group (ppkpub.org). 
+Copyright (C) 2015-2020 PPk Public Group (ppkpub.org). 
 
 Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
 

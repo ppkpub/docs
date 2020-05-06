@@ -1,6 +1,6 @@
     Ò»ÖÖ»ùÓÚÇø¿éÁ´µÄ¶ÔµÈ¡¢¿ÉÐÅµÄ¿ª·ÅÊý¾ÝË÷ÒýÃüÃû±êÊ¶·û--ODIN(Open Data Index Name)
         
-                  -- PPk¿ª·Å¼¼ÊõÉçÇø ( PPk Public Group ) 2018-08-21
+                  -- PPk¿ª·Å¼¼ÊõÉçÇø ( PPk Public Group ) 2020-05-05
                         http://ppkpub.org/
 
 1¡¢ODIN ¼ò½é
@@ -17,7 +17,7 @@ b. °²È«ÐÔ¡£Ã¿Ò»¸öODIN ±êÊ¶·ûµÄÓµÓÐÕß¶¼¶ÔÓ¦ÓµÓÐÒ»¶Ô·Ç¶Ô³Æ¼ÓÃÜ¼¼ÊõµÄ¹«Ë½Ô¿£¬¿ÉÒÔÍ¨
 c. Î¨Ò»ÐÔ¡£²ÉÓÃODINÐ­ÒéÄÜÒÀ¿¿Çø¿éÁ´¼¼ÊõÈ·±£²úÉúÎ¨Ò»±êÊ¶£¬²¢¿ª·ÅË÷Òýµ½ÈÎÒâÊý¾ÝÄÚÈÝ¶ÔÏó(ÈçÎÄ±¾¡¢Í¼Æ¬¡¢ÉùÒô¡¢Êý¾Ý¡¢Ó°Ïñ¡¢Èí¼þµÈ) ,Ê¹Êý¾ÝÄÚÈÝ¶ÔÏóÄÜ±»ÈËÃÇ×¼È·µØÊ¶±ðºÍÌáÈ¡¡£
 d. ³Ö¾ÃÐÔ¡£ODIN ±êÊ¶·ûÒ»µ©Éú³É»á³Ö¾Ã´æ´¢ÔÚÇø¿éÁ´ÉÏ,²»ÐèÒª¶¨ÆÚ½ÉÄÉÀàËÆÄê·ÑÀ´Î¬³ÖÆä³¤ÆÚ´æÔÚ£¬²»ËæÆäËù±êÊ¶µÄÊý¾ÝÄÚÈÝ¶ÔÏóµÄ³ÖÓÐÕß»ò´æ´¢µØÖ·µÈÊôÐÔµÄ±ä¸ü¶ø¸Ä±ä¡£
 e. ¼æÈÝÐÔ¡£Ëü¿ÉÒÔÓëÏÖÓÐµÄÒ»Ð©±êÊ¶·û(Èç¹ú¼Ê±ê×¼ÊéºÅISBN¡¢¹ú¼Ê±ê×¼¿¯ºÅISSN¡¢¹ú¼Ê±ê×¼ÎÄ±¾´úÂëISTC¡¢³ö°æÕß±êÊ¶·ûPII µÈ) Ïà»¥¼æÈÝ¡£
-f. »¥²Ù×÷ÐÔ( Interoperable) ¡£×ñÑ­Í¨ÓÃµÄURIÐ­Òé±ê×¼£¬ODIN µÄ´¦ÀíÏµÍ³¿ÉÒÔÓëÍøÂçÉÏ²»Í¬µÄ¼ÆËã»ú²Ù×÷ÏµÍ³ÔÚ´¦ÀíÍ¬Ò»Êý¾ÝÊ±ÄÜ±£³ÖÒ»ÖÂ,ÄÜÓë²»Í¬Ê±ÆÚµÄ¼¼ÊõÏµÍ³Á¼ºÃ¼æÈÝ¡£
+f. Áé»îÐÔ¡£×ñÑ­Í¨ÓÃµÄURIÐ­Òé±ê×¼£¬ODIN±êÊ¶·û¿ÉÒÔÁé»îÓ³Éäµ½¸÷ÖÖURI×ÊÔ´µØÖ·ÉÏ£¬±ÈÈçDat/IPFSµÈ·Ö²¼Ê½´æ´¢¡¢ÒÔÌ«·»/EOSµÈ¹«Á´ÉÏµÄÖÇÄÜºÏÔ¼Ó¦ÓÃ£¬Ò²¿ÉÒÔÊÇ´«Í³µÄHTTPÍøÕ¾¡£¡£
 
 3¡¢ODIN µÄÔËÐÐ»úÖÆ
 PPkPub£¨PPk Public Group£¬¼´·ÇÓªÀûµÄPPk¿ª·Å¼¼ÊõÉçÇø£©¶¨Òå²¢·¢Æð½¨Á¢ÁËÒ»Ì×ÍêÈ«¿ª·ÅµÄODINÔËÐÐ»úÖÆ, °üÀ¨»ù´¡ÏµÍ³(PPk ODIN system)ºÍÀ©Õ¹Ó¦ÓÃ·½Ãæ¡£PPk ODIN system ÊÇÒ»¸ö»ùÓÚÇø¿éÁ´µÄ·Ö²¼Ê½Êý¾ÝÄÚÈÝË÷ÒýÃüÃûÓë±êÊ¶ÏµÍ³,Ëü±£Ö¤Êý¾ÝÄÚÈÝµÄ×ÔÖ÷ÐÔ¡¢°²È«ÐÔ¡¢Î¨Ò»ÐÔ¡¢ÓÀ¾ÃÐÔ¡¢¿ÉÀ©Õ¹ÐÔ¡£
@@ -41,19 +41,19 @@ ODIN ·ÖÎªÃüÃûÌåÏµ¡¢Ç°×ººÍºó×ºÈý²¿·Ö£¬ÓÃÃ°ºÅ¡¢Ð±¸Ü·Ö¿ª¡£Ç°×ºÖÐÓÖÒÔÐ¡Ô²µã·ÖÎªÁ½²¿·
  
 ºó×º[DSS] (Data Suffix String)ÓÉODIN×¢²áÕß¿ÉÑ¡²¢×ÔÐÐ¸ø³öµÄ¸ÃODIN±êÊ¶Ëù¶ÔÓ¦¾ßÌåÊý¾ÝÄÚÈÝ¶¨Î»±êÊ¶£¬ÐèÒª×ÔÖ÷È·±£¾ßÓÐÎ¨Ò»ÐÔ¡£ 
 [DSS]µÄÃüÃû·½°¸£º 
-RESOURCE_ID#[DATA_BLOCK_ID.CHUNK_INDEX]
+RESOURCE_ID*[DATA_BLOCK_ID.CHUNK_INDEX]
     ÆäÖÐ£º 
-    RESOURCE_ID Îª¶ÔÓ¦µÄ×ÊÔ´±êÊ¶,ÓÉËùÊôODIN±êÊ¶×¢²áÕßÀ´¶¨Òå£¬¿ÉÒÔÊÇÁ÷Ë®±àºÅ£¬Ò²¿ÉÒÔÊÇÎ¨Ò»È¡ÖµµÄ×Ö·û´®£¬Ðè×ÔÐÐ±£Ö¤ÄÜÓë±ê×¼½á¹¹Ê½Çø·Ö¿ª,ÇÒ²»ÄÜ°üº¬# / (  ) "ÕâÎå¸ö×Ö·û¡£
-    DATA_BLOCK_ID Îª¶ÔÓ¦µÄÄÚÈÝÇø¿é±àºÅ£¨´Ó1¿ªÊ¼£¬¶ÔÓÚÎÄ¼þFile¿ÉÀí½âÎª°æ±¾£¬¶ÔÓÚ¶¯Ì¬Êý¾ÝÁ÷Stream¿ÉÒÔÀí½âÎªË³Ðò²úÉúµÄÊý¾Ý°ü£©£¬
-    CHUNK_INDEX Îª¶ÔÓ¦µÄ×ÓÊý¾Ý¿éÔÚ¸ÃÇø¿éÄÚ²¿µÄË÷Òý±àºÅ£¨´Ó0¿ªÊ¼£©¡£
-    ×¢£º"#"¼°ÆäºóÐø²¿·Ö¿ÉÊ¡ÂÔ£¬È±Ê¡±íÊ¾¶ÔÓ¦×îÐÂÄÚÈÝÇø¿éµÄµÚÒ»¸ö×ÓÊý¾Ý¿é¡£
+    RESOURCE_ID Îª¶ÔÓ¦µÄ×ÊÔ´±êÊ¶,ÓÉËùÊôODIN±êÊ¶×¢²áÕßÀ´¶¨Òå£¬¿ÉÒÔÊÇÁ÷Ë®±àºÅ£¬Ò²¿ÉÒÔÊÇÎ¨Ò»È¡ÖµµÄ×Ö·û´®£¬Ðè×ÔÐÐ±£Ö¤ÄÜÓë±ê×¼½á¹¹Ê½Çø·Ö¿ª,ÇÒ²»ÄÜ°üº¬* / (  ) "ÕâÎå¸ö×Ö·û¡£
+    DATA_BLOCK_ID Îª¶ÔÓ¦µÄÄÚÈÝÇø¿é±àºÅ£¨Èç´Ó1¿ªÊ¼£¬¶ÔÓÚÎÄ¼þFile¿ÉÀí½âÎª°æ±¾£¬¶ÔÓÚ¶¯Ì¬Êý¾ÝÁ÷Stream¿ÉÒÔÀí½âÎªË³Ðò²úÉúµÄÊý¾Ý°ü£©£¬
+    CHUNK_INDEX Îª¶ÔÓ¦µÄ×ÓÊý¾Ý¿éÔÚ¸ÃÊý¾ÝÇø¿éÄÚ²¿µÄË÷Òý±àºÅ£¨´Ó0¿ªÊ¼£©¡£
+    ×¢£º"*"¼°ÆäºóÐø²¿·Ö¿ÉÊ¡ÂÔ£¬È±Ê¡±íÊ¾¶ÔÓ¦×îÐÂÄÚÈÝ¿é
 
 ÏÂÃæ¼¸Àý¶¼ÊÇ·ûºÏ¶¨ÒåµÄ¸ùODINµÄºÏ·¨±àÂë£º
 ppk:351474.430/
-ppk:351474.430/#
-ppk:351474.430/#1.0
-ppk:305678.568/ISBN2890321345#1.0
-ppk:305678.1000/ISBN2890321345-P235#2.1
+ppk:351474.430/*
+ppk:351474.430/*1.0
+ppk:305678.568/ISBN2890321345*1.0
+ppk:305678.1000/ISBN2890321345-P235*2.1
 
 
 ¸ùODIN¿ÉÒÔ²ÉÓÃ¶Ì±àÂë·½Ê½£¬½á¹¹Ê½Îª£º
@@ -61,17 +61,17 @@ ppk:305678.1000/ISBN2890321345-P235#2.1
 [REG_ORDER_INDEX]Îª¸ÃODIN¼ÇÂ¼ÔÚÈ«²¿ODIN×¢²á¼ÇÂ¼ÖÐÒÔ×¢²áÊ±¼äÔçÍíÅÅÐòµÄ°¢À­²®Êý×ÖË÷ÒýÖµ£¨´Ó0¿ªÊ¼£©¡£
 ÏÂÃæ¼¸Àý¶¼ÊÇ·ûºÏ¶¨ÒåµÄ¸ùODINµÄºÏ·¨Ëõ¶Ì±àÂë£º
 ppk:1/
-ppk:356/#1.0
-ppk:356/ISBN2890321345#1.0
+ppk:356/*1.0
+ppk:356/ISBN2890321345*1.0
 
 ODINµÄÃüÃû½á¹¹Ê¹Ã¿¸öÊý¾Ý×ÊÔ´ÔÚÈ«Íø¾ßÓÐ×ÔÖ÷¡¢°²È«µÄÎ¨Ò»Ë÷Òý±êÊ¶¡£ODIN²»Í¬ÓÚURL£¬ËüÊÇÊý¾Ý×ÊÔ´µÄË÷ÒýÃû³Æ£¬¶øÓëÊµ¼ÊµØÖ·ÎÞ¹Ø¡£Êµ¼ÊÉÏËüÊÇÒ»ÖÖURI£¨Universal Resource Name£¬Í³Ò»×ÊÔ´±êÊ¶·û£©»òURN£¨Universal Resource Name£¬Í³Ò»×ÊÔ´Ãû³Æ£©£¬ÊÇÐÅÏ¢Ë÷ÒýµÄÊý×Ö±êÇ©ºÍÉí·ÝÖ¤¡£ÓÐÁËËü£¬¾ÍÊ¹Êý¾Ý×ÊÔ´¾ßÓÐÁËÎ¨Ò»ÐÔºÍ¿É×·×ÙÐÔ¡£
 
 ÌØÀý£º
 ppk:351474.430
-ppk:351474.430#
+ppk:351474.430*
 ppk:0
-ppk:0#
-ÕâËÄÖÖÌØÊâ±àÂëº¬ÒåÒ»Ñù£¬¶¼±íÊ¾¶ÔÓ¦¸ùODIN±êÊ¶µÄ½âÎö¼ÇÂ¼ÅäÖÃÊý¾Ý¡£
+ppk:0*
+ÕâËÄÖÖÌØÊâ±àÂëº¬ÒåÒ»Ñù£¬¶¼±íÊ¾¶ÔÓ¦¸ùODIN±êÊ¶×ÔÉíµÄ×îÐÂ½âÎö¼ÇÂ¼ÅäÖÃÊý¾Ý£¬×¢Òâ¶¼²»´ø×ÊÔ´°æ±¾¡£
 
 
 4.2 ¶à¼¶À©Õ¹ODIN
@@ -85,37 +85,37 @@ ppk:0#
 ºó×º[DSS] (Data Suffix String)ÓÉÉÏ¼¶ODIN×¢²áÕß¿ÉÑ¡²¢×ÔÐÐ¸ø³öµÄ¾ßÌåÊý¾ÝÄÚÈÝ¶¨Î»±êÊ¶£¬ÐèÒª×ÔÖ÷È·±£¾ßÓÐÎ¨Ò»ÐÔ£¬ÃüÃû·½°¸Í¬ÉÏ¡£ 
     
 ¾ÙÀý£º
-    ppk:351474.430/21.35/#
-    ppk:351474.430/21.35/ISBN2890321345#
-    ppk:351474.430/21.35/ISBN2890321345#1.0
-    ppk:305678.1000/23.678/235.32/ISBN2890321345-P218#2.1
+    ppk:351474.430/21.35/*
+    ppk:351474.430/21.35/ISBN2890321345*
+    ppk:351474.430/21.35/ISBN2890321345*1.0
+    ppk:305678.1000/23.678/235.32/ISBN2890321345-P218*2.1
 
 ¶à¼¶ODIN×Ô¶¨Òå½á¹¹Ê½Îª£º
     ppk:[PARENT_ODIN_PREFIX]/[SUB_TRANS_ID]/[DSS] 
-[SUB_TRANS_ID]Îª¸ÃODIN¼ÇÂ¼ÔÚ×Ó¼¶Çø¿éÁ´»òÆäËû¼¼ÊõÆ½Ì¨ÉÏµÄÎ¨Ò»±êÊ¶£¬ÓÉËùÊôÉÏ¼¶ODIN±êÊ¶×¢²áÕßÀ´¶¨Òå£¬¿ÉÒÔÊÇÁ÷Ë®±àºÅ£¬Ò²¿ÉÒÔÊÇÎ¨Ò»È¡ÖµµÄ×Ö·û´®£¬Ðè×ÔÐÐ±£Ö¤ÄÜÓë±ê×¼½á¹¹Ê½Çø·Ö¿ª,ÇÒ²»ÄÜ°üº¬# / (  ) "ÕâÎå¸ö×Ö·û¡£
+[SUB_TRANS_ID]Îª¸ÃODIN¼ÇÂ¼ÔÚ×Ó¼¶Çø¿éÁ´»òÆäËû¼¼ÊõÆ½Ì¨ÉÏµÄÎ¨Ò»±êÊ¶£¬ÓÉËùÊôÉÏ¼¶ODIN±êÊ¶×¢²áÕßÀ´¶¨Òå£¬¿ÉÒÔÊÇÁ÷Ë®±àºÅ£¬Ò²¿ÉÒÔÊÇÎ¨Ò»È¡ÖµµÄ×Ö·û´®£¬Ðè×ÔÐÐ±£Ö¤ÄÜÓë±ê×¼½á¹¹Ê½Çø·Ö¿ª,ÇÒ²»ÄÜ°üº¬* / (  ) "ÕâÎå¸ö×Ö·û¡£
 ¾ÙÀý£º
-    ppk:351474.430/22/#
-    ppk:1/22/ISBN2890321345#
-    ppk:1/22/ISBN2890321345#2.1
-    ppk:1/china/books/#
-    ppk:1/china/books/#
-    ppk:1/china/books/ISBN2890321345-P218#
+    ppk:351474.430/22/*
+    ppk:1/22/ISBN2890321345*
+    ppk:1/22/ISBN2890321345*2.1
+    ppk:1/china/books/*
+    ppk:1/china/books/*
+    ppk:1/china/books/ISBN2890321345-P218*
     
 4.3 ¶Ô·Ö²¼Ê½·½·¨µ÷ÓÃµÄÌØ¶¨×ÊÔ´ÐÎÊ½¶¨Òå
 
 ÔÚÉÏÊöODIN×ÊÔ´±êÊ¶¶¨Òå¿ò¼ÜÏÂ£¬¶¨ÒåÒÔÏÂÌØ¶¨À©Õ¹ÐÎÊ½À´Ö§³ÖÔ¶³Ì·½·¨µ÷ÓÃÐèÇó£º
-  ppk:[PARENT_ODIN_PREFIX]/[FUNCTION_NAME]([arg1],[arg2],...,[argn])#[RESULT_SN]
+  ppk:[PARENT_ODIN_PREFIX]/[FUNCTION_NAME]([arg1],[arg2],...,[argn])*[RESULT_SN]
   ÆäÖÐ£º 
     [PARENT_ODIN_PREFIX]Îª¶ÔÓ¦ÉÏ¼¶ODINÇ°×º£¬
-    [FUNCTION_NAME] Îª¶ÔÓ¦µÄ·½·¨Ãû³Æ,ÓÉËùÊôODIN±êÊ¶×¢²áÕßÀ´¶¨Òå£¬Ðè×ÔÐÐ±£Ö¤ÄÜÓë±ê×¼½á¹¹Ê½Çø·Ö¿ª,ÇÒ²»ÄÜ°üº¬# / (  ) "ÕâÎå¸ö×Ö·û¡£
+    [FUNCTION_NAME] Îª¶ÔÓ¦µÄ·½·¨Ãû³Æ,ÓÉËùÊôODIN±êÊ¶×¢²áÕßÀ´¶¨Òå£¬Ðè×ÔÐÐ±£Ö¤ÄÜÓë±ê×¼½á¹¹Ê½Çø·Ö¿ª,ÇÒ²»ÄÜ°üº¬* / (  ) "ÕâÎå¸ö×Ö·û¡£
     [arg1],[arg2],...,[argn]Îª¶ÔÓ¦·½·¨µ÷ÓÃµÄ1¸ö»ò¶à¸öÊäÈë²ÎÊý£¬
     RESULT_SN Îª¶ÔÓ¦µÄ½á¹ûÎ¨Ò»Á÷Ë®ºÅ£¬×Ô¶¨Òå²úÉú£¬±ÈÈç²ÉÓÃ×ÔÔö±àºÅÒ²¿ÉÒÔ²ÉÓÃÊ±¼ä´ÁµÈ·½°¸
-    ×¢£º"#"¼°ÆäºóÐø²¿·Ö¿ÉÊ¡ÂÔ£¬È±Ê¡±íÊ¾ÐèÒª¶¯Ì¬Ö´ÐÐÖ¸¶¨·½·¨²¢»ñµÃ×îÐÂ½á¹û¡£
+    ×¢£º"*"¼°ÆäºóÐø²¿·Ö¿ÉÊ¡ÂÔ£¬È±Ê¡±íÊ¾ÐèÒª¶¯Ì¬Ö´ÐÐÖ¸¶¨·½·¨²¢»ñµÃ×îÐÂ½á¹û¡£
   
   ¾ÙÀý£º
-    ppk:351474.430/21.35/sum(1,2,3)#
-    ppk:351474.430/21.35/sum(1,2,3)#1.0
-    ppk:1/china/add_book("book_isbn","book_title")#
+    ppk:351474.430/21.35/sum(1,2,3)*
+    ppk:351474.430/21.35/sum(1,2,3)*1.0
+    ppk:1/china/add_book("book_isbn","book_title")*
     
 
 ¾ßÌåÓ¦ÓÃÊ±£¬ÓÉ[PARENT_ODIN_PREFIX]ÅäÖÃËùÓ³ÉäµÄAP(Access Point)½ÚµãÀ´°´PTTP´«ÊäÐ­Òé¾ßÌå´¦ÀíËù¶ÔÓ¦µÄ·½·¨µ÷ÓÃ²¢·µ»Ø½á¹û¡£
