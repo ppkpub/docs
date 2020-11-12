@@ -1,4 +1,4 @@
-PTAP01 兼容DID的自主身份标识应用接口定义（草案 20191206）
+PTAP01 兼容DID的自主身份标识应用接口定义（草案 20201112）
 
 一、兼容oAuth的第三方验证实现流程
 参考传统oAuth验证流程，通过使用第三方提供的ODIN身份验证服务，应用前端代码实现上非常简单。
@@ -33,6 +33,9 @@ https://tool.ppkpub.org/oauth/authorize.php?response_type=code&client_id=xxxxxxx
      输出结果：
          status: 成功取值OK，其他取值 ERROR
          user_odin_uri: 成功时返回新关联的奥丁号，前端页面相应更新显示
+         title: 可选的标识名称字符串
+         avtar: 可选的头像URL
+         ... //可选的更多扩展字段，由具体标识服务来自行定义
          
      注：如果前端页面不是静态HTML，而是采用PHP,node.js等动态运行产生，也可以省略AJAX方式，直接由后端实现验证并显示结果网页。
      
@@ -66,12 +69,15 @@ https://tool.ppkpub.org/oauth/authorize.php?response_type=code&client_id=xxxxxxx
     {
      "success":true, 
      "userInfo":{
-        "user_odin_uri" : "ppk:12345#"
+        "user_odin_uri" : "ppk:12345*",
+        "title":"说明：可选的标识名称字符串", 
+        "avtar":"说明：可选的头像URL", 
+        ... //可选的更多扩展字段，由具体标识服务来自行定义
      }
     }
     当success为true时按正常处理，其他情况都按出错处理，具体可打印应答信息查看。
     
-    (3) 将新的user_odin_uri更新保存到数据库里的对应用户记录，然后返回应答：
+    (3) 将新的user_odin_uri等信息更新保存到数据库里的对应用户记录，然后返回应答：
     
     
     
@@ -122,7 +128,10 @@ https://tool.ppkpub.org/oauth/authorize.php?response_type=code&client_id=xxxxxxx
     {
      "success":true, 
      "userInfo":{
-        "user_odin_uri" : "ppk:12345#"
+        "user_odin_uri" : "ppk:12345*"
+        "title":"说明：可选的标识名称字符串", 
+        "avtar":"说明：可选的头像URL", 
+        ... //可选的更多扩展字段，由具体标识服务来自行定义
      }
     }
     (3) 更新用户登录状态，然后返回应答：
@@ -141,31 +150,68 @@ https://github.com/ppkpub/sdk/blob/master/php-oauth/client_api.php
 
 二、应用自主验证登录参考流程
 
-采用PTTP协议自主访问一个奥丁号（例如 ppk:12345# 或 ppk:joy/12345#等），所获得PTTP应答数据报文将相应兼容DID协议相关定义，来支持身份标识相关认证和授权应用。
+采用PTTP协议自主访问一个奥丁号（例如 ppk:12345* 或 ppk:joy/12345*等），所获得PTTP应答数据报文可兼容DID协议相关定义，来支持身份标识相关认证和授权应用。
 
 数据报文中的正文类型(content_type)取值为"text/json"：
-数据报文中的正文内容(content)是一个JSON编码字符串,包含指定该ODIN标识前缀的拥有者相关身份验证信息，具体定义如下：
+数据报文中的正文内容(content)是一个JSON编码字符串,其中包含字段"x_did"，提供DID规范的描述，如该ODIN标识前缀的拥有者相关身份验证信息，具体定义如下：
     {
-        "ver":"说明：ODIN标识协议定义版本，初始为1",
+      ...
+      "x_did":{
+        "@context": "https://www.w3.org/ns/did/v1",
+        "id": "ppk:joy/12345*",
         "title":"说明：可选的标识名称字符串", 
         "authentication": [ //验证参数数组
           {
-            "type": "Secp256k1VerificationKey2018",   //对应bitcoin采用的secp256k1椭圆曲线算法
+            "type": "EcdsaSecp256k1VerificationKey2019",   //对应bitcoin采用的secp256k1椭圆曲线算法
             "publicKeyHex": "231e...."  //对应公钥（HEX编码)
           },
           {
+            "type": "Ed25519VerificationKey2018",   //对应bytom采用的Ed25519曲线算法
+            "publicKeyHex": "582e...."  //对应公钥（HEX编码)
+          },
+          {
             "type": "RsaVerificationKey2018", //对应RSA算法
-            "publicKeyPem": "-----BEGIN PUBLIC KEY...END PUBLIC KEY-----\r\n"  //对应公钥（PEM格式)
+            "publicKeyPem": "-----BEGIN PUBLIC KEY...END PUBLIC KEY-----"  //对应公钥（PEM格式)
           }
        ],
+       "service": [{ //关联认证服务列表
+            "id":"ppk:joy/12345/vcs1*",
+            "type": "VerifiableCredentialService",
+            "serviceEndpoint": "https://example.com/vc/"
+          }]
+      }
     }
     注：
     (1)上述authentication数组可以提供一个或多个公钥凭证，应用可以依序验证私钥签名直到有匹配记录。
     (2)公钥类型定义参考DID规范：  
     https://w3c-ccg.github.io/ld-cryptosuite-registry/#signature-suites-and-verification-methods
+    (3)JSON Web Signature规范 https://tools.ietf.org/html/rfc7797 
+    https://www.cnblogs.com/read-the-spring-and-autumn-annals-in-night/p/12041911.html
+    (4)实际标识是否支持DID由对应标识拥有者决定，所有的ODIN根标识都默认支持（对应使用根标识注册者或管理者的公私钥）。
     
 应用可以完全自主实现对奥丁号的登录验证，相比oAuth方案在实现上相对复杂些，但可以获得更完整的自主性。
 下面只列出了用户以奥丁号登录的实现过程，给用户关联登记奥丁号的实现过程是类似的，可以参考前面oAuth验证方式中关联和登录两个功能的分别实现过程。
+
+/*
+验证时，验证发起方需要提供一段待签名的原文，JSON格式定义如下:
+{  
+  "uri":"所请求资源对应的ODIN标识地址字符串",
+  
+  "iss":"签发请求者的身份ODIN标识，可选，为空时对应开放匿名请求",
+  "iat":到秒值的生成UNIX时间戳(issued at),可选
+  "exp":到秒值的过期UNIX时间戳(expires),可选
+  
+  "user_agent":"可选的发出请求的用户代理属性,如PPk Javatool 0.615",
+}
+
+    "header":{ 
+        //签名使用的标准规范定义，默认为SHA256withRSA（），可选BitcoinSignMsg（即使用椭圆曲线Secp256K算法,比特币的SignMessage方式生成签名） ，或者取值为JWT表示兼容JWT( Json Web Token, https://tools.ietf.org/html/rfc7519 )标准定义时；当请求内容涉及加密传输时可以采用JWE(JSON Web Encryption, https://tools.ietf.org/html/rfc7516)，相应定义将另行定义。 
+        "typ": "JWT",  
+        
+        //对应签名类型为JWT时可用于进一步制定请求签名的算法（algorithm），默认是RS256(RSA+SHA256)，可选ES256等，详见JWT标准定义
+        "alg": "RS256", 
+    },
+*/
 
 2.1 登录入口页面(Login page)：
  参考示例源码： https://github.com/ppkpub/OdinSwapTool/blob/master/login.php
