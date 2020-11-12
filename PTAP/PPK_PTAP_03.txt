@@ -1,0 +1,21 @@
+PTAP03奥丁号关联多币种信息接口定义（草案20201112）
+
+
+采用PTTP协议自主访问一个奥丁号（例如 ppk:12345* 或 ppk:joy/12345*等），所获得PTTP应答数据报文中可提供多个币种的钱包地址信息，这样只需要记住一个奥丁号，就可以向该奥丁号拥有者的不同币种钱包地址进行转账了，而不用分别记住每一个钱包地址。
+
+PTTP应答数据报文的正文类型(content_type)取值为"text/json"：
+数据报文中的正文内容(content)是一个JSON编码字符串,其中包含字段"x_wallets"，提供多个币种的钱包地址信息，具体定义如下：
+    {
+      ...
+      "x_wallets":{
+        "ppk:btc/": {"label":"比特币","address":"1xxDeBBzT9Ek6eQzMGZZXbu1K96snp1hm"},
+        "ppk:bch/": {"label":"比特现金","address":"1C6KHY6MHgYvmRQ4PAafKYDrg1ejbH1cE"},
+        "ppk:joy/eth/": {"label":"以太坊","address":"0xEc5a1E2eCe52fb9Bc1A078e2598Ab7b22B56041c"},
+        "ppk:joy/btm/": {"label":"比原链","address":"bm1qdzafxmgls6h6hd5e6z699arvrx77d8vfag8ev"},
+        "ppk:joy/bsc/": {"label":"币安智能链","address":"0xC1219EC30f460c82113B571A410E9E7a1672D4ea"},
+        "更多币种的ODIN标识URI": {"label":"钱包名称","address":"对应钱包地址"},
+    }
+    注：
+    (1)币种的ODIN标识URI可以是根奥丁号（如 ppk:btc/），也可以是扩展奥丁号（ppk:joy/bsc/）
+    (2)币种的实际标识。
+
