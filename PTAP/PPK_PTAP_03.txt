@@ -23,4 +23,4 @@ PTTP应答数据报文的正文类型(content_type)取值为"text/json"：
 
 相关资源：
 奥丁号定义: https://github.com/ppkpub/docs/blob/master/PPK_ODIN.txt
-PTTP协议的义: https://github.com/ppkpub/docs/blob/master/PPK_PTTP_SPEC.txt
+PTTP协议定义: https://github.com/ppkpub/docs/blob/master/PPK_PTTP_SPEC.txt
