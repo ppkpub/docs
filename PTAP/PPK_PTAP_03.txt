@@ -19,7 +19,7 @@ PTTP应答数据报文的正文类型(content_type)取值为"text/json"：
     }
     注：  
     (1)币种的ODIN标识URI可以是根奥丁号（如 ppk:btc/），也可以是扩展奥丁号（ppk:joy/bsc/）
-    (2)币种的实际标识。
+    (2)此处列出的币种标识仅供参考，实际标识由项目团队或开发人员自行选用并公布使用为准。
 
 相关资源：
 奥丁号定义: https://github.com/ppkpub/docs/blob/master/PPK_ODIN.txt
