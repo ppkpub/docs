@@ -1,0 +1,73 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta charset="utf-8">
+<meta name="renderer" content="webkit">
+<title>准备下载 Downloding...</title>
+<meta content="ppkpub.org" name="author" />
+<meta content="用奥丁号转账，轻松关联比特币、以太坊、比原等多个币种，以及支付宝、微信等钱包地址" name="description" />
+<meta http-equiv="X-UA-Compatible" content="IE=Edge, chrome=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="https://netdna.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" />
+</head>
+
+<body style="background-color: #fff;">
+<center>
+<div>
+    <br><br><br>
+    <p><a id="redirect_view" href="https://www.chainnode.com/post/386612" target="_top"><img src="https://ppk001.sinaapp.com/demo/pay/image/loading.gif" border=0>正打开文档 Prepare opening...<br><font size="-2">如较长时间没有自动打开，可尝试点击此处进入。</font></a></p>
+</div>
+
+</body>
+
+<script>
+var redirectURL="https://www.chainnode.com/post/386612";
+
+window.onload=function(){
+    /*if(is_weixin()){
+        loadWeixinPointOut();
+    }else{
+        setTimeout(redirect,500);
+    }*/
+    setTimeout(redirect,500);
+}
+
+function redirect( ){
+    window.location.href=redirectURL; 
+}
+
+
+function is_weixin() {
+    var ua = navigator.userAgent.toLowerCase();
+    if (ua.match(/MicroMessenger/i) == "micromessenger") {
+        return true;
+    } else {
+        return false;
+    }
+}
+
+//提示“在浏览器里打开”
+function loadWeixinPointOut(){
+    var div = document.createElement('div');
+    div.id = 'weixin-tip';
+    div.innerHTML = '<p><img src="https://ppk001.sinaapp.com/demo/pay/image/wx_android.png"/></p>'; //遮罩图片
+    document.body.appendChild(div);
+    
+    var cssText = "#weixin-tip{position: fixed; left:0; top:0; background: rgba(0,0,0,0.8); filter:alpha(opacity=80); width: 100%; height:100%; z-index: 100;} #weixin-tip p{text-align: center; margin-top: 10%; padding:0 5%;}";
+    
+    var style = document.createElement('style');
+    style.rel = 'stylesheet';
+    style.type = 'text/css';
+    try {
+        style.appendChild(document.createTextNode(cssText));
+    } catch (e) {
+        style.styleSheet.cssText = cssText; //ie9以下
+    }
+    var head=document.getElementsByTagName("head")[0]; //head标签之间加上style样式
+    head.appendChild(style); 
+}
+
+
+</script>
+
+</html>
+
