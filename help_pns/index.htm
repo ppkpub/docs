@@ -1,0 +1,251 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<HTML>
+<HEAD>
+	<META HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; charset=utf-8">
+    <meta content="width=device-width, initial-scale=1" name="viewport">
+	<TITLE>轻松上手PPk协议的奥丁号托管服务示例，抢鲜体验PeerWeb</TITLE>
+	<style type="text/css">
+        span{word-break:break-all;}
+    </style>
+</HEAD>
+<BODY LANG="zh-CN" TEXT="#000000" LINK="#0000ff" BGCOLOR="#ffffff" DIR="LTR">
+<P><BR>
+</P>
+<h2 align="cneter">轻松上手PPk协议的奥丁号托管服务示例，抢鲜体验PeerWeb</h2>
+<p align="cneter">2020-12-26  PPkPub.org</P>
+
+<p>PPk协议V2新版本里对奥丁号（ODIN）增加自定义根标识解析应用托管服务(PNS, Peer Naming
+Service) ，其采用PPk的PTTP协议作为服务接口，支持区块链或网站等多种形式来承载标识设置数据，功能上类似传统域名体系里的OpenDNS这样的域名解析服务，不同之处在于所解析的是像奥丁号这样的链上标识或区块链域名了，配合区块链应用是极好地。</p>
+
+<p>奥丁号注册、更新和解析默认都承载在比特币区块链上，现在用户可以将在比特币区块链上注册的奥丁号，关联到自定义的标识解析托管服务，来负责提供更新设置和解析服务，配合日常应用管理将更方便，费用更低，同时可以衍生出更多应用场景（比如支持一个奥丁号关联多个币种钱包地址，方便转账交易；衍生出专业的区块链域名注册托管服务，其角色类似Godaddy/万网等；支持不同的英文转义名称对应不同的PeerWeb/Web3.0内容服务，类似按域名区分的虚拟主机服务，只不过内容不只存在传统WEB服务器上，还可以灵活存到新兴的分布式存储甚至直接存到区块链上)。</p>
+
+<p>配合新版本协议定义，PPk技术社区新近开发上线了PNS服务示例，体验网址为:<a
+href="https://tool.ppkpub.org/ap2/" target="_blank">https://tool.ppkpub.org/ap2/</a></p>
+
+<p>下面介绍介绍下通过微信或手机浏览器快速体验奥丁号托管服务(PNS)的方法。</p>
+
+<p>先用微信或手机浏览器扫码下面的的图标打开PPk小工具。如果是在微信或手机浏览器里阅读本文，可以直接点击图标旁边的网址链接，或者按住图片从提示“识别图中的二维码”处进入都可以。</p>
+
+<p align="center"><img border=0 style="max-width:100%;height:auto" 
+src="index.files/image001.png"><a
+href="https://ppk001.sinaapp.com/odin/" target="_blank">网址: https://ppk001.sinaapp.com/odin/</a></p>
+
+<p><br>
+打开PPk小工具后, 点击下方的“以奥丁号登录”，显示如下图所示：</p>
+
+<p align="center"><img border=0 style="max-width:100%;height:auto" 
+src="index.files/image002.png"></p>
+
+<p>确认“你的奥丁号”处显示有可用的奥丁号。如果还没有奥丁号，需要点击下方的“设置”，选择新建一个BTC地址，在比特币区块链上自主注册新的奥丁号；或者导入你已经注册过奥丁号的BTC地址，再选用你已自主注册好的一个奥丁号。相关设置好的数据会保存在用户本地，以后就可以直接使用了。<a
+href="https://ppk001.sinaapp.com/docs/help_odintool/">具体设置方法可点击此处了解</a>。</p>
+
+
+<p>现在点击上图里的“快速体验奥丁号托管服务(PNS)”按钮，会看到提示确认授权登录PNS示例的网址，如下图所示：</p>
+
+<p align="center"><img border=0 style="max-width:100%;height:auto" 
+src="index.files/image004.png"></p>
+
+<p><br>
+点击“确定”按钮，即可登录奥丁号托管服务(PNS)示例进行进一步体验，显示如下图所示：</p>
+
+
+<p align="center"><img border=0 style="max-width:100%;height:auto" 
+src="index.files/image007.png"></p>
+
+<p>现在就可以进行设置了，下面将分别介绍“关联多个币种钱包地址”和“发布内容服务”的具体方法。</p>
+
+
+<p><b>一、设置关联多个币种钱包地址</b></p>
+
+<p>在奥丁号的解析设置里，可以设置关联的多个币种钱包地址，这样只需要记住一个奥丁号，就可以向该奥丁号拥有者的不同币种钱包地址进行转账了，而不用分别记住每一个钱包地址。</p>
+
+<p>在如上图的“设置奥丁号的解析记录”窗口，选择要关联的币种并输入对应的钱包地址后，点击“提交”按钮，就可以保存了。</p>
+
+<p>设置保存成功后，就可以通过PPk协议访问用户的奥丁号标识(如 ppk:105431* ) ，获得对应的设置数据，再按一定规则解码出原始记录(JSON标准格式)，就可以解析得到所关联的多个币种钱包地址了。</p>
+
+<p>例如在支持PPk协议的浏览工具(如&nbsp;<a
+href="http://tool.ppkpub.org/ap2/browser.html" target="_blank">http://tool.ppkpub.org/ap2/browser.html</a>)里输入对应的奥丁号如“ppk:105431*”，就能看到所设置的内容, 如下图所示：</p>
+
+<p align="center"><img border=0 style="max-width:100%;height:auto" 
+src="index.files/image008.png"></p>
+
+<p>关于奥丁号关联多个币种钱包地址的应用接口定义，详见&nbsp;<a
+href="https://ppk001.sinaapp.com/docs/PTAP/PPK_PTAP_03.txt"
+target="_blank">https://ppk001.sinaapp.com/docs/PTAP/PPK_PTAP_03.txt</a></p>
+
+<p>基于上述的开放数据接口，就可以开发进一步的应用了。这里分享一个简单的应用示例，通过浏览器打开网址：&nbsp;<a
+href="http://ppk001.sinaapp.com/demo/pay/" target="_blank">http://ppk001.sinaapp.com/demo/pay/</a>&nbsp;
+，显示如下图所示：</p>
+
+<p align="center"><img border=0 style="max-width:100%;height:auto" 
+src="index.files/image009.png"></p>
+
+<p>输入一个奥丁号（如“105431”），就可以看到该奥丁号关联的多个钱包地址，如下图所示：</p>
+
+<p align="center"><img border=0 style="max-width:100%;height:auto" 
+src="index.files/image010.png"></p>
+
+<p>选择一个关联地址后，会自动显示对应该地址的收款二维码，就可以用对应支持该币种的钱包应用来扫码转账给对方了。</p>
+
+<p>通过上述示例可以看到，只需要记住一个奥丁号，就可以向该奥丁号拥有者的不同币种钱包地址进行转账了，而不用分别记住每一个钱包地址，日常使用数字加密货币会更方便。</p>
+
+<p>用奥丁号除了可以自由关联比特币、以太坊、比原等所有的数字加密资产钱包地址，还可以扩展关联支付宝或者银行账户等传统资产地址，这也是PPk协议的开放和灵活性的体现。这里介绍下操作方法。</p>
+
+<p>按前文所述方法进入奥丁号解析设置界面后，在“关联钱包地址”一栏，能看到可以填写“支付宝、微信或银联云闪付”的收款地址，如下图所示：</p>
+
+<p align="center"><img border=0 style="max-width:100%;height:auto" 
+src="index.files/image011.png"></p>
+
+<p><b>那如何得到“支付宝、微信或银联云闪付”的收款地址呢？</b></p>
+
+<p>方法也很简单，按如下3步操作即可获得相应的收款地址：</p>
+
+<p>1.<span style='font-size:
+12.0pt;font-family:"微软雅黑",sans-serif;color:black'>到支付宝、微信支付或银联云闪付的手机应用里，找到“收款”功能点击进去</p>
+
+<p>2.将显示的收款二维码截屏保存为图片</p>
+
+<p>3.用浏览器打开二维码解码工具(如&nbsp;<a href="https://tool.oschina.net/qr?type=2" target="_blank">https://tool.oschina.net/qr?type=2</a>&nbsp;)，将截图文件上传后，解码得到文字内容，将其复制填写到奥丁号解析设置工具里即可。</p>
+
+<p>可参考下图说明：</p>
+
+<p align="center"><img border=0 style="max-width:100%;height:auto" 
+src="index.files/image012.png"></p>
+
+<p>按上述方法获得支付宝、微信或银联的收款地址，并填写到奥丁号设置工具里，然后点击“提交”按钮，保存成功后就可以生效了。</p>
+
+<p>通过浏览器打开“用奥丁号收款”的应用示例网址：&nbsp;<a
+href="http://ppk001.sinaapp.com/demo/pay/" target="_blank">http://ppk001.sinaapp.com/demo/pay/</a>&nbsp;
+，输入自己的奥丁号，就能看到“关联的钱包地址”列表有出现支付宝、微信和银联的收款地址，点选可以显示对应的二维码，就能用相应的钱包APP来扫码付款了，如下图所示：</p>
+
+<p align="center"><img border=0 style="max-width:100%;height:auto" 
+src="index.files/image013.png"></p>
+
+
+
+
+
+<p><b>二、快速设置奥丁号映射内容服务</b><span
+lang=EN-US style='font-size:12.0pt;font-family:"微软雅黑",sans-serif;color:black'><br>
+<br>
+<br>
+</p>
+
+<p>在“设置奥丁号的解析记录”窗口，点击右上角的“快速发布内容”按钮，如下图所示：</p>
+
+
+
+<p align="center"><img border=0 style="max-width:100%;height:auto"  
+src="index.files/image014.png"></p>
+
+<p>将打开快速设置界面，显示如下图所示：</p>
+
+<p align="center"><img border=0 style="max-width:100%;height:auto"  
+src="index.files/image015.png"></p>
+
+<p>在这里输入名称和要与标识关联展示的内容，如下图所示：</p>
+
+<p align="center"><img border=0 style="max-width:100%;height:auto" 
+src="index.files/image016.png"></p>
+
+
+
+<p>然后点击“确定”就可以看到保存的结果了，如下图所示：</p>
+
+<p align="center"><img border=0 style="max-width:100%;height:auto" 
+src="index.files/image017.png"></p>
+
+
+
+<p>在这个示例里，已经将用户输入的文字内容上传到类似BT网络的分布式存储，获得了一个&quot;ipfs:&quot;起始的内容网址，并将该网址与对应的奥丁号“ppk:105341”关联起来保存在PNS服务里，类似将传统域名与IP地址的关联关系存在DNS服务器里，以后访问者输入“ppk:105341/”这样的网址就能解析并访问到对应的内容。</p>
+
+
+
+<p>现在点击上图中类似“ppk:105341/”的蓝色按钮，就能查看到该标识的对应内容了，如下图所示：</p>
+
+<p align="center"><img border=0 style="max-width:100%;height:auto" 
+src="index.files/image018.png"></p>
+
+<p><br>
+通过这个示例，就能看到类似“ppk:105341/”这样的奥丁号，已经发挥出了域名映射到网站内容的作用，而不同于域名的是，奥丁号是在比特币区块链上自主注册的新兴链上标识，自主、可信、安全和唯一，相比传统域名而言，可以更好地与区块链应用业态相结合，推动实现对等万维网（PeerWeb/Web3.0）。<br>
+<br>
+在上述示例里只是输入一段简短文字作为示例，也可以输入完整的网页内容，以及使用开源代码来搭建更为复杂的网络应用都是可以的，只需要生成具体的内容网址，与你的奥丁号关联在一起就可以生效了，后续将进一步介绍。</p>
+
+
+
+<p>重新回到PNS服务工具的用户帐户显示页，除了“当前标识”显示的奥丁号数字外，下方的“相关转义名称”区域还列出了更多的奥丁号名称。因为每个奥丁号数字会对应多个英文转义名称，对每个转义名称都可以单独设置标识解析记录，映射到不同的内容上。在这里，点击或输入对应的英文转义名称如“AOJGDA”就可以设置了，如下图所示。</p>
+
+<p align="center"><img border=0 style="max-width:100%;height:auto" 
+src="index.files/image019.png">&nbsp;&nbsp;</p>
+
+<p>具体设置方法是一样的，待设置成功后，就可以单独用对应的英文名称如“ppk:aojgda/”作为新型域名来访问到不同的内容了。&nbsp;</p>
+
+
+<p>现在再次点击“当前标识”处的“设置该标识的解析记录”，往下滚动页面到显示“内容访问点（AP）”一栏，将看到该标识已生效的内容服务设置信息，如下图所示：</p>
+
+<p align="center"><img border=0 style="max-width:100%;height:auto" 
+src="index.files/image020.png"></p>
+
+
+
+<p>注意上图红圈处，显示的就是与该标识关联的内容网址。用户可以自行生成一个或多个内容网址入口，将其填写到这里更新保存即可，类似将一个传统.com域名指向一个或多个IP地址的网站服务器。<br>
+设置项里的“内容可信验证设置”是可选的，类似提供WEB网站的SSL证书，在这里上传公钥，然后用私钥对发布的内容数据进行签名，以增强内容的安全可行性。具体操作后续将进一步介绍。</p>
+
+<p>上面介绍了通过传统网站数据库来设置奥丁号解析的简单方法，还可以在比原MOV、以太坊ETH、比特现金BCH等链上托管解析奥丁号，详见：&nbsp;<a href="https://ppk001.sinaapp.com/docs/help_pns/onchain.html" target="_blank">https://ppk001.sinaapp.com/docs/help_pns/onchain.html</a></p>
+
+<!--
+
+
+<p align="center"><img border=0 style="max-width:100%;height:auto"  
+src="index.files/image005.png">&nbsp;&nbsp;</p>
+
+<p><br>
+<br>
+</p>
+
+<p>点击“设置该标识的解析记录”，进入选择用传统网站数据库或者区块链来保存解析设置记录，如下图所示：</p>
+
+<p align="center"><img border=0 style="max-width:100%;height:auto" 
+src="index.files/image006.png"></p>
+
+<p>这里我们先尝试最简单的方式，用网站数据库来保存解析设置记录，点击“设置数据库解析记录”按钮，显示如下图所示：<br>
+<br>
+</p>
+
+-->
+
+<p>上述奥丁号托管服务(PNS)示例的开源代码已上传到github上(&nbsp;<a
+href="https://github.com/ppkpub/AP/tree/master/php_ap2" target="_blank">https://github.com/ppkpub/AP/tree/master/php_ap2</a>&nbsp;)，供有兴趣的朋友参考，可进一步开发出更强大的PNS服务，如支持DID分布式数字身份、多币种钱包转账应用、多用户的PeerWeb对等内容平台等，PPk技术社区后续也会有更多示例放出，请留意关注。</p>
+
+
+<p><b>关于奥丁号</b>&nbsp;</p>
+
+<p>奥丁号作为自主注册和管理的链上标识，可以兼容DID和oAuth协议，来灵活配合应用结合区块链技术的登录验证需求。在应用里嵌入奥丁号登录功能有多种方式灵活可选，应用开发者很容易参考实现&nbsp;（具体可参考&nbsp;<a
+href="https://www.chainnode.com/post/382517">https://www.chainnode.com/post/382517</a>）。最重要的改变是对于用户来说通过区块链技术拥有了一个自主的ID标识和信息入口，而不是一个类似微博或微信的被平台所控制的帐户，从而为进一步开发出更有意思的新应用建立一个基础，后续PPk技术社区还会相应推出进一步的应用案例。</p>
+
+<p>·&nbsp;<a
+href="https://ppk001.sinaapp.com/docs/help_odin/">点击了解奥丁号（ODIN）的更多信息</a></p>
+
+<p><b>关于PPk开放协议</b></p>
+
+<p>PPk是一个代号，取意自“Peer-Peer network&amp;kits”。PPk首先是一个开放的技术社区，由PPk技术社区融合区块链和网络通信技术，定义了对等可信的PPk开放协议。PPk开放协议目前包括三部分：<b>ODIN</b>（Open Data Index Name&nbsp;即开放数据索引命名标识），<b>PTTP</b>（Peer Trusted Transfer Protocol即对等可信传输协议）以及<b>PTAP</b>（Peer Trusted Application Protocols即对等可信应用扩展协议），简单介绍如下：</p>
+
+<p>1. <b>ODIN</b>：基于区块链技术定义的自主命名标识，作用类似DNS；<br>
+2. <b>PTTP</b>：基于ODIN标识和NDN架构设计的新型传输协议，作用类似HTTP；<br>
+3. <b>PTAP</b>：基于ODIN标识和PTTP传输协议的应用扩展协议，类似WEB上的具体应用协议，可以具体实现如&nbsp;OpenID认证, oAuth授权, ODATA开放数据等不同应用协议的角色。</p>
+
+<p><b>快速上手指南</b></p>
+
+<p>·&nbsp;<a
+href="https://ppk001.sinaapp.com/docs/help_odintool/">用PPk网页版小工具快速注册和体验区块链身份标识和多币种转账</a></p>
+
+<p>·&nbsp;<a
+href="https://ppk001.sinaapp.com/docs/help_pns/">通过奥丁号托管服务（PNS），发布自己的第一个对等网页，抢鲜体验PeerWeb</a></p>
+
+<p>·&nbsp;<a
+href="https://ppk001.sinaapp.com/docs/help_ppkbrowser/">使用PPk安卓应用注册和管理奥丁号，体验更多功能</a></p>
+
+<p>·&nbsp;<a href="https://ppk001.sinaapp.com/docs/">更多说明请点击这里</a></p>
+</body>
+
+</html>
